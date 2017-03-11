@@ -1,0 +1,2 @@
+Memory used by full read: -160624
+Memory used by partial read: 1504

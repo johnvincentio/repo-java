@@ -1,0 +1,122 @@
+
+-- works; writes the text
+
+	<detail>
+		<band height="300">
+			<staticText>
+				<reportElement x="280" y="150" width="315" height="23"/>
+				<box leftPadding="5">
+					<topPen lineColor="#c0c0c0" lineWidth="4"/>
+					<leftPen lineColor="#c0c0c0" lineWidth="1"/>
+					<bottomPen lineColor="#c0c0c0" lineWidth="1"/>
+					<rightPen lineColor="#c0c0c0" lineWidth="2"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font/>
+				</textElement>
+				<text> =   A2 cell content</text>
+			</staticText>
+
+-- works; writes the text
+
+			<staticText>
+				<reportElement x="70" y="50" width="295" height="18"/>
+				<box leftPadding="5">
+					<topPen lineColor="#c0c0c0" lineWidth="4"/>
+					<leftPen lineColor="#c0c0c0" lineWidth="1"/>
+					<bottomPen  lineColor="#c0c0c0" lineWidth="1"/>
+					<rightPen lineColor="#c0c0c0" lineWidth="2"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font/>
+				</textElement>
+				<text><![CDATA[Account Summary and Open Invoices]]></text>
+			</staticText>			
+			
+			<staticText>
+				<reportElement x="180" y="110" width="115" height="18"/>
+				<box leftPadding="5">
+					<topPen lineColor="#c0c0c0" lineWidth="4"/>
+					<leftPen lineColor="#c0c0c0" lineWidth="1"/>
+					<bottomPen  lineColor="#c0c0c0" lineWidth="1"/>
+					<rightPen lineColor="#c0c0c0" lineWidth="2"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font/>
+				</textElement>
+				<text> =   A5 cell content</text>
+			</staticText>
+
+-- within the detail section; this writes actual data
+
+			<textField>
+				<reportElement x="10" y="70" width="100" height="18"/>
+				<box leftPadding="5">
+					<topPen lineColor="#c0c0c0" lineWidth="4"/>
+					<leftPen lineColor="#c0c0c0" lineWidth="1"/>
+					<bottomPen  lineColor="#c0c0c0" lineWidth="1"/>
+					<rightPen lineColor="#c0c0c0" lineWidth="2"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CustomerName}]]></textFieldExpression>
+			</textField>
+
+<staticText> - within detail section, only used for writing actual text, not data
+
+
+-- within title section; draw a line
+
+			<line>
+				<reportElement x="0" y="0" width="515" height="1"/>
+				<graphicElement/>
+			</line>
+
+--within title section; image hyperlink to url
+
+				<image hAlign="Center" vAlign="Middle" hyperlinkType="Reference" hyperlinkTarget="Blank">
+					<reportElement x="230" y="90" width="200" height="30"/>
+					<graphicElement/>
+					<imageExpression class="java.lang.String"><![CDATA["google.gif"]]></imageExpression>
+					<hyperlinkReferenceExpression><![CDATA["http://www.google.com"]]></hyperlinkReferenceExpression>
+					<hyperlinkTooltipExpression>"Searching for something?"</hyperlinkTooltipExpression>
+				</image>
+
+
+
+
+
+
+			<staticText>
+				<reportElement x="120" y="40" width="375" height="35" style="Sans_Italic"/>
+				<textElement textAlignment="Left">
+					<font size="16"/>
+				</textElement>
+				<text>Demo</text>
+			</staticText>
+
+
+html tag? looks it!
+
+			<staticText>
+				<reportElement x="180" y="5" width="375" height="40">
+					<property name="net.sf.jasperreports.export.pdf.tag.h1" value="full"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="22"/>
+				</textElement>
+				<text>Table Report</text>
+			</staticText>
+			
+images samples:			
+http://fecplanner.com/jasperreports/docs/samples/ImagesReport.pdf
+
+landscape report:
+	name="LandscapeReport" pageWidth="842" pageHeight="595" 
+	orientation="Landscape" columnWidth="842" 
+	leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	
+	
+	
+		

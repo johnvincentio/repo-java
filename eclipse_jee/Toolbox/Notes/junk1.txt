@@ -1,0 +1,679 @@
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.hertz.herc.framework;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.hertz.herc.login.presentation.LoginHttpInfo;
+import com.hertz.herc.member.presentation.MemberReportsHttpInfo;
+import com.hertz.herc.presentation.util.framework.ContractHelper;
+import com.hertz.herc.presentation.util.framework.PaymentCardHttpInfo;
+import com.hertz.herc.presentation.util.framework.PosHelper;
+import com.hertz.herc.presentation.util.reports.AppCookies;
+import com.hertz.herc.reports.presentation.MemberReportsSetAutoHelper;
+import com.hertz.herc.user.presentation.MemberInfo;
+import com.hertz.herc.user.presentation.MemberJobLocationItemInfo;
+import com.hertz.herc.user.presentation.UserHttpInfo;
+import com.hertz.herc.user.presentation.UserJobLocationItemInfo;
+import com.hertz.hercutil.company.ContractRentalsEquipmentInfo;
+import com.hertz.hercutil.company.RMAccountType;
+import com.hertz.hercutil.member.MemberReports;
+import com.hertz.hercutil.member.MemberRole;
+import com.hertz.hercutil.member.profile.MemberProfileItemInfo;
+import com.hertz.hercutil.presentation.HercConstants;
+import com.hertz.hercutil.user.presentation.PosItemInfo;
+import com.hertz.irac.framework.HertzSystemException;
+import com.hertz.irac.util.logging.LogBroker;
+
+/**
+ *	UserHelper encapsulates session related tasks for the UserHttpInfo object.
+ *
+ * @author John Vincent
+ */
+
+public class UserHelper {
+
+	/**
+	 * Get UserHttpInfo object.
+	 * @param request			HttpServletRequest.
+	 */
+	private static UserHttpInfo getUserHttpInfo (HttpServletRequest request) {
+		return UserHttpInfo.getInstance(request.getSession());
+	}
+
+	/**
+	 * Update UserHttpInfo object.
+	 * @param request
+	 */
+	private static void updateUserHttpInfo (HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setAttribute(UserHttpInfo.SESSION_NAME, getUserHttpInfo (request));
+	}
+	
+	/**
+	 * Session container for payment card state, sitewide
+	 * @param request
+	 * @return
+	 */
+	public static PaymentCardHttpInfo getPaymentCardHttpInfo(HttpServletRequest request) {
+	    return PaymentCardHttpInfo.getInstance(request.getSession());
+	}
+
+
+/*
+ * handle user logged in state
+ */
+
+	/**
+	 * Determine whether user is logged in.
+	 * @param request	the HttpServletRequest
+	 * @return			true if logged in
+	 */
+	public static boolean isLoggedIn (HttpServletRequest request) {
+		return getUserHttpInfo(request).isLoggedIn();
+	}
+	/**
+	 * Set user state to logged in.
+	 * @param request	the HttpServletRequest
+	 */
+	public static void setLoggedIn(HttpServletRequest request) {
+        int basePos = getPos(request).getCountryCode();	
+		LoginHttpInfo.clearSession(request.getSession());
+		MemberReportsHttpInfo.clearSession(request.getSession());
+		getUserHttpInfo(request).setLoggedIn();
+		updateUserHttpInfo (request);
+
+		if (basePos != getPos(request).getCountryCode()) // Clear cart if user's POS changed on login.
+			UserHelper.invalidateRentalsCart(request);
+	}
+	/**
+	 * Set user state to logged out.
+	 * @param request	the HttpServletRequest
+	 */
+	public static void setLoggedOut(HttpServletRequest request) {
+        int loggedInPos = getPos(request).getCountryCode();	
+		LoginHttpInfo.clearSession(request.getSession());
+		MemberReportsHttpInfo.clearSession(request.getSession());
+		MemberReportsSetAutoHelper.clearSession (request);
+		getUserHttpInfo(request).setLoggedOut();			// set user state to logged out
+		updateUserHttpInfo (request);
+
+		setEtrieveLoggedOut(request);						// logout of etrieve
+
+		if (loggedInPos != getPos(request).getCountryCode()) // Clear cart if user's POS changed.
+			UserHelper.invalidateRentalsCart(request);
+	}
+	
+
+	/*
+	 * handle demo account
+	 */
+
+	/**
+	 * Determine whether member's company is a demo 
+	 * 
+	 * @param request
+	 * @return			true if a demo company
+	 */
+	public static boolean isDemo (HttpServletRequest request) {
+		if (! isLoggedIn (request)) return false;
+		return getUserHttpInfo(request).isDemo();
+	}
+
+	/**
+	 * Set demo state.
+	 * @param request	the HttpServletRequest
+	 * @param demo		true if a demo company
+	 */
+	public static void setDemo(HttpServletRequest request, boolean demo) {
+		getUserHttpInfo(request).setDemo(demo);
+		updateUserHttpInfo (request);
+	}
+/*
+ * handle state of carts
+ */
+	/**
+	 * Invalidate the Rentals and Sales carts.
+	 * @param request	HttpServletRequest
+	 */
+	private static void invalidateCarts (HttpServletRequest request) {
+		invalidateRentalsCart (request);
+		invalidateSalesCart (request);
+	}
+	/**
+	 * Invalidate the Rentals cart.
+	 * @param request	HttpServletRequest
+	 */
+	private static void invalidateRentalsCart (HttpServletRequest request) {
+		RentalsCartHelper.notifyStateChange(request);
+	}
+	/**
+	 * Invalidate the Sales cart.
+	 * @param request	HttpServletRequest.
+	 */
+	public static void invalidateSalesCart (HttpServletRequest request) {
+		SalesCartHelper.notifyStateChange(request);
+	}
+
+/*
+ * handle user point of sale
+ */
+	/**
+	 * Get Point of Sale. This is derived from Current Job Location, or if there is not a
+	 * current job location, from the Current Point of Sale.
+	 * 
+	 * @param request	HttpServletRequest.
+	 * @return			Point of Sale object.
+	 */
+	public static PosItemInfo getPos (HttpServletRequest request) {
+		String pos = "";
+		UserJobLocationItemInfo userJobLocationItemInfo = getCurrentJobLocation(request);
+		if (userJobLocationItemInfo != null)
+			pos = userJobLocationItemInfo.getHercAddress().getCountry();
+		return new PosItemInfo(PosHelper.getValidPos (request, pos));
+	}
+	/**
+	 * Handle POS change. Called by POS Handler when the POS has changed.
+	 * 
+	 * @param request	HttpServletRequest
+	 */
+	public static void posChanged (HttpServletRequest request) {
+		if (! isLoggedIn (request)) invalidateCarts (request);
+	}
+
+	/**
+	 * Handle session timeout duties. Called by LoginPageHelper when session has timed out.
+	 * 
+	 * @param request	HttpServletRequest
+	 */
+	public static void sessionTimedOut (HttpServletRequest request) {
+		if(isLoggedIn(request)) {
+			setLoggedOut(request);
+		}
+		
+		invalidateCarts (request);
+	}
+
+/*
+ * handle the MemberInfo object
+ */
+	/**
+	 * Get memberInfo object.
+	 * @param request	HttpServletRequest
+	 * @return 			MemberInfo
+	 */
+	private static MemberInfo getMemberInfo(HttpServletRequest request) {
+		return getUserHttpInfo(request).getMemberInfo();
+	}
+	/**
+	 * Set memberInfo object.
+	 * @param request			HttpServletRequest
+	 * @param memberInfo		MemberInfo
+	 */
+	public static void setMemberInfo(HttpServletRequest request, MemberInfo memberInfo) {
+		getUserHttpInfo(request).setMemberInfo(memberInfo);
+		updateUserHttpInfo (request);
+	}
+	/**
+	 * Show memberInfo object. Useful for tracing the object.
+	 * @param request			HttpServletRequest
+	 * @param msg				A message to display in the logs.
+	 */
+	public static void showMemberInfo (HttpServletRequest request, String msg) {
+		LogBroker.debug(UserHelper.class, "showMemberInfo; "+msg);
+		if (getMemberInfo(request) != null)
+			LogBroker.debug(UserHelper.class, getMemberInfo(request).toString());
+	}
+
+/*
+ * handle the MemberInfo properties
+ */
+
+	/**
+	 * Get memberid.
+	 * @param request			HttpServletRequest
+	 * @return 					the member id
+	 */
+	public static long getMemberid (HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		return (memberInfo != null) ? memberInfo.getMemberid() : 0;
+	}
+	/**
+	 * Get username.
+	 * @param request			HttpServletRequest
+	 * @return					User name.
+	 */
+	public static String getUsername (HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		return (memberInfo != null) ? memberInfo.getUsername() : null;
+	}
+
+	/**
+	 * Get member's RentalMan Account. You must keep this private.
+	 * @param request			HttpServletRequest
+	 * @return					RentalMan Accounts
+	 */
+	private static RMAccountType getRMAccount (HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		if (memberInfo == null) return null;
+		MemberJobLocationItemInfo memberJobLocationItemInfo = memberInfo.getMemberJobLocation();
+		if (memberJobLocationItemInfo == null) return null;
+		return memberJobLocationItemInfo.getMemberAccount().getAccount();
+	}	
+	/**
+	 * Get member's account number.
+	 * @param request			HttpServletRequest
+	 * @return					RentalMan Account number
+	 */
+	public static String getAccount (HttpServletRequest request) {
+		RMAccountType rmAccountType = getRMAccount (request);
+		if (rmAccountType == null) return null;
+		return rmAccountType.getAccountNumber();
+	}
+	/**
+	 * Get member's account country code.
+	 * @param request			HttpServletRequest
+	 * @return					Account country code
+	 */
+	public static int getAccountCountryCode (HttpServletRequest request) {
+		RMAccountType rmAccountType = getRMAccount (request);
+		if (rmAccountType == null) return 0;
+		return rmAccountType.getCountryCode();
+	}
+	/**
+	 * Get member's contract rental equipment items.
+	 * @param request			HttpServletRequest
+	 * @return					Contract rental items
+	 */
+	public static ContractRentalsEquipmentInfo getContractRentalsEquipment (HttpServletRequest request) throws HertzSystemException {
+		if (! isLoggedIn (request)) return null;
+		MemberInfo memberInfo = getMemberInfo(request);	
+		if (memberInfo == null) return null;
+		MemberJobLocationItemInfo memberJobLocationItemInfo = memberInfo.getMemberJobLocation();
+		if (memberJobLocationItemInfo == null) return null;
+		return ContractHelper.getContractRentalsEquipment (memberJobLocationItemInfo.getMemberAccount());
+	}
+
+	/**
+	 * Get member's company id.
+	 * @param request			HttpServletRequest
+	 * @return					Company id
+	 */
+	public static long getCompanyid (HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		return (memberInfo != null) ? memberInfo.getCompanyid() : 0;
+	}
+	/**
+	 * Get default location.
+	 * @param request			HttpServletRequest
+	 * @return					the default job location
+	 */
+	public static String getDefaultlocation (HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		return (memberInfo != null) ? memberInfo.getDefaultlocation() : null;
+	}
+
+
+/*
+ * handle the MemberProfileItemInfo properties
+ */
+
+	/**
+	 * Get member profile
+	 * @param request			HttpServletRequest
+	 * @return					Member Profile
+	 */
+	public static MemberProfileItemInfo getMemberProfile (HttpServletRequest request) {
+		if (! isLoggedIn(request)) return null;
+		MemberInfo memberInfo = getMemberInfo(request);	
+		if (memberInfo == null) return null;
+		return memberInfo.getMemberProfile();
+	}
+	/**
+	 * Set member profile
+	 * 
+	 * @param request			HttpServletRequest
+	 * @param item				Member Profile
+	 */
+	public static void setMemberProfile (HttpServletRequest request, MemberProfileItemInfo item) {
+		MemberInfo memberInfo = getMemberInfo(request);
+		if (isLoggedIn(request) && memberInfo != null && item != null) {
+			memberInfo.setMemberProfile(item);
+			updateUserHttpInfo (request);
+		}
+	}
+	/**
+	 * Get member's report flags.
+	 * @param request			HttpServletRequest
+	 * @return					Member Reports
+	 */
+	public static MemberReports getReports(HttpServletRequest request) {
+		MemberProfileItemInfo memberProfileItemInfo = getMemberProfile(request);	
+		return (memberProfileItemInfo != null) ? memberProfileItemInfo.getReports() : null;
+	}	
+
+	/**
+	 * Get the member's role object.
+	 * @param request			HttpServletRequest
+	 * @return					MemberRole object
+	 */
+	public static MemberRole getRole (HttpServletRequest request) {
+		MemberProfileItemInfo memberProfileItemInfo = getMemberProfile(request);
+		return (memberProfileItemInfo != null) ? memberProfileItemInfo.getRole() : null;
+	}
+	/**
+	 * Is the user an account admin role.
+	 * @param request			HttpServletRequest
+	 * @return					true if user is an account admin role
+	 */
+	public static boolean isAccountAdminRole (HttpServletRequest request) {
+		MemberRole role = getRole(request);
+		if (role == null) return false;
+		return role.isAccountAdminRole();
+	}
+	/**
+	 * Is the user an account approver role.
+	 * @param request			HttpServletRequest
+	 * @return					true if user is an account approver role
+	 */
+	public static boolean isAccountApproverRole (HttpServletRequest request) {
+		MemberRole role = getRole(request);
+		if (role == null) return false;
+		return role.isAccountApproverRole();
+	}
+	/**
+	 * Is the user a requestor role.
+	 * @param request			HttpServletRequest
+	 * @return					true if user a requestor role
+	 */
+	public static boolean isAccountRequestorRole (HttpServletRequest request) {
+		MemberRole role = getRole(request);
+		if (role == null) return false;
+		return role.isAccountRequestorRole();
+	}
+	/**
+	 * Is the user an accounts approver.
+	 * @param request			HttpServletRequest
+	 * @return					true if user is an accounts approver
+	 */
+	public static boolean isApproverOfAccounts (HttpServletRequest request) {
+		MemberRole role = getRole(request);
+		if (role == null) return false;
+		return role.isApproverOfAccounts();
+	}
+	/**
+	 * Is the user an approver of his own rental requests.
+	 * @param request			HttpServletRequest
+	 * @return					true if user is an approver of his own rental requests
+	 */
+	public static boolean isApproverOfOwnRentalRequests (HttpServletRequest request) {
+		MemberRole role = getRole(request);
+		if (role == null) return false;
+		return role.isApproverOfOwnRentalRequests();
+	}
+
+
+/*
+ * handle member's job location object
+ */
+	/**
+	 * Get member job location.
+	 * @param request			HttpServletRequest
+	 * @return					MemberJobLocationItemInfo
+	 */
+	public static MemberJobLocationItemInfo getMemberJobLocationItemInfo(HttpServletRequest request) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		if(memberInfo != null) return memberInfo.getMemberJobLocation();
+		return null;
+	}
+	/**
+	 * Set member job location, and take action if the POS changed.
+	 * @param request			HttpServletRequest
+	 * @param location			Job Location
+	 */
+	public static void setMemberJobLocationItemInfo(HttpServletRequest request, MemberJobLocationItemInfo location) {
+		MemberInfo memberInfo = getMemberInfo(request);	
+		if (isLoggedIn(request) && memberInfo != null) {
+			if (location != null) {
+				String currentPos = getPos(request).getPos();
+				String newPos = location.getHercAddress().getCountry();
+				if (! currentPos.equals(newPos)) {
+					invalidateCarts (request);
+				}
+			}
+			memberInfo.setMemberJobLocation(location);
+			updateUserHttpInfo (request);
+		}
+	}
+
+/*
+ * handle UserJobLocationItemInfo object
+ */
+	/**
+	 * Get UserJobLocationItem, job location object for a non-logged in user.
+	 * @param request			HttpServletRequest
+	 * @return					UserJobLocationItemInfo
+	 */
+	public static UserJobLocationItemInfo getUserJobLocationItemInfo (HttpServletRequest request) {
+		return getUserHttpInfo(request).getUserJobLocation();
+	}
+	/**
+	 * Set UserJobLocationItem, job location object for a non-logged in user.
+	 * @param request			HttpServletRequest
+	 * @param location			Job Location
+	 */
+	public static void setUserJobLocationItemInfo (HttpServletRequest request, UserJobLocationItemInfo location) {
+		getUserHttpInfo(request).setUserJobLocation(location);
+		updateUserHttpInfo (request);
+	}
+
+
+/*
+ * handle job location helper methods
+ */
+	/**
+	 * Delete job location from User session object - removes both User and Member objects.
+	 * @param request			HttpServletRequest
+	 */
+	public static void clearCurrentJobLocation (HttpServletRequest request) {
+		setUserJobLocationItemInfo(request, null);
+		setMemberJobLocationItemInfo(request, null);
+		updateUserHttpInfo (request);
+	}
+	/**
+	 * If logged in, get member job location, else get user job location.
+	 * @param request			HttpServletRequest
+	 * @return					UserJobLocationItemInfo
+	 */
+	public static UserJobLocationItemInfo getCurrentJobLocation (HttpServletRequest request) {
+		if (isLoggedIn(request)) return getMemberJobLocationItemInfo(request);
+		return getUserJobLocationItemInfo(request);
+	}
+	/**
+	 * Does the job location object exist in session object.
+	 * If logged in, check the member job location, else check the user job location.
+	 * @param request			HttpServletRequest
+	 * @return					true if job location object exists in session object
+	 */
+	public static boolean isCurrentJobLocation (HttpServletRequest request) {
+		if (getCurrentJobLocation(request) == null) return false;
+		return true;
+	}
+	/**
+	 * Check whether the passed location is the location currently in session object. 
+	 * If logged in, will use the member job location, else will use the user job location.
+	 * @param request			HttpServletRequest.
+	 * @param location			location to look for.
+	 * @return					true if passed location is the location currently in session object.
+	 */
+	public static boolean isCurrentJobLocation (HttpServletRequest request, String location) {
+		UserJobLocationItemInfo item = getCurrentJobLocation(request);
+		if (item != null && item.getLocationname().equals(location)) return true;
+		return false;
+	}
+
+	/**
+	 * If logged in, set member job location, else set user job location.
+	 * @param request			HttpServletRequest
+	 * @param location			Job Location
+	 */
+	public static void setCurrentJobLocation (HttpServletRequest request, UserJobLocationItemInfo location) {
+		if (isLoggedIn(request)) {
+			setMemberJobLocationItemInfo(request, (MemberJobLocationItemInfo) location);
+		}
+		else {
+			setUserJobLocationItemInfo(request, location);
+		}		
+	}
+
+	/**
+	 * Get the Herc branch associated with the current job location.
+	 * 
+	 * @param request			HttpServletRequest.
+	 * @return					Branch associated with the current job location.
+	 */
+	public static String getCurrentJobLocationBranch (HttpServletRequest request) {
+		UserJobLocationItemInfo info = getCurrentJobLocation(request);
+		if (info != null) {
+			String branch = info.getBranchLocation().getBranch();
+			if (branch != null && (! branch.equals (HercConstants.HERC_BRANCH_NOT_DEFINED)))
+				return branch;
+		}
+		return HercConstants.HERC_BRANCH_NOT_DEFINED;
+	}	
+
+/*
+ * handle various helper methods
+ */
+	/**
+	 * Get account id of the account associated with this member's job location.
+	 * @param request			HttpServletRequest
+	 * @return					Id of the current account.
+	 */
+	public static long getCurrentAccountid (HttpServletRequest request) {
+		MemberJobLocationItemInfo memberJobLocationItemInfo = getMemberJobLocationItemInfo(request);
+		if (memberJobLocationItemInfo == null) return 0;
+		return memberJobLocationItemInfo.getMemberAccount().getAccountid();
+	}
+
+	/**
+	 * Is the member a contract customer.
+	 * @param request			HttpServletRequest
+	 * @return					true if the member is a contract customer.
+	 */
+	public static boolean isContract (HttpServletRequest request) throws HertzSystemException {
+		if (! isLoggedIn(request)) return false;
+		MemberJobLocationItemInfo memberJobLocationItemInfo = getMemberJobLocationItemInfo(request);
+		if (memberJobLocationItemInfo == null) return false;
+		return ContractHelper.isContract (memberJobLocationItemInfo.getMemberAccount());
+	}
+
+	/**
+	 * Return true if this is a logged in member, and the currently selected job location is
+	 * associated with a company account which has the display rates flag set to true.
+	 * @param request			HttpServletRequest
+	 * @return					true if can display rates.
+	 */
+	public static boolean isDisplayRates (HttpServletRequest request) {
+		if (! isLoggedIn(request)) return false;
+		MemberJobLocationItemInfo memberJobLocationItemInfo = getMemberJobLocationItemInfo(request);
+		if (memberJobLocationItemInfo == null) return false;
+		return memberJobLocationItemInfo.getMemberAccount().getCompanyAccount().isDisplayRates();
+	}
+
+
+	/*
+	 * handle reports
+	 */
+
+	/**
+	 * Gets etrieve cookies
+	 * 
+	 * @param request	HttpServletRequest
+	 * @return			Cookies
+	 */
+	public static AppCookies getReportsCookies(HttpServletRequest request) {
+		return getUserHttpInfo(request).getUserReportsInfo().getCookies();
+	}
+
+	/**
+	 * Sets etrieve cookies
+	 * 
+	 * @param request		HttpServletRequest
+	 * @param cookies		Cookies
+	 */
+	public static void setReportsCookies(HttpServletRequest request, AppCookies cookies) {
+		getUserHttpInfo(request).getUserReportsInfo().setCookies(cookies);
+		updateUserHttpInfo (request);
+	}
+
+	/**
+	 * Get account id of the account to be used for the current Etrieve report
+	 * 
+	 * @param request	HttpServletRequest
+	 * @return			account id
+	 */
+	public static long getEtrieveAccountid (HttpServletRequest request) {
+		return getUserHttpInfo(request).getUserReportsInfo().getAccountid();
+	}
+
+	/**
+	 * Set the account id for Etrieve access. Note that the changing of an account will trigger
+	 * a logout from Etrieve. This call handles that change of state.
+	 * 
+	 * @param request		HttpServletRequest
+	 * @param accountid		account id
+	 */
+	public static void setEtrieveAccountid (HttpServletRequest request, long accountid) {
+		getUserHttpInfo(request).getUserReportsInfo().setAccountid (accountid);
+		updateUserHttpInfo (request);
+	}
+
+	/**
+	 * Determine application state of Etrieve authentication
+	 * 
+	 * @param request		HttpServletRequest
+	 * @return				true if authenticated with Etrieve
+	 */
+	public static boolean isEtrieveLoggedIn(HttpServletRequest request) {
+		boolean bLoggedIn = getUserHttpInfo(request).getUserReportsInfo().isLoggedIn();
+		if (bLoggedIn) {
+			if (getReportsCookies(request).getSize() < 1) {
+				bLoggedIn = false;
+				setEtrieveLoggedOut(request);
+			}
+		}
+		return bLoggedIn;
+	}
+
+	/**
+	 * Set Etrieve authentication state to logged in
+	 * 
+	 * @param request	HttpServletRequest
+	 */
+	public static void setEtrieveLoggedIn(HttpServletRequest request) {
+		getUserHttpInfo(request).getUserReportsInfo().setLoggedIn();
+		updateUserHttpInfo (request);
+	}
+
+	/**
+	 * Set Etrieve authentication state to logged out
+	 * 
+	 * @param request	HttpServletRequest
+	 */
+	public static void setEtrieveLoggedOut(HttpServletRequest request) {
+		getUserHttpInfo(request).getUserReportsInfo().setLoggedOut();
+		updateUserHttpInfo (request);
+	}
+}

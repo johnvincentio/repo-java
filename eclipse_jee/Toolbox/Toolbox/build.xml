@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<project name="toolbox" default="make_jar" basedir="."> 
+
+	<property name="toolbox.jar.file" value="/Users/jv/Desktop/MyDevelopment/repo_shell_scripts/mac/JVTools/toolbox.jar"/>
+
+	<target name="make_jar">
+		<echo message="Creating Toolbox JAR file - ${toolbox.jar.file}"/>
+		<echo message="base directory ${basedir}"/>
+		<jar destfile="${toolbox.jar.file}" basedir="${basedir}"/>
+	</target>
+
+</project>

@@ -1,0 +1,210 @@
+Scrabble Development Notes
+John Vincent
+last change 12/19/2003
+
+FEATURES:
+
+Has build.xml file.
+ant to do the make - optional.
+ant runserver    - runs the server.
+ant runclient    - run client.
+
+Up to 6 players.
+One game.
+
+Drag tiles from rack and place on board.
+Move, Pass, Clear and Exit buttons supported.
+
+To Pass, place tiles you want to keep onto the board and press Pass button.
+
+Currently address of server is hard-coded as local.
+
+Basically working. Cycles through the players, keeps everyone informed.
+Not too bad.
+
+A little brittle mind, but there is always the next version!
+
+********************* TO DO ****************************
+
+First word placed must cover the centre tile.....
+
+Allow configurable server address in the client.
+
+No support for word lookup.
+
+No support for a computer user.
+
+Support system through Java Web Start.
+
+Socket communication should support SSL.
+Will need this when my cheats work! 
+
+Sort out the error handling. Make it graceful!
+
+When you do not allow new players to join the game? After the first cycle of
+moves maybe.
+
+Check that thread.isAlive() actually works. This may be part of the current player
+tracking loss. 
+
+If thread is down, will doing on a method in the thread class necessarily cause 
+an exception.
+
+The thread status checking code requires some careful work. 
+
+The thread cycling code needs the magnifying glass treatment.
+
+No support for game over condition.
+Game is over when all tiles have been placed or
+all players have retired.
+The winner is the person who, with no tiles left in the bag, has succesfully
+placed all of his tiles on the board.
+Any tiles remaining in other players tiles are deducted from each players score,
+the sum of these tiles is added to the winning players tiles.
+The actual winner is the player with the highest score.
+
+Each player, retired, thread died, player exited.... - exclude these players.
+
+Server needs to tell clients that game is over....
+Final board...
+Players and scores....
+The winner is......
+Thanks for playing etc...... please buy something....
+
+No support for all threads have terminated.
+
+Needs to support user retires. 
+Add retire button, signal server, server sets playerinfo.m_bRetires. The thread
+checking code will not resume the thread.
+
+Retired user does not mean exit. The user will want to be signalled with game 
+information including details of it's conclusion.
+
+Server needs to gracefully handle thread loss. Trouble is, the server does not actually
+have it's own thread, only the player threads actually exist.
+
+The code is very light on comments. Sort this out.
+Some of this stuff would be very tough to come back to.
+
+Rename some of the classes. This Scrabble.... is a pest. Use packages.
+What package name convention should I adopt?
+
+Some of the code just winds on and on. Game.java badly needs to be broken up.
+
+The program structure needs to properly documented. Drawings...
+
+Check private/public - min access is best.
+
+Check some traces - there are too many.
+
+Do I need multiplier in LetterSlave?
+
+Rationalize ScoreSlave and WordSlave - only one is needed.
+
+The logic in validateMove() is a little winding. A rethink here can surely turn
+up some softer solutions, with much less, and hopefully more readable code.
+The mechanism for cycling through the threads seems rather dangerous. If the
+current thread dies, the whole app is hung!
+
+Check synchronizations.....
+Only sync what needs to be sync'd. Maybe it is the object that needs protection,
+not the method. Be Careful.
+
+Should I switch the PASS button functionality. letters on the board are the ones to
+toss. Or maybe, a picture of a dustbin, drag and drop to the bin!
+
+I didn't get around to adding support for my cheating!
+Special key code.
+see other players racks.
+ask server for some word suggestions.
+require server to check with me before sending letters to other players racks!
+
+document the communication protocol.
+
+document the code properly.
+
+try using an Object type for the socket communication. The object type will be unique
+for each signal.
+writeObject (Object)
+where the Object is int signal, Object.....
+
+use packages
+
+
+CLIENT
+
+the twitchy dialog really is annoying!
+
+Ask the user for a name.
+
+Ask if he wants to join a game or start a new game.
+
+A new game, how many players?
+Computer user OK?
+
+make the squares larger - more readable, but will it still work?
+
+is setSize() in ScrabbleClient needed?
+
+when user selects a tile, the tile or the background should change. Could try
+raising or lowering the tile, maybe change the color of the border of the selected
+tile.
+
+needs to more gracefully handle an EXIT condition.
+
+needs to better handle exceptions.
+
+there was a strange problem; could not sync both the getMessage and sendMessage on
+the client - client would hang. Actually don't need to sync the getMessage anyway
+as it is only run from the secondary listening thread in ClientPlayer, but I would
+like to know why this happened.
+
+do the JOptionPaneDialogs need some consideration with regard to the EDT?
+
+needs help text (Version 9.1).
+
+no about....
+
+ensure 1 letter word is illegal.
+
+ensure user does not put a letter onto an occupied tile on the board.
+
+should I allow user to rearrange tiles in his rack?
+
+make the applet work again.
+
+really could use proper drag and drop.
+
+
+
+BLANK TILE
+
+No support for blank letter tile.
+How to do scoring.
+Need a Swing component to model this tile.
+user needs to be able to select the letter.
+A JPanel, with a pull down box?
+User can change the blank tile while in the rack, not on the board.
+Do not allow a blank tile to be dragged to the board.
+
+The score for the letter is zero.
+
+
+PROBLEMS:
+
+4 players - after maybe 2-3 moves each, the current player signal was not received
+at any client.
+
+there seems to be some problem with thread tracking.
+
+if a thread goes down, I need to catch it.
+
+The program needs to catch these exceptions and take evasive action. At the moment, they are merely exiting....
+
+The poor exception handling could be a part of the thread tracking problems.
+
+OTHER:
+I found the gifs on the net and downloaded them.
+I suppose I could write them myself, but I would much rather someone else
+does the art like work...
+

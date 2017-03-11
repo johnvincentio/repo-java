@@ -1,0 +1,8 @@
+CREATE PROCEDURE hercdb.jv_test1 (IN pActive VARCHAR(5)) 
+RESULT SETS 1 
+LANGUAGE SQL 
+BEGIN 
+	DECLARE c1 CURSOR FOR
+	SELECT username FROM hercdb.LDAPMembers;
+	OPEN c1;
+END @

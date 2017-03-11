@@ -1,0 +1,371 @@
+JasperReport By Example
+
+
+ 
+
+This simple article is intended to guide beginners to start with a simple example.
+
+I have written it using Eclipse and MySql. And there is every thing described using steps.
+
+
+
+
+Step 1.
+
+
+
+
+Install Eclipse. (http://eclipse.org)
+
+
+
+
+Step 2.
+
+
+
+
+Download
+
+jasperreports-1.3.4.jar from jasperreports site.
+
+commons-beanutils.jar(http://commons.apache.org/downloads/download_beanutils.cgi)
+
+commons-collections.jar(http://commons.apache.org/downloads/download_collections.cgi)
+
+commons-digester.jar(http://commons.apache.org/downloads/download_digester.cgi)
+
+commons-logging.jar(http://commons.apache.org/downloads/download_logging.cgi)
+
+itext.jar(http://www.lowagie.com/iText/download.html)
+
+
+
+
+Step 3.
+
+
+
+
+Create Java Project in eclipse.
+
+Add above listed jars to JavaBuildPath libraries.
+
+
+
+
+Step 4.
+
+ 
+
+Create a table in Mysql with name "jaspertest". Use script given below.
+
+
+create table jaspertest(name char(10),address char(20), city char(10),phone int(10));
+
+insert data in to it. 
+
+insert into jaspertest(name,address,city,phone) values('User1','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User2','135,NFC','New Delhi','9814456611');  
+
+insert into jaspertest(name,address,city,phone) values('User3','135,NFC','New Delhi','9814456611');  
+
+insert into jaspertest(name,address,city,phone) values('User4','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User5','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User6','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User7','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User8','135,NFC','New Delhi','9814456611'); 
+
+insert into jaspertest(name,address,city,phone) values('User9','135,NFC','New Delhi','9814456611'); 
+
+ 
+
+Step 5. 
+
+
+
+
+Create a jasperReport_demo.jrxml
+
+
+
+
+<?xml version="1.0"?>
+
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperReports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="SimpleReport">
+
+<queryString>
+
+<![CDATA[select * from jaspertest]]>
+
+</queryString>
+
+<field name="name" class="java.lang.String"/>
+
+<field name="address" class="java.lang.String"/>
+
+<field name="city" class="java.lang.String"/>
+
+<field name="phone" class="java.lang.String"/>
+
+<pageHeader>
+
+<band height="30">
+
+<staticText>
+
+<reportElement x="0" y="0" width="69" height="24"/>
+
+<textElement verticalAlignment="Bottom"/>
+
+<text>
+
+<![CDATA[User Name: ]]>
+
+</text>
+
+</staticText>
+
+<staticText>
+
+<reportElement x="140" y="0" width="79" height="24"/>
+
+<text>
+
+<![CDATA[Address: ]]>
+
+</text>
+
+</staticText>
+
+<staticText>
+
+<reportElement x="280" y="0" width="69" height="24"/>
+
+<text>
+
+<![CDATA[City: ]]>
+
+</text>
+
+</staticText>
+
+<staticText>
+
+<reportElement x="420" y="0" width="69" height="24"/>
+
+<text>
+
+<![CDATA[Phone: ]]>
+
+</text>
+
+</staticText>
+
+</band>
+
+</pageHeader>
+
+<detail>
+
+<band height="30">
+
+<textField>
+
+<reportElement x="0" y="0" width="69" height="24"/>
+
+<textFieldExpression class="java.lang.String">
+
+<![CDATA[$F{name}]]>
+
+</textFieldExpression>
+
+</textField>
+
+<textField>
+
+<reportElement x="140" y="0" width="69" height="24"/>
+
+<textFieldExpression class="java.lang.String">
+
+<![CDATA[$F{address}]]>
+
+</textFieldExpression>
+
+</textField>
+
+<textField>
+
+<reportElement x="280" y="0" width="69" height="24"/>
+
+<textFieldExpression class="java.lang.String">
+
+<![CDATA[$F{city}]]>
+
+</textFieldExpression>
+
+</textField>
+
+<textField>
+
+<reportElement x="420" y="0" width="69" height="24"/>
+
+<textFieldExpression class="java.lang.String">
+
+<![CDATA[$F{phone}]]>
+
+</textFieldExpression>
+
+</textField>
+
+</band>
+
+</detail>
+
+</jasperReport>
+
+
+
+
+
+
+
+
+
+
+Create a class JasperTest.java
+
+
+
+
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+
+import java.sql.SQLException;
+
+import java.util.HashMap;
+
+ 
+
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
+
+import net.sf.jasperreports.engine.JRException;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+
+import net.sf.jasperreports.engine.JasperExportManager;
+
+import net.sf.jasperreports.engine.JasperFillManager;
+
+import net.sf.jasperreports.engine.JasperPrint;
+
+import net.sf.jasperreports.engine.JasperReport;
+
+ 
+
+ 
+
+ 
+
+public class JasperTest {
+
+ 
+
+
+public static void main(String args[]) {
+
+ 
+
+
+Connection connection;
+
+JasperReport jasperReport;
+
+JasperPrint jasperPrint;
+
+ 
+
+
+try{
+
+//load mysql driver
+
+Class.forName("com.mysql.jdbc.Driver");
+
+ 
+
+
+//makes connection to database
+
+//replace bn with your database name and ivms with username and ivms with password respectively.
+
+ 
+
+
+connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bn","ivms","ivms");
+
+ 
+
+
+jasperReport = JasperCompileManager.compileReport("jasperReport_demo.jrxml");
+
+ 
+
+
+jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap(), connection);
+
+ 
+
+
+//generates PDF
+
+JasperExportManager.exportReportToPdfFile(jasperPrint, "Simple_Report.pdf");
+
+ 
+
+
+//generates HTML
+
+JasperExportManager.exportReportToHtmlFile(jasperPrint, "Simple_Report.html");
+
+ 
+
+
+//generates XML
+
+JasperExportManager.exportReportToXmlFile(jasperPrint, "Simple_Report.xml",true);
+
+ 
+
+
+}catch(JRException jrException){
+
+jrException.printStackTrace();
+
+ 
+
+
+}catch (ClassNotFoundException classNotFoundException)
+
+{
+
+classNotFoundException.printStackTrace();
+
+ 
+
+
+}catch (SQLException sqlException)
+
+{
+
+sqlException.printStackTrace();
+

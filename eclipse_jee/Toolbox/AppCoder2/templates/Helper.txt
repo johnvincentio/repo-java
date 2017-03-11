@@ -1,0 +1,39 @@
+-- Helper
+`makePackage()`
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.hertz.irac.framework.HertzSystemException;
+
+/**
+ *	`getHelperClassName()` encapsulates session related tasks for the `getHttpInfoClassName()` object.
+ *
+ * @author John Vincent
+ */
+
+public class `getHelperClassName()` {
+
+	/**
+	 * Get `getHttpInfoClassName()` object.
+	 *
+	 * @param request			HttpServletRequest.
+	 */
+	private static `getHttpInfoClassName()` get`getHttpInfoClassName()` (HttpServletRequest request) {
+		return `getHttpInfoClassName()`.getInstance (request.getSession());
+	}
+
+	/**
+	 * Update `getHttpInfoClassName()` object.
+	 *
+	 * @param request			HttpServletRequest.
+	 */
+	private static void update`getHttpInfoClassName()` (HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setAttribute (`getHttpInfoClassName()`.SESSION_NAME, get`getHttpInfoClassName()` (request));
+	}
+
+`makeHelperGetters()`
+
+`makeHelperSetters()`
+}

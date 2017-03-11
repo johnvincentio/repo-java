@@ -1,0 +1,580 @@
+package net.sf.jdec.jvminstructions.commands;
+
+import net.sf.jdec.blockhelpers.BranchHelper;
+import net.sf.jdec.blockhelpers.IFHelper;
+import net.sf.jdec.blockhelpers.LoopHelper;
+import net.sf.jdec.blocks.IFBlock;
+import net.sf.jdec.blocks.Loop;
+import net.sf.jdec.core.*;
+import net.sf.jdec.reflection.Behaviour;
+import net.sf.jdec.util.Util;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class IFNECommand extends AbstractInstructionCommand {
+
+	public IFNECommand(Behaviour context) {
+		super(context);
+
+	}
+
+	public int getSkipBytes() {
+		return 2;
+	}
+
+	public void execute() {
+		int currentForIndex = getCurrentInstPosInCode();
+		String tempstr = "";
+		String tempString = "";
+		Behaviour behavior = getContext();
+		Loop thisLoop;
+		boolean encounteredAndOrComp = GlobalVariableStore
+				.isEncounteredAndOrComp();
+		boolean isIfInScope = GlobalVariableStore.isIfInScope();
+		OperandStack opStack = getStack();
+		byte[] info = getCode();
+		int i = currentForIndex;
+		java.lang.String previnstret = DecompilerHelper
+				.getReturnTypeIfPreviousInvoke(currentForIndex, info);
+		Operand op = (Operand) opStack.pop();
+		int classIndex = getGenericFinder().getJumpAddress(i);
+		i += 2;
+
+		ArrayList list = getContext().getBehaviourLoops();
+
+		IFBlock ifst = new IFBlock();
+		ifst.setIfStart(currentForIndex);
+		ifst.setHasIfBeenGenerated(true);
+		// ifst.setIfCloseLineNumber(classIndex-3);
+		boolean addBreak = LoopHelper.checkForParentLoopForIF(ifst);
+		getContext().getMethodIfs().add(ifst);
+
+		BranchHelper.addBranchLabel(classIndex, i, ifst, currentForIndex, info);
+		boolean beyondLoop = LoopHelper.isBeyondLoop(ifst
+				.getIfCloseLineNumber(), list, info);
+        thisLoop = GlobalVariableStore.getThisLoop();
+        boolean isEndOfLoop = LoopHelper.isIndexEndOfLoop(list, ifst
+				.getIfCloseLineNumber());
+        thisLoop = GlobalVariableStore.getThisLoop();
+        boolean correctIf = false;
+		int prevStart = getGenericFinder().getPrevStartOfInst(currentForIndex);
+		java.lang.String t3 = op.getClassType();
+		java.lang.String t4 = op.getLocalVarType();
+		if ((t3 != null && t3.trim().equals("boolean"))
+				|| (t4 != null && t4.trim().equals("boolean"))) {
+			if (previnstret != null && previnstret.trim().equals("1")) {
+				previnstret = "true";
+			}
+			if (previnstret != null && previnstret.trim().equals("0")) {
+				previnstret = "false";
+			}
+		}
+		if ((getGenericFinder().isThisInstrStart(currentForIndex - 1)
+				&& (info[currentForIndex - 1] != JvmOpCodes.DCMPG)
+				&& (info[currentForIndex - 1] != JvmOpCodes.DCMPL)
+				&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+				&& info[currentForIndex - 1] != JvmOpCodes.FCMPL && info[currentForIndex - 1] != JvmOpCodes.LCMP)) {
+
+			tempstr = op.getOperandValue() + "==" + previnstret;
+		} else if (getGenericFinder().isThisInstrStart(currentForIndex - 3)
+				&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF) {
+
+			tempstr = op.getOperandValue() + "==" + previnstret;
+		} else if (prevStart != currentForIndex - 1
+				&& prevStart != currentForIndex - 3) {
+			tempstr = op.getOperandValue() + "==" + previnstret;
+		} else {
+
+			tempstr = op.getOperandValue();// //
+		}
+		boolean processIF = true;// checkForTernaryIf(ifst,info,tempstr);
+		if (processIF) {
+			if (ifst.getDonotclose() == false
+					&& ifst.getIfCloseLineNumber() == -1) {
+				int if_end = IFHelper.checkIFEndIfUnset(ifst, info,
+						currentForIndex);
+				ifst.setIfCloseLineNumber(if_end);
+			}
+			if (isEndOfLoop) {
+				int loopstart = LoopHelper.getLoopStartForEnd(ifst
+						.getIfCloseLineNumber(), list);
+				if (currentForIndex > loopstart) {
+					boolean ifinstcodepresent = IFHelper.getIfinst(loopstart,
+							info, currentForIndex);
+					if (ifinstcodepresent) {
+						correctIf = false;
+					} else
+						correctIf = true;
+				}
+			}
+			if (ifst.getIfCloseLineNumber() >= 0
+					&& ifst.getIfCloseLineNumber() < info.length
+					&& info[ifst.getIfCloseLineNumber()] == JvmOpCodes.GOTO
+					&& isEndOfLoop && correctIf) {
+				int t = ifst.getIfCloseLineNumber();
+				int gotoIndex = getGenericFinder().getJumpAddress(t);// ((info[t+1]
+																		// << 8)
+																		// |
+																		// info[t+2])
+																		// +
+																		// (ifst.getIfCloseLineNumber());
+				if (gotoIndex < (t + 3))
+					if (gotoIndex < classIndex) {
+						boolean isInfiniteLoop = false;
+						Iterator infLoop = getContext().getBehaviourLoops()
+								.iterator();
+						while (infLoop.hasNext()) {
+							Loop iloop = (Loop) infLoop.next();
+							if (iloop.getStartIndex() == gotoIndex
+									&& iloop.isInfinite()) {
+								isInfiniteLoop = true;
+								/*
+								 * ifLevel++; ifst = new IFBlock();
+								 * ifst.setIfStart(currentForIndex);
+								 * ifst.setHasIfBeenGenerated(true);
+								 * //ifst.setIfCloseLineNumber(classIndex-3);
+								 */
+								ifst.setElseCloseLineNumber(gotoIndex);
+								// ifHashTable.put(""+(ifLevel),ifst);
+								isIfInScope = true;
+								// addBranchLabel(classIndex,i,ifst,currentForIndex,info);
+								boolean bb = LoopHelper.isBeyondLoop(
+										getGenericFinder().getJumpAddress(
+												currentForIndex), getContext()
+												.getBehaviourLoops(), info);
+                                thisLoop = GlobalVariableStore.getThisLoop();
+                                boolean print = true;
+								boolean addifbreak = false;
+								java.lang.String tempString2 = "";
+								prevStart = getGenericFinder()
+										.getPrevStartOfInst(currentForIndex);
+								if (bb && thisLoop != null
+										&& thisLoop.isInfinite()
+										&& !encounteredAndOrComp && addBreak) {
+									Loop dowl = LoopHelper.isIfInADoWhile(
+											currentForIndex, ifst, getContext()
+													.getBehaviourLoops());
+									if (dowl != null) {
+										tempString = "";
+									} else {
+										addifbreak = true;
+										if (getGenericFinder()
+												.isThisInstrStart(
+														currentForIndex - 1)
+												&& (info[currentForIndex - 1] != JvmOpCodes.DCMPG)
+												&& (info[currentForIndex - 1] != JvmOpCodes.DCMPL)
+												&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+												&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+												&& info[currentForIndex - 1] != JvmOpCodes.LCMP)
+											tempString = "\nif("
+													+ op.getOperandValue()
+													+ "!=" + previnstret
+													+ ")\n{\nbreak;\n}\n";
+										else if (getGenericFinder()
+												.isThisInstrStart(
+														currentForIndex - 3)
+												&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+												&& getGenericFinder()
+														.isPreviousInst(
+																currentForIndex,
+																currentForIndex - 3))
+											tempString = "\nif("
+													+ op.getOperandValue()
+													+ "!=" + previnstret
+													+ ")\n{\nbreak;\n}\n";
+										else if (prevStart != currentForIndex - 1
+												&& prevStart != currentForIndex - 3) {
+											tempString = "\nif("
+													+ op.getOperandValue()
+													+ "!=" + previnstret
+													+ ")\n{\nbreak;\n}\n";
+										} else
+											tempString = "\nif("
+													+ op.getOperandValue()
+													+ ")\n{\nbreak;\n}\n";
+										// codeStatements
+										// +=Util.formatDecompiledStatement(tempString);
+										tempString2 = tempString;
+									}
+									print = false;
+									// ifst.setIfHasBeenClosed(true);
+								}
+								tempstr = "";
+								boolean last = IFHelper.lastIFinShortCutChain(
+										info, ifst, currentForIndex);
+								boolean bc = false;
+								if (getGenericFinder().isThisInstrStart(
+										currentForIndex - 1)
+										&& (info[currentForIndex - 1] != JvmOpCodes.DCMPG)
+										&& (info[currentForIndex - 1] != JvmOpCodes.DCMPL)
+										&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+										&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+										&& info[currentForIndex - 1] != JvmOpCodes.LCMP) {
+									tempString = "\nif(" + op.getOperandValue()
+											+ "==" + previnstret + ")\n{\n";
+									tempstr = op.getOperandValue() + "!="
+											+ previnstret;
+								} else if (getGenericFinder().isThisInstrStart(
+										currentForIndex - 3)
+										&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+										&& getGenericFinder().isPreviousInst(
+												currentForIndex,
+												currentForIndex - 3)) {
+									tempString = "\nif(" + op.getOperandValue()
+											+ "==" + previnstret + ")\n{\n";
+									tempstr = op.getOperandValue() + "!="
+											+ previnstret;
+								} else if (prevStart != currentForIndex - 1
+										&& prevStart != currentForIndex - 3) {
+									tempString = "\nif(" + op.getOperandValue()
+											+ "==" + previnstret + ")\n{\n";
+									tempstr = op.getOperandValue() + "!="
+											+ previnstret;
+								} else {
+									tempString = "\nif(" + op.getOperandValue()
+											+ ")\n{\n";
+									tempstr = op.getOperandValue();
+									bc = true;
+								}
+								java.lang.String alt;
+								if (bc == false)
+									alt = op.getOperandValue() + "=="
+											+ previnstret;
+								else
+									alt = op.getOperandValue();
+								boolean c = IFHelper
+										.addCodeStatementWRTShortcutOR(ifst,
+												tempstr, print, "if", last, alt);
+								if (c) {
+									if (addifbreak) {
+										behavior.appendToBuffer( Util
+												.formatDecompiledStatement(tempString2));
+									}
+
+									behavior.appendToBuffer( Util
+											.formatDecompiledStatement(tempString));
+								} else {
+									boolean firstIfForLoop = LoopHelper
+											.isIfFirstIfInLoopCondition(info,
+													currentForIndex);
+									if (firstIfForLoop) {
+										IFHelper
+												.registerElseBreakForIfChain(currentForIndex);
+									}
+								}
+
+								break;
+							}
+						}
+						if (isInfiniteLoop) {
+							GlobalVariableStore
+									.setEncounteredAndOrComp(encounteredAndOrComp);
+							GlobalVariableStore.setIfInScope(isIfInScope);
+							GlobalVariableStore.setThisLoop(thisLoop);
+							
+							return;
+						}
+						tempstr = "";
+						prevStart = getGenericFinder().getPrevStartOfInst(
+								currentForIndex);
+						boolean bc = false;
+						if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 1)
+								&& info[currentForIndex - 1] != JvmOpCodes.DCMPG
+								&& info[currentForIndex - 1] != JvmOpCodes.DCMPL
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+								&& info[currentForIndex - 1] != JvmOpCodes.LCMP) {
+							tempString = "\nwhile(" + op.getOperandValue()
+									+ "==" + previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 3)
+								&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+								&& getGenericFinder().isPreviousInst(
+										currentForIndex, currentForIndex - 3)) {
+							tempString = "\nwhile(" + op.getOperandValue()
+									+ "==" + previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else if (prevStart != currentForIndex - 1
+								&& prevStart != currentForIndex - 3) {
+							tempString = "\nwhile(" + op.getOperandValue()
+									+ "==" + previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else {
+							tempString = "\nwhile(" + op.getOperandValue()
+									+ ")\n{\n";
+							tempstr = op.getOperandValue();
+							bc = true;
+						}
+						boolean last = IFHelper.lastIFinShortCutChain(info,
+								ifst, currentForIndex);
+						java.lang.String alt;
+						if (bc == false) {
+							alt = op.getOperandValue() + "==" + previnstret;
+						} else {
+							alt = op.getOperandValue();
+						}
+
+						boolean c = IFHelper.addCodeStatementWRTShortcutOR(
+								ifst, tempstr, true, "while", last, alt);
+						if (c)
+							behavior.appendToBuffer( Util
+									.formatDecompiledStatement(tempString));
+
+					} else {
+						/*
+						 * ifLevel++; ifst = new IFBlock();
+						 * ifst.setIfStart(currentForIndex);
+						 * ifst.setHasIfBeenGenerated(true);
+						 * //ifst.setIfCloseLineNumber(classIndex-3);
+						 */
+						ifst.setElseCloseLineNumber(gotoIndex);
+						// ifHashTable.put(""+(ifLevel),ifst);
+						isIfInScope = true;
+						// addBranchLabel(classIndex,i,ifst,currentForIndex,info);
+						boolean bb = LoopHelper.isBeyondLoop(getGenericFinder()
+								.getJumpAddress(currentForIndex), getContext()
+								.getBehaviourLoops(), info);
+                        thisLoop = GlobalVariableStore.getThisLoop();
+                        boolean print = true;
+						boolean addifbreak = false;
+						java.lang.String tempString2 = "";
+						prevStart = getGenericFinder().getPrevStartOfInst(
+								currentForIndex);
+						if (bb && thisLoop != null && thisLoop.isInfinite()
+								&& !encounteredAndOrComp && addBreak) {
+							Loop dowl = LoopHelper.isIfInADoWhile(
+									currentForIndex, ifst, getContext()
+											.getBehaviourLoops());
+							if (dowl != null) {
+								tempString = "";
+							} else {
+								if (getGenericFinder().isThisInstrStart(
+										currentForIndex - 1)
+										&& (info[currentForIndex - 1] != JvmOpCodes.DCMPG)
+										&& (info[currentForIndex - 1] != JvmOpCodes.DCMPL)
+										&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+										&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+										&& info[currentForIndex - 1] != JvmOpCodes.LCMP)
+									tempString = "\nif(" + op.getOperandValue()
+											+ "!=" + previnstret
+											+ ")\n{\nbreak;\n}\n";
+								else if (getGenericFinder().isThisInstrStart(
+										currentForIndex - 3)
+										&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+										&& getGenericFinder().isPreviousInst(
+												currentForIndex,
+												currentForIndex - 3))
+									tempString = "\nif(" + op.getOperandValue()
+											+ "!=" + previnstret
+											+ ")\n{\nbreak;\n}\n";
+								else if (prevStart != currentForIndex - 1
+										&& prevStart != currentForIndex - 3) {
+									tempString = "\nif(" + op.getOperandValue()
+											+ "!=" + previnstret
+											+ ")\n{\nbreak;\n}\n";
+								} else
+									tempString = "\nif(" + op.getOperandValue()
+											+ ")\n{\nbreak;\n}\n";
+								// codeStatements
+								// +=Util.formatDecompiledStatement(tempString);
+								tempString2 = tempString;
+							}
+							print = false;
+							// ifst.setIfHasBeenClosed(true);
+						}
+						tempstr = "";
+						boolean bc = false;
+						if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 1)
+								&& info[currentForIndex - 1] != JvmOpCodes.DCMPG
+								&& info[currentForIndex - 1] != JvmOpCodes.DCMPL
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+								&& info[currentForIndex - 1] != JvmOpCodes.LCMP) {
+							tempString = "\nif(" + op.getOperandValue() + "=="
+									+ previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 3)
+								&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+								&& getGenericFinder().isPreviousInst(
+										currentForIndex, currentForIndex - 3)) {
+							tempString = "\nif(" + op.getOperandValue() + "=="
+									+ previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else if (prevStart != currentForIndex - 1
+								&& prevStart != currentForIndex - 3) {
+							tempString = "\nif(" + op.getOperandValue() + "=="
+									+ previnstret + ")\n{\n";
+							tempstr = op.getOperandValue() + "!=" + previnstret;
+						} else {
+							tempString = "\nif(" + op.getOperandValue()
+									+ ")\n{\n";
+							tempstr = op.getOperandValue();
+							bc = true;
+						}
+						java.lang.String alt;
+						if (bc == false) {
+							alt = op.getOperandValue() + "==" + previnstret;
+						} else {
+							alt = op.getOperandValue();
+						}
+						boolean last = IFHelper.lastIFinShortCutChain(info,
+								ifst, currentForIndex);
+						boolean c = IFHelper.addCodeStatementWRTShortcutOR(
+								ifst, tempstr, print, "if", last, alt);
+						if (c) {
+							if (addifbreak) {
+								behavior.appendToBuffer( Util
+										.formatDecompiledStatement(tempString2));
+							}
+							behavior.appendToBuffer( Util
+									.formatDecompiledStatement(tempString));
+						} else {
+							boolean firstIfForLoop = LoopHelper
+									.isIfFirstIfInLoopCondition(info,
+											currentForIndex);
+							if (firstIfForLoop) {
+								IFHelper
+										.registerElseBreakForIfChain(currentForIndex);
+							}
+						}
+
+					}
+
+			} else {
+				/*
+				 * ifLevel++; ifst = new IFBlock();
+				 * ifst.setIfStart(currentForIndex);
+				 * ifst.setHasIfBeenGenerated(true);
+				 * ifHashTable.put(""+(ifLevel),ifst); isIfInScope=true;
+				 * addBranchLabel(classIndex,i,ifst,currentForIndex,info);
+				 */
+				isIfInScope = true;
+				boolean bb = LoopHelper.isBeyondLoop(getGenericFinder()
+						.getJumpAddress(currentForIndex), getContext()
+						.getBehaviourLoops(), info);
+                thisLoop = GlobalVariableStore.getThisLoop();
+                boolean print = true;
+				boolean addifbreak = false;
+				java.lang.String tempString2 = "";
+				prevStart = getGenericFinder().getPrevStartOfInst(
+						currentForIndex);
+				if (bb && thisLoop != null && thisLoop.isInfinite()
+						&& !encounteredAndOrComp && addBreak) {
+					Loop dowl = LoopHelper.isIfInADoWhile(currentForIndex,
+							ifst, getContext().getBehaviourLoops());
+					if (dowl != null) {
+						tempString = "";
+					} else {
+						if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 1)
+								&& (info[currentForIndex - 1] != JvmOpCodes.DCMPG)
+								&& (info[currentForIndex - 1] != JvmOpCodes.DCMPL)
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+								&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+								&& info[currentForIndex - 1] != JvmOpCodes.LCMP)
+							tempString = "\nif(" + op.getOperandValue() + "!="
+									+ previnstret + ")\n{\nbreak;\n}\n";
+						else if (getGenericFinder().isThisInstrStart(
+								currentForIndex - 3)
+								&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+								&& getGenericFinder().isPreviousInst(
+										currentForIndex, currentForIndex - 3))
+							tempString = "\nif(" + op.getOperandValue() + "!="
+									+ previnstret + ")\n{\nbreak;\n}\n";
+						else if (prevStart != currentForIndex - 1
+								&& prevStart != currentForIndex - 3) {
+							tempString = "\nif(" + op.getOperandValue() + "!="
+									+ previnstret + ")\n{\nbreak;\n}\n";
+						} else
+							tempString = "\nif(" + op.getOperandValue()
+									+ ")\n{\nbreak;\n}\n";
+						// codeStatements
+						// +=Util.formatDecompiledStatement(tempString);
+						addifbreak = true;
+						tempString2 = tempString;
+					}
+					print = false;
+					// ifst.setIfHasBeenClosed(true);
+				}
+				boolean last = IFHelper.lastIFinShortCutChain(info, ifst,
+						currentForIndex);
+				tempstr = "";
+				boolean bc = false;
+				if (getGenericFinder().isThisInstrStart(currentForIndex - 1)
+						&& info[currentForIndex - 1] != JvmOpCodes.DCMPG
+						&& info[currentForIndex - 1] != JvmOpCodes.DCMPL
+						&& info[currentForIndex - 1] != JvmOpCodes.FCMPG
+						&& info[currentForIndex - 1] != JvmOpCodes.FCMPL
+						&& info[currentForIndex - 1] != JvmOpCodes.LCMP) {
+					tempString = "\nif(" + op.getOperandValue() + "=="
+							+ previnstret + ")\n{\n";
+					tempstr = op.getOperandValue() + "!=" + previnstret;
+				} else if (getGenericFinder().isThisInstrStart(
+						currentForIndex - 3)
+						&& info[currentForIndex - 3] != JvmOpCodes.INSTANCEOF
+						&& getGenericFinder().isPreviousInst(currentForIndex,
+								currentForIndex - 3)) {
+					if(previnstret.equals("false")){
+						tempString = "\nif(!" + op.getOperandValue()  + ")\n{\n";
+					}
+					else
+						tempString = "\nif(" + op.getOperandValue() + "=="
+							+ previnstret + ")\n{\n";
+					tempstr = op.getOperandValue() + "!=" + previnstret;
+				} else if (prevStart != currentForIndex - 1
+						&& prevStart != currentForIndex - 3) {
+					
+					if(previnstret.equals("false")){
+						tempString = "\nif(!" + op.getOperandValue() + ")\n{\n";
+					}
+					else
+						tempString = "\nif(" + op.getOperandValue() + "=="
+							+ previnstret + ")\n{\n";
+					tempstr = op.getOperandValue() + "!=" + previnstret;
+				} else {
+					tempString = "\nif(" + op.getOperandValue() + ")\n{\n";
+					tempstr = op.getOperandValue();
+					bc = true;
+				}
+				java.lang.String alt;
+				if (bc == false) {
+					if(previnstret.equals("false")){
+						alt = "!"+op.getOperandValue();
+					}
+					else
+						alt = op.getOperandValue() + "==" + previnstret;
+				} else {
+					alt = op.getOperandValue();
+				}
+				boolean c = IFHelper.addCodeStatementWRTShortcutOR(ifst,
+						tempstr, print, "if", last, alt);
+				if (c) {
+					if (addifbreak) {
+						behavior.appendToBuffer( Util
+								.formatDecompiledStatement(tempString2));
+					}
+
+					behavior.appendToBuffer( Util
+							.formatDecompiledStatement(tempString));
+				} else {
+					boolean firstIfForLoop = LoopHelper
+							.isIfFirstIfInLoopCondition(info, currentForIndex);
+					if (firstIfForLoop) {
+						IFHelper.registerElseBreakForIfChain(currentForIndex);
+					}
+				}
+
+			}
+		}
+		GlobalVariableStore.setEncounteredAndOrComp(encounteredAndOrComp);
+		GlobalVariableStore.setIfInScope(isIfInScope);
+		GlobalVariableStore.setThisLoop(thisLoop);
+		
+	}
+
+}

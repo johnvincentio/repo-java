@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<project name="toolbox" default="make_jar" basedir=".">
+
+    <property name="my.jar.file" value="../base.jar"/>
+    <property name="my.manifest.file" value="mymanifest.txt"/>
+    <property name="my.version" value="l.0.0"/>
+
+    <target name="clean">
+        <echo message="Deleting My JAR file - ${my.jar.file}"/>
+        <delete file="${my.jar.file}" />
+    </target>
+
+    <target name="timestamp">
+        <tstamp>
+            <format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+        </tstamp>
+    </target>
+
+    <target name="make_manifest" depends="timestamp">
+        <echo message="Creating manifest file - ${my.manifest.file}"/>
+        <delete file="${my.manifest.file}" />
+        <manifest file="${my.manifest.file}">
+            <attribute name="Built-By" value="${user.name}"/>
+            <section name="com/idc/base">
+                <attribute name="Specification-Title" value="Jars Test"/>
+                <attribute name="Specification-Version" value="${my.version}"/>
+                <attribute name="Specification-Vendor" value="Jars idc"/>
+                <attribute name="Implementation-Title" value="base"/>
+                <attribute name="Implementation-Version" value="${my.version}
+${my.datestamp}"/>
+                <attribute name="Implementation-Vendor" value="idc"/>
+            </section>
+            <section name="com/idc/base/">
+                <attribute name="Sealed" value="true"/>
+            </section>
+        </manifest>
+    </target>
+
+    <target name="make_jar_old" depends="clean, make_manifest">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+            <fileset dir="${basedir}" includes="**/**.class" />
+        </jar>
+    </target>
+
+    <target name="make_jar">
+        <tstamp>
+            <format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+        </tstamp>
+        <echo message="Deleting My JAR file - ${my.jar.file}"/>
+        <delete file="${my.jar.file}" />
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" >
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <section name="com/idc/base">
+                    <attribute name="Specification-Title"  value="Jars Test"/>
+                    <attribute name="Specification-Version" value="${my.version}"/>
+                    <attribute name="Specification-Vendor" value="Jars idc"/>
+                    <attribute name="Implementation-Title" value="base"/>
+                    <attribute name="Implementation-Version" value="${my.version}
+${my.datestamp}"/>
+                    <attribute name="Implementation-vendor" value="idc"/>
+                </section>
+                <section name="com/idc/base/">
+                    <attribute name="Sealed" value="true"/>
+                </section>
+            </manifest>
+            <fileset dir="${basedir}" includes="**/**.class" />
+        </jar>
+    </target>
+
+</project>

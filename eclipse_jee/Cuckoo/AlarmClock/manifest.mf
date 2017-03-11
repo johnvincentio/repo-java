@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: AlarmClock
+Class-Path: File://C:/Java/Project1/
+Created-By: Nu_Systems aka Edward Wegner
+
+Name: AlarmClock.class
+Java-Bean: False

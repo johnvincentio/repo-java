@@ -1,0 +1,518 @@
+
+package com.idc.a13;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.DESedeKeySpec;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+public class StringEncrypter {
+
+		 public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+		 public static final String DES_ENCRYPTION_SCHEME = "DES";
+		 public static final String DEFAULT_ENCRYPTION_KEY = "This is a fairly long phrase used to encrypt";
+
+		 private KeySpec keySpec;
+		 private SecretKeyFactory keyFactory;
+		 private Cipher cipher;
+
+		 private static final String UNICODE_FORMAT = "UTF8";
+
+		 public StringEncrypter(String encryptionScheme) throws EncryptionException {
+		 		 this(encryptionScheme, DEFAULT_ENCRYPTION_KEY);
+		 }
+
+		 public StringEncrypter(String encryptionScheme, String encryptionKey)
+		 		 		 throws EncryptionException {
+
+		 		 if (encryptionKey == null)
+		 		 		 throw new IllegalArgumentException("encryption key was null");
+		 		 if (encryptionKey.trim().length() < 24)
+		 		 		 throw new IllegalArgumentException("encryption key was less than 24 characters");
+
+		 		 try {
+		 		 		 byte[] keyAsBytes = encryptionKey.getBytes(UNICODE_FORMAT);
+
+		 		 		 if (encryptionScheme.equals(DESEDE_ENCRYPTION_SCHEME)) {
+		 		 		 		 keySpec = new DESedeKeySpec(keyAsBytes);
+		 		 		 } else if (encryptionScheme.equals(DES_ENCRYPTION_SCHEME)) {
+		 		 		 		 keySpec = new DESKeySpec(keyAsBytes);
+		 		 		 } else {
+		 		 		 		 throw new IllegalArgumentException(
+		 		 		 		 		 		 "Encryption scheme not supported: " + encryptionScheme);
+		 		 		 }
+
+		 		 		 keyFactory = SecretKeyFactory.getInstance(encryptionScheme);
+		 		 		 cipher = Cipher.getInstance(encryptionScheme);
+
+		 		 } catch (InvalidKeyException e) {
+		 		 		 throw new EncryptionException(e);
+		 		 } catch (UnsupportedEncodingException e) {
+		 		 		 throw new EncryptionException(e);
+		 		 } catch (NoSuchAlgorithmException e) {
+		 		 		 throw new EncryptionException(e);
+		 		 } catch (NoSuchPaddingException e) {
+		 		 		 throw new EncryptionException(e);
+		 		 }
+
+		 }
+
+		 public String encrypt(String unencryptedString) throws EncryptionException {
+		 		 if (unencryptedString == null || unencryptedString.trim().length() == 0)
+		 		 		 throw new IllegalArgumentException(
+		 		 		 		 		 "unencrypted string was null or empty");
+
+		 		 try {
+		 		 		 SecretKey key = keyFactory.generateSecret(keySpec);
+		 		 		 cipher.init(Cipher.ENCRYPT_MODE, key);
+		 		 		 byte[] cleartext = unencryptedString.getBytes(UNICODE_FORMAT);
+		 		 		 byte[] ciphertext = cipher.doFinal(cleartext);
+
+		 		 		 BASE64Encoder base64encoder = new BASE64Encoder();
+		 		 		 return base64encoder.encode(ciphertext);
+		 		 } catch (Exception e) {
+		 		 		 throw new EncryptionException(e);
+		 		 }
+		 }
+
+		 public String decrypt(String encryptedString) throws
+EncryptionException {
+		 		 if (encryptedString == null || encryptedString.trim().length() <= 0)
+		 		 		 throw new IllegalArgumentException(
+		 		 		 		 		 "encrypted string was null or empty");
+
+		 		 try {
+		 		 		 SecretKey key = keyFactory.generateSecret(keySpec);
+		 		 		 cipher.init(Cipher.DECRYPT_MODE, key);
+		 		 		 BASE64Decoder base64decoder = new BASE64Decoder();
+		 		 		 byte[] cleartext = base64decoder.decodeBuffer(encryptedString);
+		 		 		 byte[] ciphertext = cipher.doFinal(cleartext);
+
+		 		 		 return bytes2String(ciphertext);
+		 		 } catch (Exception e) {
+		 		 		 throw new EncryptionException(e);
+		 		 }
+		 }
+
+		 private static String bytes2String(byte[] bytes) {
+		 		 StringBuffer stringBuffer = new StringBuffer();
+		 		 for (int i = 0; i < bytes.length; i++) {
+		 		 		 stringBuffer.append((char) bytes[i]);
+		 		 }
+		 		 return stringBuffer.toString();
+		 }
+
+		 public static class EncryptionException extends Exception {
+		 		 public EncryptionException(Throwable t) {
+		 		 		 super(t);
+		 		 }
+		 }
+}
+
+package com.idc.a13;
+
+public class Main {
+
+		 public static void main(String[] args) throws Exception {
+		 		 String stringToEncrypt = "test";
+		 		 String encryptionKey = "123456789012345678901234567890";
+		 		 String encryptionScheme = StringEncrypter.DES_ENCRYPTION_SCHEME;
+
+		 		 StringEncrypter encrypter = new StringEncrypter (encryptionScheme,
+encryptionKey);
+		 		 String encryptedString = encrypter.encrypt (stringToEncrypt);
+
+		 		 String decryptedString = encrypter.decrypt (encryptedString);
+		 		 System.out.println("decryptedString :"+decryptedString+":");
+		 }
+}
+
+
+
+package com.idc.a1;
+
+
+package com.idc.a11;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+public class Main {
+
+		 public static void JVmain (String[] args) throws Exception {
+		 		 DesEncrypt encrypter = new DesEncrypt();
+		 		 encrypter.encrypt (new FileInputStream("a11/input"), new
+FileOutputStream("a11/output"));
+		 		 encrypter.decrypt (new FileInputStream("a11/output"), new
+FileOutputStream("a11/decrypt"));
+		 }
+		 public static void main (String[] args) throws Exception {
+		 		 DesEncrypt encrypter = new DesEncrypt();
+		 		 encrypter.encrypt (new FileInputStream("a11/abc.zip"), new
+FileOutputStream("a11/outzip"));
+		 		 encrypter.decrypt (new FileInputStream("a11/outzip"), new
+FileOutputStream("a11/decryptzip.zip"));
+		 }
+}
+
+package com.idc.a11;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+public class DesEncrypt implements Serializable {
+		 private transient Cipher ecipher;
+		 private transient Cipher dcipher;
+		 private SecretKey key;
+		 // Buffer used to transport the bytes from one stream to another
+		 private transient byte[] buf = new byte[1024];
+
+		 public DesEncrypt() {
+		 		 try {
+		 		 		 // Initializing and Serializing key object.
+		 		 		 key = KeyGenerator.getInstance("DES").generateKey();
+		 		 		 FileOutputStream out = new FileOutputStream("a11/key.object");
+		 		 		 ObjectOutputStream s = new ObjectOutputStream(out);
+		 		 		 s.writeObject(key);
+		 		 		 s.flush();
+		 		 		 s.close();
+		 		 }
+		 		 catch (NoSuchAlgorithmException exc) {
+		 		 		 System.out.println("Exception " + exc.getMessage());
+		 		 }
+		 		 catch (IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 // Create an 8-byte initialization vector
+		 		 byte[] iv = new byte[] { (byte) 0x8E, 0x12, 0x39, (byte) 0x9C, 0x07,
+0x72, 0x6F, 0x5A };
+		 		 AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
+		 		 try {
+		 		 		 ecipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 // CBC requires an initialization vector
+		 		 		 ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+		 		 		 dcipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+		 		 }
+		 		 catch (java.security.InvalidAlgorithmParameterException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (javax.crypto.NoSuchPaddingException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.NoSuchAlgorithmException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.InvalidKeyException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void encrypt (InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes written to out will be encrypted
+		 		 		 out = new CipherOutputStream(out, ecipher);
+		 		 		 // Read in the cleartext bytes and write to out to encrypt
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.flush();
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void decrypt(InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes read from in will be decrypted
+		 		 		 in = new CipherInputStream(in, dcipher);
+
+		 		 		 // Read in the decrypted bytes and write the cleartext to out
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {}
+		 }
+}
+package com.idc.a11;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+public class DesEncrypt implements Serializable {
+		 private transient Cipher ecipher;
+		 private transient Cipher dcipher;
+		 private SecretKey key;
+		 // Buffer used to transport the bytes from one stream to another
+		 private transient byte[] buf = new byte[1024];
+
+		 public DesEncrypt() {
+		 		 try {
+		 		 		 // Initializing and Serializing key object.
+		 		 		 key = KeyGenerator.getInstance("DES").generateKey();
+		 		 		 FileOutputStream out = new FileOutputStream("a11/key.object");
+		 		 		 ObjectOutputStream s = new ObjectOutputStream(out);
+		 		 		 s.writeObject(key);
+		 		 		 s.flush();
+		 		 		 s.close();
+		 		 }
+		 		 catch (NoSuchAlgorithmException exc) {
+		 		 		 System.out.println("Exception " + exc.getMessage());
+		 		 }
+		 		 catch (IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 // Create an 8-byte initialization vector
+		 		 byte[] iv = new byte[] { (byte) 0x8E, 0x12, 0x39, (byte) 0x9C, 0x07,
+0x72, 0x6F, 0x5A };
+		 		 AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
+		 		 try {
+		 		 		 ecipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 // CBC requires an initialization vector
+		 		 		 ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+		 		 		 dcipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+		 		 }
+		 		 catch (java.security.InvalidAlgorithmParameterException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (javax.crypto.NoSuchPaddingException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.NoSuchAlgorithmException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.InvalidKeyException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void encrypt (InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes written to out will be encrypted
+		 		 		 out = new CipherOutputStream(out, ecipher);
+		 		 		 // Read in the cleartext bytes and write to out to encrypt
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.flush();
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void decrypt(InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes read from in will be decrypted
+		 		 		 in = new CipherInputStream(in, dcipher);
+
+		 		 		 // Read in the decrypted bytes and write the cleartext to out
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {}
+		 }
+}
+package com.idc.a11;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+public class DesEncrypt implements Serializable {
+		 private transient Cipher ecipher;
+		 private transient Cipher dcipher;
+		 private SecretKey key;
+		 // Buffer used to transport the bytes from one stream to another
+		 private transient byte[] buf = new byte[1024];
+
+		 public DesEncrypt() {
+		 		 try {
+		 		 		 // Initializing and Serializing key object.
+		 		 		 key = KeyGenerator.getInstance("DES").generateKey();
+		 		 		 FileOutputStream out = new FileOutputStream("a11/key.object");
+		 		 		 ObjectOutputStream s = new ObjectOutputStream(out);
+		 		 		 s.writeObject(key);
+		 		 		 s.flush();
+		 		 		 s.close();
+		 		 }
+		 		 catch (NoSuchAlgorithmException exc) {
+		 		 		 System.out.println("Exception " + exc.getMessage());
+		 		 }
+		 		 catch (IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 // Create an 8-byte initialization vector
+		 		 byte[] iv = new byte[] { (byte) 0x8E, 0x12, 0x39, (byte) 0x9C, 0x07,
+0x72, 0x6F, 0x5A };
+		 		 AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
+		 		 try {
+		 		 		 ecipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 // CBC requires an initialization vector
+		 		 		 ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+		 		 		 dcipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		 		 		 dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+		 		 }
+		 		 catch (java.security.InvalidAlgorithmParameterException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (javax.crypto.NoSuchPaddingException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.NoSuchAlgorithmException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 		 catch (java.security.InvalidKeyException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void encrypt (InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes written to out will be encrypted
+		 		 		 out = new CipherOutputStream(out, ecipher);
+		 		 		 // Read in the cleartext bytes and write to out to encrypt
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.flush();
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {
+		 		 		 System.out.println("Exception " + e.getMessage());
+		 		 }
+		 }
+
+		 public void decrypt(InputStream in, OutputStream out) {
+		 		 try {
+		 		 		 // Bytes read from in will be decrypted
+		 		 		 in = new CipherInputStream(in, dcipher);
+
+		 		 		 // Read in the decrypted bytes and write the cleartext to out
+		 		 		 int numRead = 0;
+		 		 		 while ((numRead = in.read(buf)) >= 0) {
+		 		 		 		 out.write(buf, 0, numRead);
+		 		 		 }
+		 		 		 out.close();
+		 		 }
+		 		 catch (java.io.IOException e) {}
+		 }
+}
+
+
+
+package com.idc.a1;
+
+import java.security.InvalidKeyException;
+import java.security.Key;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+
+//http://www.java2s.com/Code/Java/Security/EncryptionandDecryptionusingSymmetricKeys.htm
+
+public class A5 {
+		 
+		 static String algorithm = "DESede";
+		 static Key key;
+		 static Cipher cipher;
+
+		 public static void main(String[] args) throws Exception {
+		 		 init();
+		 		 byte[] encryptionBytes = encrypt ("input");
+		 		 System.out.println("Recovered: " + decrypt (encryptionBytes));
+		 }
+
+		 private static void init() {
+		 		 try {
+		 		 		 key = KeyGenerator.getInstance(algorithm).generateKey();
+		 		 		 cipher = Cipher.getInstance (algorithm);
+		 		 }
+		 		 catch (Exception ex) {
+		 		 		 System.out.println("Init Exception; "+ex.getMessage());
+		 		 }
+
+		 }
+		 private static byte[] encrypt(String input) throws InvalidKeyException,
+BadPaddingException, IllegalBlockSizeException {
+		 		 cipher.init(Cipher.ENCRYPT_MODE, key);
+		 		 byte[] inputBytes = input.getBytes();
+		 		 return cipher.doFinal(inputBytes);
+		 }
+
+		 private static String decrypt(byte[] encryptionBytes) throws
+InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+		 		 cipher.init(Cipher.DECRYPT_MODE, key);
+		 		 byte[] recoveredBytes = cipher.doFinal(encryptionBytes);
+		 		 String recovered = new String(recoveredBytes);
+		 		 return recovered;
+		 }
+}
+
+
+
+
+

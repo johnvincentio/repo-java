@@ -1,0 +1,618 @@
+package com.idc.c2;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class App {
+    private static final int UPDATE_INTERVAL =2;  // seconds
+    private Timer m_timer = new Timer();
+
+    public static void main(String args[])  {(new App()).doApp();}
+    private void doApp()  {
+        m_timer.schedule (new Task(),  1000, UPDATE_INTERVAL  *  1000);
+    }
+
+    private class Task extends TimerTask {
+        private Calculate m_calculate  = new Calculate  (UPDATE_ INTER VAL) ;
+        private boolean bProcessed = false;
+        public void run()  {
+            long currentTime = System.currentTimeMillis();
+            Result result = recalculate.handle  (currentTime);
+            if  (result.isNothing())
+                bProcessed = false;
+            else if (! bProcessed) {
+                bProcessed = true;
+                if  (result.isHour()) showHours  (currentTime, result.getHours());
+                else if (result.isQuarterHour()) showQuarterHour  (currentTime);
+                else if (result.isHalfHour()) showHalfHour  (currentTime);
+            }
+        }
+    }
+    private void showQuarterHour  (long currentTime)  {System.out.println(currentTime
+ + " Quarter Hour");}
+    private void showHalfHour  (long currentTime) {System.out.println(currentTime  +
+ " Half Hour");}
+    private void showHours  (long currentTime, int hours)
+ {System.out.println(currentTime + " " + hours  + " hours");}
+}
+
+package com.idc.c2;
+import Java.util.Calendar;
+
+import j unit.framework.TestCase;
+
+public class Test extends TestCase  {
+    public long getTime  (int hours, int minutes, int seconds, int millis)  {
+        Calendar m_calendar = Calendar.getlnstance() ;
+        m_calendar.set  (Calendar.HOUR_OF_DAY, hours);
+        m_calendar.set  (Calendar.MINUTE, minutes);
+        m_calendar.set  (Calendar.SECOND, seconds);
+        m_calendar.set  (Calendar.MILLISECOND, millis);
+        return m_calendar.getTimelnMillis();
+    }
+
+    public void testl()  {
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 20,  13, 0));
+        assertNotNull  (result);
+        assertTrue (result.isNothing());
+    }
+
+    public void testla()  {       //  test quarter hour
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 14,  59, 0));
+        assertNotNull  (result);
+        assertTrue (result.isNothing());
+    }
+    public void testlbf)  {
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 15,  1,  0));
+        assertNotNull  (result);
+        assertTrue (result.isQuarterHour());
+    }
+    public void testlc()  {
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 15,  2,  0));
+        assertNotNull  (result);
+        assertTrue (result.isQuarterHour());
+    }
+    public void testld()  {
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 15,  3,  0));
+        assertNotNull  (result);
+        assertFalse  (result.isQuarterHour());
+        assertTrue (result.isNothing());
+    }
+
+    public void test2a()  {           // test 3/4 hour
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 44,  59, 0));
+        assertNotNull  (result);
+        assertTrue (result.isNothing());
+    }
+    public void test2b()  {
+        Calculate calculate = new Calculate(2);
+        Result result =  calculate.handle  (getTime  (4, 45,  1,  0));
+        assertNotNull  (result);
+        assertTrue (result.isQuarterHour());
+public void test2c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4,  45,  2,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isQuarterHour());
+}
+public void test2d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4,  45,  3,  0))
+    assertNotNull  (result);
+    assertFalse  (result.isQuarterHour ());
+    assertTrue  (result.isNothing());
+}
+
+public void test3a() {      // test hour
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  25,  59,  0)
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3b() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  25,  0,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  25,  1,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  25,  2,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3e() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  25,  3,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3f() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  59,  59,  0)
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3g() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1,  59,  0,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3h() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1, 59, 59,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test3j() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1, 0, 0,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing ());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour() ) ;
+    assertTrue(result.isHour());
+    assertEquals  (result.getHours(),  1);
+}
+public void test3k() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1, 0, 1,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals  (result.getHours(),  1);
+}
+public void test3m() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1, 0, 2,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals  (result.getHours(),  1);
+}
+public void test3n() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (1, 0, 3,  0));
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+
+public void test4a() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (10,  59,  59,  0)
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test4b() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (10,  0, 0,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),   10);
+}
+public void test4c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (10, 0, 1,  0));
+    assertNotNull (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),   10);
+}
+public void test4d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (10, 0, 2,  0));
+    assertNotNull (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),   10);
+}
+public void test4e() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (10, 0, 3,  0));
+    assertNotNull (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+
+public void test5a() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12, 59,  59,  0))
+    assertNotNull (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test5b() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12, 0, 0,  0));
+    assertNotNull (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),   12);
+}
+public void test5c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12, 0, 1,  0));
+    assertNotNull (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),   12);
+public void test5d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12,  0, 2,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour()) ;
+    assertEquals (result.getHours(),  12);
+}
+public void test5e() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12,  0, 3,  0));
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+
+public void test6a() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (12,  59,  59,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test6b() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (13,  0, 0,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),  13);
+}
+public void test6c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (13,  0, 1,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour()) ;
+    assertEquals (result.getHours(),  13);
+}
+public void test6d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (13,  0, 2,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals (result.getHours(),  13);
+}
+public void test6e() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (13,  0, 3,  0));
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+
+public void test7a()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (23, 59,  59,  0)
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+public void test7b()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (24, 0,  0,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour());
+    assertEquals  (result.getHours(),  24);
+}
+public void test7c()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (24, 0,  1,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour()) ;
+    assertEquals  (result.getHours(),  24);
+}
+public void test7d()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (24, 0,  2,  0));
+    assertNotNull  (result);
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertTrue(result.isHour()) ;
+    assertEquals  (result.getHours(),  24);
+}
+public void test7e()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (24, 0,  3,  0));
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isHour());
+}
+
+public void test8a()  {       // test half hour
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4,  29,  59,  0))
+    assertNotNull  (result);
+    assertTrue  (result.isNothing());
+}
+public void test8b()  {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4,  30,  0,  0));
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertTrue  (result.isHalfHour());
+    assertFalse(result. isHour() ) ;
+}
+public void test8c() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4, 30, 1, 0))
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour() ) ;
+    assertTrue  (result.isHalfHour());
+    assertFalse(result.isHour());
+}
+public void test8d() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4, 30, 2, 0))
+    assertFalse  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertTrue  (result.isHalfHour());
+    assertFalse(result. isHour()) ;
+}
+public void test8e() {
+    Calculate calculate = new Calculate(2);
+    Result result = calculate.handle  (getTime  (4, 30, 3, 0))
+    assertNotNull (result);
+    assertTrue  (result.isNothing());
+    assertFalse  (result.isQuarterHour());
+    assertFalse  (result.isHalfHour());
+    assertFalse(result.isHour()) ;
+}
+
+package com.idc.c2;
+import java.util.Calendar;
+
+public class Calculate  {
+    private Calendar m_calendar = Calendar.getlnstance() ;   // Current  time.
+    private Result m_result = new Result();
+    private int m_update_interval;
+    public Calculate  (int update_interval) {m_update_interval = update_interval;}
+
+    public Result handle  (long currentTime)  {
+        m_calendar.setTimelnMillis  (currentTime);
+        int hours   = m_calendar.get(Calendar.HOUR_OF_DAY) ;
+        int minutes = m_calendar.get(Calendar.MINUTE);
+        int seconds = m_calendar.get(Calendar.SECOND) ;
+//      int millis  = m_calendar.get(Calendar.MILLISECOND);
+//      System.out.println("("+hours+","+minutes+","+seconds+","+millis+")");
+
+        if (seconds < 0  || seconds  > m_update_interval)
+            m_result.setNothing();
+        else if  (minutes ==15  || minutes == 45)
+            m_result.setQuarterHour();
+        else if  (minutes == 30)
+            m__result. setHalfHour () ;
+        else if  (minutes ==0)  {
+            if  (hours == 0) hours =  24;
+            m_result.setHour  (hours);
+        }
+        return m_result;
+    }
+}
+
+package com.idc.c2;
+public class Result {
+    private int m_type = 0;
+    private int m_hours = -1;
+    public void setNothing()  {m_type = 0;}
+    public void setQuarterHour()  {m_type = 1;}
+    public void setHalfHour() {m_type = 2;}
+    public void setHour (int hours)  {m_type = 3; m_hours = hours
+    public boolean isNothing()  {return m_type == 0;}
+    public boolean isQuarterHour()  {return m_type == 1;}
+    public boolean isHalfHour()  {return m_type == 2;}
+    public boolean isHour() {return m_type == 3;}
+    public int getHours()  {return m_hours;}
+
+package com.idc.c2;
+import java.util.Calendar;
+import junit.framework.TestCase;
+public class Testl extends TestCase  {
+public Calendar getCalendar  (long currentTime)  {
+    Calendar calendar = Calendar.getlnstance();
+    calendar.setTimeInMillis(currentTime);
+    System.out.println  (
+            calendar, get (Calendar. HOUR_OF_DAY)  +  "," +
+            calendar.get(Calendar.MINUTE) + "," +
+            calendar.get(Calendar.SECOND) + ", " +
+            calendar.get(Calendar.MILLISECOND)) ;
+    return calendar;
+}
+public void testl()  {
+    Calendar calendar = getCalendar  (1262022301001L);
+    assertEquals  (calendar.get  (Calendar.HOUR_OF_DAY),  12);
+    assertEquals  (calendar.get  (Calendar.MINUTE) , 45);
+    assertEquals  (calendar.get  (Calendar.SECOND), 1);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND) ,  1);
+}
+public void testla() {
+    Calendar calendar = getCalendar  (1262023200645L) ;
+    assertEquals  (calendar.get  (Calendar.HOUR_OF_DAY) ,  13);
+    assertEquals  (calendar.get  (Calendar.MINUTE) , 0);
+    assertEquals  (calendar.get  (Calendar.SECOND) , 0);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND) ,  645)
+}
+public void testlb() {
+    Calendar calendar = getCalendar  (1262023202646L);
+    assertEquals  (calendar.get  (Calendar.HOUR_OF_DAY) ,  13);
+    assertEquals  (calendar.get  (Calendar.MINUTE) , 0);
+    assertEquals  (calendar.get  (Calendar.SECOND) , 2);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND) ,  646)
+}
+public void testlcf) {
+    Calendar calendar = getCalendar  (1262024101593L);
+    assertEquals  (calendar . get  (Calendar. HOUR_OF__DAY) ,  13);
+    assertEquals  (calendar.get  (Calendar.MINUTE) , 15);
+    assertEquals  (calendar.get  (Calendar.SECOND) , 1);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND) ,  593)
+}
+public void testldf) {
+    Calendar calendar = getCalendar  (1262025000068L);
+    assertEquals  (calendar.get  (Calendar.HOUR_OF_DAY) ,  13);
+    assertEquals  (calendar.get  (Calendar.MINUTE), 30);
+    assertEquals  (calendar.get  (Calendar.SECOND) , 0);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND) ,  68);
+public void testle() {
+    Calendar calendar = getCalendar  (1262025002068L);
+    assertEquals  (calendar.get  (Calendar.HOUR_OF_DAY) , 13);
+    assertEquals  (calendar.get  (Calendar.MINUTE), 30);
+    assertEquals  (calendar.get  (Calendar.SECOND) , 2);
+    assertEquals  (calendar.get  (Calendar.MILLISECOND), 68);
+    }
+    public void testlf()  {
+        Calendar calendar = getCalendar (1262025900724L);
+        assertEquals (calendar.get (Calendar.HOUR_OF_DAY) ,  13);
+        assertEquals (calendar.get (Calendar.MINUTE) ,  45);
+        assertEquals (calendar.get (Calendar.SECOND) ,  0);
+        assertEquals (calendar.get (Calendar.MILLISECOND) ,  724)
+    }
+    public void testlg()  {
+        Calendar calendar = getCalendar (1262025902724L);
+        assertEquals (calendar.get (Calendar.HOUR_OF_DAY) ,  13);
+        assertEquals (calendar.get (Calendar.MINUTE) ,  45);
+        assertEquals (calendar.get (Calendar.SECOND) ,  2);
+        assertEquals (calendar.get (Calendar.MILLISECOND),  724)
+    }
+    public void testlh()  {
+        Calendar calendar = getCalendar (1262026801380L);
+        assertEquals (calendar.get (Calendar.HOUR_OF_DAY) ,  14);
+        assertEquals (calendar.get (Calendar.MINUTE) ,  0);
+        assertEquals (calendar.get (Calendar.SECOND) ,  1);
+        assertEquals (calendar.get (Calendar.MILLISECOND) ,  380)
+    }
+    public void testlj()  {
+        Calendar calendar = getCalendar (1262026800309L);
+        assertEquals (calendar.get (Calendar.HOUR_OF_DAY),  14);
+        assertEquals (calendar.get (Calendar.MINUTE) ,  0);
+        assertEquals (calendar.get (Calendar.SECOND) ,  0);
+        assertEquals (calendar.get (Calendar.MILLISECOND) ,  309)
+    }
+}
+//1262026801989 14 hours
+ 
+
+
+
+package com.idc.j 4;
+import java.io.File;
+
+public class Sound  {
+    private static final int EXTERNAL_BUFFER_SIZE =  128000;
+
+    public static void doSoundTest  (File file) {
+        try {
+//          FilelnputStream inputStream = new FilelnputStream(file);
+//          BufferedlnputStream bufin = new BufferedlnputStream(inputStream);
+//          AudioInputStream audioInputStream =
+AudioSystem.getAudioInputStream(bufin); // read in the  sound file
+
+            AudioInputStream audioInputStream =
+ AudioSystem.getAudioInputStream(file); // read in the  sound file
+            AudioFormat baseFormat = audioInputStream.getFormat();
+            AudioFormat decodedFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_SIGNED,  // Encoding  to  use
+                    baseFormat.getSampleRate(),   //  sample rate  (same as  base
+format)
+                    16,               // sample size  in bits  (thx  to Javazoom)
+                    baseFormat.getChannels(),     //  #  of Channels
+                    baseFormat.getChannels()*2,   //  Frame Size
+                    baseFormat.getSampleRate(),   //  Frame Rate
+                    false                 // Big Endian
+            ) ;
+//          show  ("1", baseFormat);
+//          show  ("2", decodedFormat);
+
+            AudioInputStream decodedlnput =
+ AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+
+            DataLine.Info info = new DataLine.Info(SourceDataLine.class,
+ decodedFormat);
+            SourceDataLine line =  (SourceDataLine) AudioSystem.getLine(info);
+            if  (line  != null)  {
+                line.open(decodedFormat);       // open the line
+                line.start();                   // activate the line
+
+                byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
+                int nBytesRead;
+                while ((nBytesRead = decodedlnput.read(abData, 0,  abData.length)
+ -1) {
+                    if  (nBytesRead >= 0)
+                        line.write(abData, 0, nBytesRead);
+                }
+                line.drain();
+                line.stop();
+                line.close();
+                decodedlnput.close();
+                audioInputStream.close();
+             }
+        }
+        catch (LineUnavailableException e)  {
+            e.printStackTrace();
+        }
+        catch (IOException e)  {
+            e.printStackTrace();
+        }
+        
+                                 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+Please note:
+	& must be converted to &amp;
+ -->
+ 
+<loadtest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<stages server="localhost" port="80" contextroot="herc" protocol="https">
+		<stage url="/index.jsp" method="get" description=""/>
+		<stage url="/home/index.jsp?targetPage=homeView.jsp" method="get" description=""/>
+		<stage url="/login/index.jsp?targetPage=loginView.jsp" method="get" description=""/>
+		<stage url="/handlers/LoginHandler" method="post" description="">
+			<form name="password" value="aaa"/>
+			<form name="user" value="aaa"/>
+		</stage>
+		<stage url="/home/index.jsp?targetPage=homeView.jsp" method="get" description=""/>
+		<stage url="/rentals/index.jsp?targetPage=catalogView.jsp&amp;catalogType=none" method="get" description=""/>
+		<stage url="/rentals/index.jsp?targetPage=categoryView.jsp&amp;catalogType=none&amp;categoryId=175" method="get" description=""/>
+		<stage url="/rentals/index.jsp?targetPage=equipmentDetailsView.jsp&amp;subcategory2Id=177&amp;subcategory1Id=176&amp;catalogType=none&amp;categoryId=175" method="get" description=""/>
+		<stage url="/handlers/RentalsEquipmentDetailsHandler" method="post" description="">
+			<form name="selected510001" value="on"/>
+			<form name="startDay510001" value="1"/>
+			<form name="endDay510001" value="1"/>
+			<form name="quantity510001" value="1"/>
+			<form name="endMonthYear510001" value="112007"/>
+			<form name="startMonthYear510001" value="072007"/>
+		</stage>
+		<stage url="/rentals/index.jsp?targetPage=cartView.jsp" method="get" description=""/>
+		<stage url="/handlers/RentalsCartHandler" method="post" description="">
+			<form name="comments" value=""/>
+			<form name="businessAddress1" value="413 First Ave"/>
+			<form name="customerLastName" value="Payaaa"/>
+			<form name="businessPostalCode" value="03124"/>
+			<form name="businessFax" value="9435256545"/>
+			<form name="businessName" value="Pontvale Cleaners"/>
+			<form name="businessEmail1" value="billpay@yahoo.com"/>
+			<form name="checkout" value="Submit Query"/>
+			<form name="jobLocationName" value="Hertz NJ"/>
+			<form name="customerSuffix" value="SR"/>
+			<form name="customerMiddleName" value="E"/>
+			<form name="customerFirstName" value="Billaaa"/>
+			<form name="businessAddress2" value=""/>
+			<form name="customerPrefix" value="MR"/>
+			<form name="businessCity" value="Pontvale"/>
+			<form name="businessEmail2" value="billpay@yahoo.com"/>
+			<form name="businessPhone" value="912-344-5643"/>
+			<form name="businessCountryStateProvince" value="USNJ"/>
+		</stage>
+		<stage url="/rentals/index.jsp?targetPage=rentalConfirmView.jsp" method="get" output="browser" description=""/>
+	</stages>
+</loadtest>
+

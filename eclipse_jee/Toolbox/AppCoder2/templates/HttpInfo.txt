@@ -1,0 +1,49 @@
+-- HttpInfo
+`makePackage()`
+
+import java.io.Serializable;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.hertz.irac.framework.presentation.HTTPInfo;
+
+/**
+ *	Describe a `getHttpInfoClassName()`
+ *
+ * @author John Vincent
+ */
+ 
+public class `getHttpInfoClassName()` extends HTTPInfo implements Serializable {
+
+	public static final String SESSION_ID = `getHttpInfoClassName()`.class.getName();
+
+	public static `getHttpInfoClassName()` getInstance (HttpSession session) {
+		`getHttpInfoClassName()` info = (`getHttpInfoClassName()`) session.getAttribute (SESSION_NAME);
+		if (info == null) {
+			info = new `getHttpInfoClassName()`();
+			session.setAttribute (SESSION_NAME, info);
+		}
+		info.session = session;
+		return info;
+	}
+
+	public static void updateSession (HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setAttribute (SESSION_NAME, getInstance (session));
+	}
+
+	public static void clearSession (HttpSession session) throws IllegalArgumentException {
+		if (session == null)
+			throw new IllegalArgumentException ("Session was null");
+		session.removeAttribute (SESSION_NAME);
+	}
+
+`makeMembers()`
+
+`makeGetters()`
+
+`makeSetters()`
+
+`makeToString()`
+}

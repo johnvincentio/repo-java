@@ -1,0 +1,42 @@
+AS400 File	Index	Based on File	Application
+
+ARIDETF2	Y	ARIDETFL	payment history
+ARIDETV1			payment history
+ARIHD2FL			Contract / Invoice Details
+ARIHDRF2	Y	ARIHDRFL	Open invoicing
+ARIHDRFL			Contract / Invoice Details
+CRAHDRFL			Contract / Invoice Details
+CUSJBLFL			Contract / Invoice Details
+CUSJOBFL			Contract / Invoice Details
+CUSMASF4	Y	CUSMASFL	National Accounts
+CUSMASFL			Account summary
+CUSMS2F2	Y	CUSMS2FL	Log in
+CUSMS2FL			Account summary
+EQPCCMF1	Y	EQPCCMFL	Rental history
+EQPCCMFL			Closed contracts
+EQPCPHFL			EQUIPMENT CONTRACT HEADER FILE
+EQPCPRFL			EQUIPMENT CONTRACT PRICE FILE
+EQPMASFL			Contract / Invoice Details
+ITMMASFL			Contract / Invoice Details
+MARACDFL			payment history
+RACDETF3	Y	RACDETFL	Detail history
+RACDETFL			Contract / Invoice Details
+RACDETH3	Y	RACHDRFL	Rental history
+RACHDRF4	Y	RACHDRFL	Monthly billing
+RACHDRFL			Contract / Invoice Details
+RACHDRH3	Y	RACHDRFL	Closed contracts
+RACHDRH4	Y	RACHDRFL	Closed contracts
+RAOADTFL			Contract / Invoice Details
+RAOAMTFL			
+RAODETFL			Contract / Invoice Details
+RAOHDRF2	Y	RAOHDRFL	Reservations / quotes
+RAOHDRF5	Y	RAOHDRFL	Contract history
+RAOHDRFL			Contract / Invoice Details
+RAPKUPF4	Y	RAPKUPFL	Equipment on rent
+RAPKUPFL			Contract / Invoice Details
+RASDETF3	Y	RASDETFL	Contract / Invoice Details
+SYSLOCFL			Contract / Invoice Details
+SYSPGMFL			All
+SYSSECF2	Y	SYSSECFL	Log in
+WOHEADFL			Contract / Invoice Details
+

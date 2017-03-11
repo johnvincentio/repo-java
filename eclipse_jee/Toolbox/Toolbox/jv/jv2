@@ -1,0 +1,9 @@
+
+private JCheckBox m_chkIgnoreWhiteSpace;
+
+private JCheckBox m_chkClean;
+
+isIgnoreWhiteSpace()
+
+isCleanSelected()
+

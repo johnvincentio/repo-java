@@ -1,0 +1,1338 @@
+*********************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.base;
+
+public class Base {
+    private int index;
+    public Base (int index)  {this.index = index;}
+    public int getlndex() {return index;}
+}
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="l.0"?>
+
+<project name="toolbox" default="make_jar" basedir=".">
+
+    <property name="my.jar.file" value="../base.jar"/>
+    <property name="my.manifest.file" value="mymanifest.txt"/>
+    <property name="my.version" value="l.0.0"/>
+
+    <target name="clean">
+        <echo message="Deleting My JAR file - ${my.jar.file}"/>
+        <delete file="${my.jar.file}" />
+    </target>
+
+    <target name="timestamp">
+        <tstamp>
+            <format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+        </tstamp>
+    </target>
+
+    <target name="make_manifest" depends="timestamp">
+        <echo message="Creating manifest file - ${my.manifest.file}"/>
+        <delete file="${my.manifest.file}" />
+        <manifest file="${my.manifest.file}">
+            <attribute name="Built-By" value="${user.name}"/>
+            <section name="com/idc/base">
+                <attribute name="Specification-Title" value="Jars Test"/>
+                <attribute name="Specification-Version" value="${my.version}"/>
+                <attribute name="Specification-Vendor" value="Jars idc"/>
+                <attribute name="Implementation-Title" value="base"/>
+                <attribute name="Implementation-Version" value="${my.version}
+${my.datestamp}"/>
+                <attribute name="Implementation-Vendor" value="idc"/>
+            </section>
+            <section name="com/idc/base/">
+                <attribute name="Sealed" value="true"/>
+            </section>
+        </manifest>
+    </target>
+
+    <target name="make_jar_old" depends="clean, make_manifest">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+            <fileset dir="${basedir}" includes="**/**.class" />
+        </jar>
+    </target>
+
+    <target name="make_jar">
+        <tstamp>
+            <format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+        </tstamp>
+        <echo message="Deleting My JAR file - ${my.jar.file}"/>
+        <delete file="${my.jar.file}" />
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" >
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <section name="com/idc/base">
+                    <attribute name="Specification-Title"  value="Jars Test"/>
+                    <attribute name="Specification-Version" value="${my.version}"/>
+                    <attribute name="Specification-Vendor" value="Jars idc"/>
+                    <attribute name="Implementation-Title" value="base"/>
+                    <attribute name="Implementation-Version" value="${my.version}
+${my.datestamp}"/>
+                    <attribute name="Implementation-vendor" value="idc"/>
+                </section>
+                <section name="com/idc/base/">
+                    <attribute name="Sealed" value="true"/>
+                </section>
+            </manifest>
+            <fileset dir="${basedir}" includes="**/**.class" />
+        </jar>
+    </target>
+
+</proj ect>
+
+************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.base;
+
+public class Item {
+    private String name;
+    public Item (String name) {this.name = name;}
+    public String getName()   {return name;}
+}
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.middle;
+
+import com.idc.base.Base;
+import com.idc.base.Item;
+
+public class Middle {
+    private int count;
+    private Base base;
+    private Item item;
+    public Middle  (int count) {
+        this.count = count;
+        base = new Base (count+500);
+        item = new Item ("Abed");
+    }
+    public int getCount()  {return count;}
+    public int getlndex()  {return base.getlndex();}
+
+    public static void main(String[]  args)  {
+        System.out.println("Main - stage 1");
+        Base base = new Base(99);
+        Item item = new Item("fred");
+        System.out.println("Main - index is "tbase.getlndex());
+        System.out.println("Main - name  is  "+item.getName());
+        System.out.println("Main - stage 99");
+    }
+}
+
+********************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml  version="l.0"?>
+
+<project name="toolbox" default="make_jar"  basedir=".">
+
+    <property name="my.jar.file" value="../middle.jar"/>
+    <property name="my.manifest.file" value="mymanifest.txt"/>
+    <property name="my.version" value="l.0.0"/>
+
+    <property environment="env" />
+
+    <target name="test">
+        <tstamp/>
+        <echo message="Stamp - ${DSTAMP} -  ${TSTAMP}"/>
+        <echo message="user -  ${user.name}"/>
+        <echo message="computer - ${env.COMPUTERNAME}"/>
+    </target>
+
+    <target name="timestamp">
+        <tstamp>
+            <format  property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+        </tstamp>
+        <echo message="Stamp - ${my.datestamp}"/>
+    </target>
+
+    <target name="clean">
+        <echo message="Deleting My JAR file - ${my.jar.file}"/>
+        <delete file="${my.jar.file}" />
+    </target>
+
+    <target name="make_manifest" depends="timestamp">
+        <echo message="Creating manifest file - ${my.manifest.file}"/>
+        <delete file="${my.manifest.file}"  />
+        <manifest file="${my.manifest.file}">
+            <attribute name="Built-By" value="${user.name}"/>
+            <attribute name="Class-Path" value="base.jar"/>
+            <attribute name="Main-Class" value="com.idc.middle.Middle"/>
+            <section name="com/idc/middle">
+                <attribute name="Specification-Title"  value="Jars Test"/>
+                <attribute name="Specification-Version" value="${my.version}"/>
+                <attribute name="Specification-Vendor" value="Jars idc"/>
+                <attribute name="Implementation-Title" value="middle"/>
+                <attribute name="Implementation-Version" value="${my.version}
+${my.datestamp}"/>
+                <attribute name="Implementation-Vendor" value="idc"/>
+            </section>
+            <section name="com/idc/middle/">
+                <attribute name="Sealed" value="true"/>
+            </section>
+        </manifest>
+    </target>
+
+    <target name="make_jar" depends="clean,  make_manifest">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+            <fileset dir="${basedir}" includes="**/**.class" />
+            <fileset file="../base.jar" />
+        </jar>
+    </target>
+
+    <target name="make_jar_use_manifest" depends="clean">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" manifest="manifest.txt">
+            <fileset dir="${basedir} " includes="**/** . class" />
+            <fileset file="../base.jar" />
+        </jar>
+    </target>
+
+    <!-- does not work -->
+    <target name="make_jar_Bad_manifest" depends="clean">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" manifest="Badmanifest.txt">
+            <fileset dir="${basedir}" includes="**/**.class" />
+            <fileset file="../base.jar" />
+        </j ar>
+    </target>
+
+    <!-- does not work -->
+    <target name="make_jar_99" depends="clean">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" >
+            <fileset dir="${basedir}" includes="**/**.class" />
+            <fileset file="../base.jar" />
+        </j ar>
+    </target>
+
+    <!-- this works -->
+    <target name="make_jar^test"  depends="clean">
+        <echo message="Creating My JAR file - ${my.jar.file}"/>
+        <echo message="base directory ${basedir}"/>
+        <jar destfile="${my.jar.file}" >
+            <fileset dir="${basedir}" includes="**/**.class" />
+            <fileset dir="c:/irac7/wrkspc/Jars/Base" includes="**/**.class" />
+        </jar>
+    </target>
+
+</project>
+
+*********************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+
+set ANT_HOME=C:/apache-ant-1.7.1
+set path=%ANT_HOME%\bin;%PATH%
+echo.
+echo Ant
+echo.
+ant make_jar
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+Class-Path: base.jar
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.top;
+
+import com.idc.middle.Middle;
+
+public class Top {
+    public static void main(String[]  args) {
+        System.out.println("Main - stage 1");
+        Middle middle = new Middle(21);
+        System.out.println("Main - count is "tmiddle.getCount());
+        System.out.println("Main - index is "tmiddle.getlndex());
+        System.out.println("Main - stage 99");
+    }
+}
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+rem
+rem script to run the Java program
+rem
+set JAVA_HOME=C:\Program Files\IBM\SDP70\jdk
+set path=%JAVA_HOME%\bin;%PATH%
+rem
+set
+Classpath=C:\irac7\wrkspc\Jars\Middle;C:\irac7\wrkspc\Jars\base.jar;%JAVA_HOME%\lib
+Java com.idc.middle.Middle
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+rem
+rem script to run the grepdir Java program
+rem
+set JAVA_HOME=C:\Program Files\IBM\SDP70\jdk
+set path=%JAVA_HOME%\bin;%PATH%
+rem
+set Classpath=%JAVA_HOME%\lib
+Java -jar C:\irac7\wrkspc\Jars\middle.jar
+
+***********************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+rem
+rem script to run the grepdir Java program
+rem
+set JAVA_HOME=C:\Program Files\IBM\SDP70\jdk
+set path=%JAVA_HOME%\bin;%PATH%
+rem
+set
+Classpath=C:\irac7\wrkspc\Jars\Top;C:\irac7\wrkspc\Jars\middle.j ar;%JAVA_HOME%\lib
+Java com.idc.top.Top
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+
+set JAVA_HOME=C:\Program Files\IBM\SDP70\jdk
+set path=%JAVA_HOME%\bin;%PATH%
+echo.
+echo Base.jar
+echo.
+jar tf  C:\irac7\wrkspc\Jars\base.jar
+
+echo.
+echo Middle.jar
+echo.
+jar tf  C:\irac7\wrkspc\Jars\middle.jar
+echo.
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+
+set ANT__HOME=C : /apache-ant-1.7.1
+set path=%ANT_HOME%\bin;%PATH%
+echo.
+echo Ant
+echo.
+ant -version
+
+
+
+package com.idc.five;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import•java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java . awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import j ava.awt.event.MouseEvent;
+import j ava.awt.event.MouseListener;
+import j ava.awt.event.WindowAdapter;
+import j ava.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities ;
+
+import com.idc.five.score.Coord;
+
+public class Five  extends  JFrame {
+    private static  final  long  serialVersionUID = 1;
+
+    public static  final Color[] PLAYER__COLOR = {null, Color.BLACK,  Color.WHITE};
+    private static  final  String[] PLAYER_NAME = {null,  "BLACK",  "WHITE"};
+    private static  final  boolean[] PLAYER_AUTO = {false,  true,  false};
+
+    private static  final  int  SIZE = 9;
+
+    private GameBoard m gameBoard;
+    private JTextField  m  statusField;
+    private FiveModel m fiveModel;
+
+    public static  void  main(String[]  args) {
+        new Five  ("Five in  a  Row");
+    }
+    public void doStopClient() {System.exit(0);}
+    public FiveModel  getFiveModel() {return m_fiveModel;}
+
+    public Five(String  msg)  {
+        super  (msg);
+        m_fiveModel  = new FiveModel(SIZE, SIZE);
+        m_gameBoard  = new GameBoard(this, SIZE, SIZE);
+        m_gameBoard.addMouseListener(new GameBoardListener());
+
+        setContentPane(makeContentPane());
+        this.addWindowListener  (new WindowAdapter()  {
+            public  void windowClosing  (WindowEvent e) {
+                doStopClient();
+            }
+        } ) ;
+        pack(); //  Do layout
+        setLocationRelativeTo   (null); // Center window.
+        setResizable (false);
+        setVisible  (true); // Make window visible
+    }
+
+    private Container makeContentPane()  {
+        JPanel controlPanel = new JPanel();
+        controlPanel.setLayout  (new FlowLayout());
+        JButton newGameButton = new JButton("New Game");
+        newGameButton.addActionListener (new NewGameAction());
+        JButton undoButton = new JButton("Undo");
+        controlPanel.add  (newGameButton);
+        controlPanel.add  (undoButton);
+
+        JPanel pane = new JPanel();
+        pane.setLayout (new BorderLayout());
+        pane.add  (controlPanel, BorderLayout.NORTH);
+        pane.add  (m_gameBoard, BorderLayout.CENTER);
+        m_statusField = new JTextField();
+        pane.add  (m_statusField, BorderLayout.SOUTH);
+        return pane;
+    }
+
+    public void handleMove  (int x,  int y)  {
+        boolean gameOver = getFiveModel().getGameStatus()   != 0;
+        int currentOccupant = getFiveModel().getPlayerAt(x, y) ;
+        if (!  gameOver && currentOccupant == FiveModel.EMPTY)  {
+            getFiveModel().move(x,  y);  // Make a move.
+
+            switch  (getFiveModel().getGameStatus())  {
+            case 1:     // Player one wins. Game over.
+                setStatusMessage ("BLACK WINS");
+                break;
+            case 2:     // Player two wins. Game over.
+                setStatusMessage ("WHITE WINS");
+                break;
+            case FiveModel.TIE: // Tie game. Game over.
+                setStatusMessage ("TIE GAME");
+                break;
+            default:
+                setStatusMessage (PLAYER_NAME[getFiveModel().getNextPlayer()] +  "
+to play");
+            }
+        }  else { // Not legal - clicked non-empty location or  game over.
+            Toolkit.getDefaultToolkit().beep();
+        }
+    }
+
+    private class GameBoardListener implements MouseListener {
+        public void mousePressed (MouseEvent e) {
+//          if (PLAYER_AUTO[getFiveModel().getNextPlayer()]) return;
+            if (PLAYER^AUTO[getFiveModel().getNextPlayer()]) {
+                getFiveModel().makeAutoMove();
+                m_gameBoard.repaint() ;
+                return;
+            }
+            System.out.println("e.getX() "+e.getX()+" e.getYO "+e.getY());
+            Coord coord = m_gameBoard. getCoord (e . getX () , e.getYO);
+
+            System.out.println("Five::GameBoardListener::mousePressed;
+"+coord.toString());
+            handleMove (coord.getX(),  coord.getY());
+            getFiveModel().show("After move");
+            m_gameBoard.repaint();
+        }
+        public void mouseClicked(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e)  {}
+        public void mouseEntered(MouseEvent e) {}
+        public void mouseExited(MouseEvent e)   {}
+    }
+
+    private class NewGameAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            m fiveModel.reset();
+            m gameBoard.repaint();
+        }
+    }
+
+    public void setStatusMessage  (final String msg) {
+        SwingUtilities.invokeLater  (
+            new Runnable()  {
+                public void run()   {
+                    m__statusField. setText (msg) ;
+                    validate();
+                }
+            }
+        ) ;
+    }
+}
+
+
+**********************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five;
+
+import com.idc.five.score.Board;
+import com.idc.five.score.Coord;
+
+public class FiveModel {
+
+    public static final int EMPTY  = 0; // The  cell is empty.
+    private static final  int  PLAYER1 = 1;
+    public static final int TIE =  -1;  // Game  is a tie  (draw).
+
+    private int m__nMaxRows;  // Number of rows. Set in constructor.
+    private int m_nMaxCols;  // Number of columns. Set in constructor.
+    private int[][] m_anBoard;  //  The board values.
+    private int m_nNextPlayer;  //  The player who moves next.
+    private int m_nMmoves = 0;  //  Number of moves in the game.
+
+    public FiveModel(int  rows,  int cols)  {
+        m_nMaxRows = rows;
+        m_nMaxCols = cols;
+        m anBoard = new int[m nMaxRows][m_nMaxCols];
+        reset() ;
+    }
+
+    /** Returns the next player. */
+    public int getNextPlayer()  {
+        return m_nNextPlayer;
+    }
+
+    /** Returns player who has played at particular row and column. */
+    public int getPlayerAt(int r, int c) {
+        return m_anBoard[r][c];
+    }
+
+    /** Clears board to initial  state. Makes first move in center. */
+    public void reset () {
+        for (int r = 0; r < m nMaxRows; r++) {
+            for (int c = 0;  c < m_nMaxCols; C++) {
+                m_anBoard[r][c]  = EMPTY;
+            }
+        }
+        m_nMmoves = 0;  // No moves so far.
+        m_nNextPlayer = PLAYER1;
+        // --  Make first move in center.
+//      move(_maxCols / 2,  _maxRows / 2); // First player moves to center
+    }
+
+    /** Play a marker on the board, record it, flip players. */
+    public void move(int r,  int  c) {
+        assert m_anBoard[r][c] == EMPTY;
+        m_anBoard[r][c] = m_nNextPlayer; // Record this move.
+        m_nNextPlayer = 3 - m_nNextPlayer; // Flip players
+        m_nMmoves++; // Increment number of moves.
+    }
+
+    / * *
+     * The count5 utility function returns true if there are five in a row
+     * starting at the specified r,c position and continuing in the dr direction
+     * (+1,  -1) and similarly for the column c.
+     */
+    private boolean count5(int r, int dr, int c, int dc) {
+        int player = m_anBoard[r][c]; // remember the player.
+        for (int i = 1; i < 5; i++) {
+            if (m_anBoard[r + dr * i][c + dc * i] != player) return false;
+        }
+        return true; // There were 5 in a row!
+    }
+
+    / * *
+     * -1  = game is tie, 0 = more to play, 1 = playerl wins, 2 = player2 wins
+     * What I  don't like about this is mixing a couple of logical types: player
+     * number, empty board,  and game status.
+     */
+    public int getGameStatus() {
+        int row;
+        int col;
+//      int n_up,  n^right,  n_up_right, n_up_left;
+//      boolean at_least_one_move; // true if game isn't a tie
+
+        for (row = 0;  row < m nMaxRows; row++) {
+            for (col = 0;  col < m nMaxCols; col++) {
+                int p = m_anBoard[row][col];
+                if  (p  != EMPTY)  {
+                    // look at 4 kinds of rows of 5
+                    // 1.  a column going up
+                    // 2.  a row going to the right
+                // 3. a diagonal up  and  to  the  right
+                // 4. a diagonal up  and  to  the  left
+
+                if  (row < m nMaxRows  - 4) //  Look up
+                    if  (count5(row,  1, col,  0))
+                        return p;
+
+                if  (col < m_nMaxCols  - 4) {  //  row to right
+                    if  (count5(row,  0, col,  1))
+                        return p;
+
+                    if  (row < m nMaxRows -  4)  {  // diagonal up to right
+                        if  (count5(row,  1,  col,  1))
+                            return p;
+                    }
+                }
+
+                if  (col > 3 && row <  m_nMaxRows  - 4)  {  // diagonal up left
+                    if  (count5(row,  1, col,  -1))
+                        return p;
+                }
+            }// endif position wasn't empty
+        }// endfor row
+    }// endfor col
+
+    if  (m_nMmoves == m__nMaxRows * m_nMaxCols)  return  TIE;
+    return 0; // More to play.
+}
+
+public void makeAutoMoveSilly() {
+    for (int r = 0; r < m nMaxRows;  r++)  {
+        for (int c = 0; c < m_nMaxCols;  C++)  {
+            if (m_anBoard[r][c] == EMPTY) {
+                move(r, c);
+                return;
+            }
+        }
+    }
+}
+
+public void makeAutoMove()  {
+    System.out.println(">>> FiveModel:rmakeAutoMove");
+    try {
+        Board m_Jooard = new Board(true,  1);
+        for (int r = 0; r < m_nMaxRows;  r++)  {
+            for (int c =  0; c < in_nMaxCols;  C++)  {
+                if  (m_anBoard[r][c]  == EMPTY)  continue;
+                if  (m_anBoard[r][c]  == PLAYER1)
+                    m_board. addMove  (true,  r  +  1,  c  + 1);
+                else
+                    m_board.addMove  (false,  r +  1, c  +  1);
+            }
+        }
+        show ("before moves");
+        m_board.show("before moves");
+        Coord coord = m_board.calculatedMove();
+        move(coord.getX() - 1, coord.getY()  - 1);
+    }
+    catch  (Exception ex)  {
+        System.out.println("Exception; "+ex.getMessage());
+        }
+        System.out.println("<<< FiveModel::makeAutoMove");
+    }
+
+    public void show(String msg) {
+        System.out.println(">>> FiveModel; "+msg);
+        System.out.print("Move "+m_nMmoves);
+        if (m_nNextPlayer == PLAYER1)
+            System.out.println(" Black to play");
+        else
+            System.out.println(" White to play");
+        for (int y = m nMaxCols - 1; y >= 0; y--)  {
+            for (int x = 0; x < m_nMaxRows; x++) {
+                if (m_anBoard[x][y]  == EMPTY)
+                    System.out.print(".");
+                else {
+                    if  (m_anBoard[x][y] == PLAYER1)
+                        System.out.print("B");
+                    else
+                        System.out.print("W");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.println("<<< "+msg);
+    }
+}
+
+
+************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.JComponent;
+
+import com.idc.five.score.Coord;
+
+public class GameBoard extends JComponent  {
+    private static final long serialVersionUID = 1;
+
+    private static final int CELL_SIZE =  30; // Pixels
+
+    private Five m five;
+    private int m x;
+    private int m y;
+    private int m width;
+    private int m height;
+    public GameBoard  (Five five, int x, int y)  {
+        m five = five;
+        m_x = x;
+        m_y = y;
+        m_width = x * CELL_SIZE;
+        m_height = y * CELL_SIZE;
+        this.setPreferredSize  (new Dimension  (m_width,  m_height));
+    }
+    public int getX  (int pos)  {return pos  / CELL_SIZE;}
+    public int getY  (int pos)  {return pos  / CELL_SIZE;}
+    public Coord getCoord  (int x, int y)  {
+        int xpos = x / CELL^SIZE;
+        int ypos = y / CELL_SIZE;
+        int newypos = -  (ypos  - m_y + 1);
+        return new Coord  (xpos, newypos);
+    }
+
+    @Override
+    public void paintComponent(Graphics  g)  {
+        Graphics2D g2 =  (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setColor(Color.LIGHT_GRAY);      // paint  background
+        g2.fillRect(0, 0, m_width, m_height);
+
+        g2.setColor(Color.BLACK);        // paint  grid
+        for  (int r = 1; r < m_x; r++) {  // Horizontal lines
+            g2.drawLine(0, r * CELL_SIZE, m_width,  r  *  CELL_SIZE);
+        }
+        for  (int c = 1; c < m_y; C++) {
+            g2.drawLine(c * CELL_SIZE,  0, c * CELL_SIZE, m_height);
+        }
+
+        for  (int y = m_y-l; y  >= 0; y--)  {
+            int newypos =-(y-my+l);
+            int ypixel = newypos * CELL_SIZE;
+            for (int x = 0; x  < m_x; x++)  {
+                int xpixel = x * CELL_SIZE;
+                int who = m_five.getFiveModel().getPlayerAt(x,  y);
+                if (who  != FiveModel.EMPTY) {
+                    g2.setColor(Five.PLAYER_COLOR[who]);
+                    g2.fillOval(xpixel  +  2, ypixel  +  2,  CELL_SIZE  -  4,  CELL_SIZE -
+4) ;
+                }
+            }
+        }
+    }
+}
+
+
+***********************************************
+PASTED TEXT
+************************************************************************ ***********
+
+package com.idc.five.score;
+
+public class Board {
+    private final static int SIZE = 9;          //  size  of the  board
+    private Tile[] []  m_tiles;   // the board itself
+    boolean m_bBlack = true;    // always start with  black
+    int m_currentMove;          // current move number
+    public Board (boolean bBlack, int currentMove)  {
+        m_tiles = new Tile[SIZE+1][SIZE+1];
+        for  (int x = 1; x <= SIZE; x++)   {
+            for (int y = 1;  y <= SIZE;  y++)
+                m_tiles[x][y]  = new Tile();
+        }
+        m_bBlack = bBlack;
+        m_currentMove = currentMove;
+    }
+    public  Tile getTile(int  x,  int y)  {return m_tiles[x][y];}
+    public  boolean isBlack()  {return m bBlack;}
+    public  int  getCurrentMove()  {return m currentMove;}
+
+    public  void addMove (boolean bBlack,  int x, int y)  throws  Exception {
+        Tile tile = m_tiles[x][y];
+        if  (tile.isOccupied())  throw new Exception("AddMove error");
+        tile.setMoveNumber(m currentMove);
+        tile.setOccupier(bBlack);
+        m bBlack = !  m bBlack;
+        m currentMove++;
+    }
+
+    public  Coords getActualRow (boolean bBlack, int x,  int y)  throws  Exception {
+        if  (x < 1 M  x > SIZE)  throw new Exception("getActualRow (X)  error");
+        if  (y < 1 ||  y > SIZE)  throw new Exception("getActualRow (Y)  error");
+        if  (getTile (x,  y).isOccupied())  throw new Exception("getActualRow
+(occupied)  error");
+
+        int min = x,  max = x;
+        int pos = x;
+        while (++pos <= SIZE)  {          //  within the board
+            Tile tile = getTile (pos,  y);
+            if  (!  tile.isOccupied(bBlack))  break;   // not occupied by this player
+            max = pos;
+        }
+        pos = x;
+        while (--pos >= 1)  {             //  within the board
+            Tile tile = getTile (pos,  y);
+            if  (!  tile.isOccupied(bBlack))  break;   // not occupied by this player
+            min = pos;
+        }
+        return  new Coords (new Coord (min,  y),  new Coord (max,  y));
+    }
+
+    public  Coords getPossibleRow  (boolean bBlack, int x,  int y)  throws Exception {
+        if  (x < 1 ||  x > SIZE)  throw new Exception("getPossibleRow (X) error");
+        if  (y < 1 ||  y > SIZE)  throw new Exception("getPossibleRow (Y) error");
+        if  (getTile (x,  y).isOccupied())  throw new Exception("getPossibleRow
+(occupied)  error");
+
+        int min = x,  max = x;
+        int pos = x;
+        while (++pos <= SIZE)  {          //  within the board
+            Tile tile = getTile (pos,  y);
+            if  (tile.isOccupied()  && (!  tile.isOccupied(bBlack)))
+                break;  // occupied and (not occupied by this  player)
+            max = pos;
+        }
+        pos = x;
+        while (--pos >= 1)  {             //  within the board
+            Tile tile = getTile (pos,  y);
+            if  (tile.isOccupied()  && (!  tile.isOccupied(bBlack)))
+                break;  // occupied and (not occupied by this  player)
+            min = pos;
+        }
+        return new Coords  (new Coord  (min, y), new Coord  (max, y));
+    }
+
+    public Coords getActualColumn  (boolean bBlack, int x, int y)  throws Exception  {
+        if (x < 1 ||  x > SIZE) throw new Exception("getActualColumn  (X) error");
+        if (y < 1 ||  y > SIZE) throw new Exception("getActualColumn  (Y) error");
+        if (getTile (x, y).isOccupied())  throw new Exception("getActualColumn
+(occupied) error");
+
+        int min = y,  max = y;
+        int pos = y;
+        while  (++pos <= SIZE) {         // within the board
+            Tile tile = getTile  (x, pos);
+            if  (! tile.isOccupied(bBlack)) break;   // not occupied  by this player
+            max = pos;
+        }
+        pos = y;
+        while  (--pos >= 1)  {            // within the board
+            Tile tile = getTile  (x, pos);
+            if  (! tile.isOccupied(bBlack)) break;   // not occupied  by this player
+            min = pos;
+        }
+        return new Coords  (new Coord  (x,  min), new Coord  (x, max));
+    }
+
+    public Coords getPossibleColumn   (boolean bBlack, int x,  int  y)  throws
+Exception {
+        if (x < 1 ||  x > SIZE) throw new Exception("getPossibleColumn  (X) error");
+        if (y < 1 M  y > SIZE) throw new Exception("getPossibleColumn  (Y) error");
+        if (getTile (x, y).isOccupied())  throw new Exception("getPossibleColumn
+(occupied) error");
+
+        int min = y,  max = y;
+        int pos = y;
+        while  (++pos <= SIZE) {         // within the board
+            Tile tile = getTile  (x, pos);
+            if  (tile.isOccupied()  &&  (! tile.isOccupied(bBlack)))
+                break;  // occupied and  (not occupied by  this player)
+            max = pos;
+        }
+        pos = y;
+        while  (--pos >= 1)  {            // within the board
+            Tile tile = getTile  (x, pos);
+            if  (tile.isOccupied()  &&  (! tile.isOccupied(bBlack)))
+                break;  // occupied and  (not occupied by  this player)
+            min = pos;
+        }
+        return new Coords  (new Coord  (x,  min), new Coord  (x, max));
+    }
+
+    public Coords getActualForwardDiagonal  (boolean bBlack, int  x, int y) throws
+Exception {
+        if (x < 1 ||  x > SIZE) throw new Exception("getActualForwardDiagonal  (X)
+error");
+        if (y < 1 ||  y > SIZE) throw new Exception("getActualForwardDiagonal  (Y)
+error");
+        if (getTile (x, y).isOccupied())  throw new
+Exception("getActualForwardDiagonal  (occupied) error");
+        int minX = x, maxX = x;
+        int minY = y, maxY = y;
+        int posX = x, posY = y;
+        while (++posX <= SIZE && ++posY <= SIZE)  {          // within the board
+            if (! getTile  (posX, posY).isOccupied(bBlack)) break;    // not  occupied
+by this player
+            maxX = posX;
+            maxY = posY;
+        }
+        posX = x; posY = y;
+        while (--posX >= 1 && --posY >= 1) {             // within the board
+            if (! getTile  (posX, posY).isOccupied(bBlack)) break;    // not  occupied
+by this player
+            minX = posX;
+            minY = posY;
+        }
+        return new Coords  (new Coord  (minX, minY), new Coord  (maxX,  maxY));
+    }
+
+    public Coords getPossibleForwardDiagonal  (boolean bBlack, int x, int  y)  throws
+Exception {
+        if (x < 1 ||  x > SIZE) throw new Exception("getPossibleForwardDiagonal  (X)
+error");
+        if (y < 1 ||  y > SIZE) throw new Exception("getPossibleForwardDiagonal  (Y)
+error");
+        if (getTile  (x, y).isOccupied()) throw new
+Exception("getPossibleForwardDiagonal  (occupied)  error");
+
+        int minX = x, maxX = x;
+        int minY = y, maxY = y;
+        int posX = x, posY = y;
+        while (++posX <= SIZE && ++posY <= SIZE)  {          // within the board
+            Tile tile = getTile  (posX, posY);
+            if (tile.isOccupied() &&  (! tile.isOccupied(bBlack)))
+                break;  // occupied and (not occupied by  this player)
+            maxX = posX;
+            maxY = posY;
+        }
+        posX = x; posY = y;
+        while (--posX >= 1 && --posY >= 1) {             // within the board
+            Tile tile = getTile  (posX, posY);
+            if (tile.isOccupied() &&  {! tile.isOccupied(bBlack)))
+                break;  // occupied and (not occupied by  this player)
+            minX = posX;
+            minY = posY;
+        }
+        return new Coords  (new Coord  (minX, minY), new Coord  (maxX,  maxY));
+    }
+
+    public Coords getActualBackwardDiagonal (boolean bBlack,  int x,  int y)  throws
+Exception {
+        if (x < 1 ||  x > SIZE) throw new Exception("getActualBackwardDiagonal  (X)
+error");
+        if (y < 1 ||  y > SIZE) throw new Exception("getActualBackwardDiagonal  (Y)
+error");
+        if (getTile  (x, y).isOccupied()) throw new
+Exception("getActualBackwardDiagonal  (occupied) error");
+
+        int minX = x, maxX = x;
+        int minY = y, maxY = y;
+        int posX = x, posY = y;
+        while (—posX >= 1 && ++posY <= SIZE)  {         // within the board
+            if (! getTile  (posX, posY).isOccupied(bBlack)) break;    // not occupied
+by this player
+            maxX = posX;
+            maxY = posY;
+        }
+        posX = x; posY = y;
+        while (++posX <= SIZE && —posY >= 1)  {         // within the board
+            if (! getTile  (posX, posY).isOccupied(bBlack)) break;    // not occupied
+by this player
+            minX = posX;
+            minY = posY;
+        }
+        return new Coords  (new Coord  (minX, minY), new Coord  (maxX,  maxY));
+    }
+
+    public Coords getPossibleBackwardDiagonal  (boolean bBlack,  int  x, int  y)  throws
+Exception {
+        if (x < 1 || x > SIZE) throw new Exception("getPossibleBackwardDiagonal  (X)
+error");
+        if (y < 1 || y > SIZE) throw new Exception("getPossibleBackwardDiagonal  (Y)
+error");
+        if (getTile  (x, y).isOccupied()) throw new
+Exception("getPossibleBackwardDiagonal  (occupied) error");
+
+        int minX = x, maxX = x;
+        int minY = y, maxY = y;
+        int posX = x, posY = y;
+        while (—posX >= 1 && ++posY <= SIZE)  {         // within the board
+            Tile tile = getTile  (posX, posY);
+            if (tile.isOccupied() &&  (! tile.isOccupied(bBlack)))
+                break;  // occupied and  (not occupied by  this  player)
+            maxX = posX;
+            maxY = posY;
+        }
+        posX = x; posY = y;
+        while (++posX <= SIZE && —posY >= 1)  {         // within the board
+            Tile tile = getTile  (posX, posY);
+            if (tile.isOccupied() &&  (! tile.isOccupied(bBlack)))
+                break;  // occupied and  (not occupied by  this  player)
+            minX = posX;
+            minY = posY;
+        }
+        return new Coords  (new Coord  (minX, minY), new Coord  (maxX,  maxY));
+    }
+
+    public int proximityScore  (int x,  int y) {
+        int score =  0;
+        if (x == 5 && y == 5)
+            score =  100;
+        else if  ((x  >= 4 && x <= 6 &&  y >= 4 &&  y <= 6))
+            score =  75;
+        else if  ((x  >= 3 && x <= 7 &&  y >= 3 &&  y <= 7))
+            score =  50;
+        else if  ((x  >= 2 && x <= 8 &&  y >= 2 &&  y <= 8))
+            score =  25;
+        else
+            score =  10;
+        return score;
+    }
+
+    public Data getData  (int x, int y) throws Exception  {
+        if (x < 1 || x > SIZE) throw new Exception("getParts  (X)  error");
+        if (y < 1 II y > SIZE) throw new Exception("getParts  (Y)  error");
+        Data data = new Data(x, y);
+
+        data.getBlack().getRow().setActual(getActualRow  (true,  x,  y));
+        data.getBlack().getRow().setPossible(getPossibleRow  (true,  x,  y));
+
+        data.getBlack().getColumn().setActual(getActualColumn  (true,  x,  y));
+        data.getBlack().getColumn().setPossible(getPossibleColumn (true,  x,  y));
+
+        data.getBlack().getForwardDiagonal().setActual(getActualForwardDiagonal
+(true,  x,  y));
+        data.getBlack().getForwardDiagonal().setPossible(getPossibleForwardDiagonal
+(true,  x,  y));
+
+        data.getBlack().getBackwardDiagonal().setActual(getActualBackwardDiagonal
+(true,  x,  y));
+        data.getBlack().getBackwardDiagonal().setPossible(getPossibleBackwardDiagon
+al (true,  x,  y));
+
+        data.getWhite().getRow().setActual(getActualRow  (false,  x,  y));
+        data.getWhite().getRow().setPossible(getPossibleRow  (false,  x,  y));
+
+        data.getWhite().getColumn().setActual(getActualColumn  (false,  x,  y));
+        data.getWhite().getColumn().setPossible(getPossibleColumn (false,  x,  y));
+
+        data.getWhite().getForwardDiagonal().setActual(getActualForwardDiagonal
+(false, x, y));
+        data.getWhite().getForwardDiagonal().setPossible(getPossibleForwardDiagonal
+(false, x, y) ) ;
+
+        data.getWhite().getBackwardDiagonal().setActual(getActualBackwardDiagonal
+(false, x, y));
+        data.getWhite().getBackwardDiagonal().setPossible(getPossibleBackwardDiagon
+al (false, x,  y));
+
+        return data;
+    }
+
+    public long scoreData  (int x, int y) throws Exception {
+        System.out.println(">>> Board::scoreData;  x =  "+x+"  y  = "+y);
+        long score = OL;
+        if (getTile  (x,  y).isOccupied()) return OL;      // occupied
+        Data data = getData  (x, y);
+        int lenActual = data.getBlack().getRow().getActual().getLength();
+        int lenPossible = data.getBlack().getRow().getPossible().getLength();
+        System.out.println("Black;  lenActual  "+lenActual+" lenPossible
+"tlenPossible);
+        if (lenPossible >= 5)  {
+            if (lenActual == 4) score += 100000L;
+        }
+        lenActual = data.getWhite().getRow().getActual().getLength();
+        lenPossible = data.getWhite() .getRow() .getPossible() .getLength ();
+        System.out.println("White;  lenActual  "+lenActual+" lenPossible
+"tlenPossible);
+        if (lenPossible >= 5)  {
+            if (lenActual == 4) score = 100000L;
+        }
+
+        score += proximityScore (x, y);                 // add proximity value
+        System.out.println("<<< Board::scoreData; score "+score);
+        return score;
+    }
+
+    public Coord calculatedMove()  throws Exception {
+        System.out.println(">>> Board::calculatedMove");
+        Coord coord = null;
+        long highScore = -1;
+        for (int x = 1; x <= SIZE; x++) {
+            for (int y = 1;  y <= SIZE; y++) {
+//              System.out.println("before getData; x "+x+" y "+y);
+                long score = scoreData (x, y);
+                if (score == OL)
+                    System.out.println("x "+x+" y "+y+" score "+score);
+                getTile(x, y).setBlackScore(score);
+                if (score > highScore) {
+                    coord = new Coord  (x, y);
+                    highScore = score;
+                }
+            }
+        }
+        showScore ("calculatedMove");
+        System.out.println("<<< Board::calculatedMove; coord "+coord.toString());
+        return coord;
+    }
+
+    public void show(String msg)  {
+        System.out.println(">>> "+msg);
+        System.out.print("Move "+m currentMove);
+        if (mJoBlack)
+            System.out.println(" Black to play");
+        else
+            System.out.println(" White to play");
+        for (int y = SIZE; y >=1;  y—) {
+            for (int x = 1;  x <= SIZE; x++) {
+                if (! m_tiles[x][y].isOccupied())
+                    System.out.print(".");
+                else {
+                    if (m_tiles[x][y].isBlack())
+                        System.out.print("B");
+                    else
+                        System.out.print("W");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.println("<<< "+msg);
+    }
+
+    public void showScore(String msg) {
+        System.out.println(">>> "+msg);
+        System.out.print("Move "+m_currentMove);
+        if (mJoBlack)
+            System.out.println(" Black to play");
+        else
+            System.out.println(" White to play");
+        for  (int y = SIZE; y >=1; y—)   {
+            for  (int x = 1; x <= SIZE;   x++)  {
+                System.out.print(m_tiles[x][y].getBlackScore()+"  ");
+            }
+            System.out.print("\n");
+        }
+        System.out.println("<<<  "+msg);
+    }
+}
+/*
+    public long scoreRow  (boolean bBlack, int  x, int y)  {
+        Tile tile;
+        // go right
+        int rWin, rOpen;
+        for  (int i = x + 1; i <= SIZE;   i++)  {
+            tile = m_tiles[i][y];
+            if (tile.isOccupied())  break;
+        }
+        return OL;
+    }
+V
+
+
+************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five.score;
+
+public class Coord {
+    private int m_x;
+    private int m_y;
+    public Coord  (int x, int y)  {
+        m_x = x;
+        m_y = y;
+    }
+    public int getX()   {return m_x; }
+    public int getY ()   {return rn_y; }
+    public String toString()  {
+        return "("+m_x+","+m_y+")";
+    }
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five.score;
+
+public class Coords {
+    private Coord m__from;
+    private Coord m^to;
+    public Coords  (Coord from, Coord to)  {
+        m_from = from;
+        m_to = to;
+    }
+    public Coord getFrom() {return m_from;}
+    public Coord getTo() {return m_to;}
+    public int getLength() {
+        int xlen = m_to.getX()  - m_from.getX()  + 1;
+        int ylen = m_to.getY()  - m_from.getY()  + 1;
+        if (xlen < 0) xlen =- xlen;
+        if (ylen < 0) ylen =- ylen;
+        if (xlen > ylen)  return xlen;
+        return ylen;
+    }
+    public String toStringO {
+        return "("+m_from+","+m_to+")";
+    }
+}
+
+
+*************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five.score;
+
+public class Data {
+    private Parts m_white =  new Parts ();
+    private Parts m black =  new Parts();
+    private int m x;
+    private int my;
+    public Data  (int x, int  y)  {
+        m x = x;
+        m_y = y;
+    }
+    public Parts getWhite()  {return m white;}
+    public Parts getBlack()  {return m_black;}
+    public int getX() {return m_x;}
+    public int getY() {return m_y;}
+
+    public class Parts {
+        private Part row = new Part();
+        private Part column  = new  Part();
+        private Part forwardDiagonal = new Part () ;
+        private Part backwardDiagonal = new  Part();
+
+        public Part getRow() {return row;}
+        public Part getColumn()  {return column;}
+        public Part getForwardDiagonal()  {return forwardDiagonal;}
+        public Part getBackwardDiagonal{) {return  backwardDiagonal;}
+
+        public class Part {
+            private Coords m_actual;
+            private Coords mjpossible;
+
+            public Coords getActual() {return m actual;}
+            public Coords getPossible() {return mjpossible;}
+            public void setActual(Coords  actual) {m_actual  = actual;}
+            public void setPossible(Coords possible)  {m_possible  = possible;}
+        }
+    }
+}
+
+
+***********************************************************************************
+PASTED TEXT
+package com.idc.five.score;
+
+public class Tile {
+    private int m_moveNumber = -1;      // -1 => empty
+    private boolean m_bBlack = false;
+    private long m_lWhiteScore = OL;
+    private long m_lBlackScore = OL;
+
+    public boolean isOccupied() {return m_moveNumber > 0;}
+    public boolean isBlack() {return m_bBlack;}
+    public boolean isOccupied  (boolean black) {
+        if  (m moveNumber < 0) return false;
+        if  (black && isBlackO) return true;
+        if  (! black && !  isBlackO) return true;
+        return false;
+    }
+    public void setOccupier  (boolean black)  {m_bBlack = black;}
+    public long getWhiteScore() {return m_lWhiteScore;}
+    public long getBlackScore() {return m_lBlackScore;}
+    public void setWhiteScore  (long score) {m_lWhiteScore = score;}
+    public void setBlackScore  (long score) {m__lBlackScore = score;}
+    public int getMoveNumber()  {return m_moveNumber;}
+    public void setMoveNumber(int move) {m_moveNumber = move;}
+}
+
+
+************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.five.test;
+
+import com.idc.five.score.Board;
+import com.idc.five.score.Coords ;
+import com.idc.five.score.Tile;
+
+public class App {
+    public static void main  (String[] args)  {
+        (new App()).doTest2();
+    }
+    private void doTestl()  {
+        try {
+            Board m_board =  new Board(true,  1);
+            int x = 5;
+            int y = 4;
+//          long score = m_board.scoreData  (x, y);
+            Coords coords =  m__board. getActualRow  (true, x, y) ;
+            System.out.println("Coords "tcoords.toString());
+            coords = m_board.getActualRow  (false, x, y);                  
+            System.out.println("Coords "+coords.toString());
+        }
+        catch  (Exception ex) {
+            System.out.println(" Exception;  "+ex.getMessage());
+        }
+    }
+    private void doTest2()  {
+        try {
+            Board m_board =  new Board(true,  1);
+            m_board.addMove(true,  5, 5);
+            m_board.addMove(true, 4, 5);
+            m_board.addMove(true, 3, 5);
+            m_board.addMove(true, 2, 5);
+            int x = 6;
+            int y = 5;
+            Tile tile = m_board.getTile  (6, 5);
+            if (tile.isOccupied () && (! tile.isOccupied(true)))
+                System.out.println("(6,5) is occupied by the  other guy");
+//          long score = m_board.scoreData  (x, y);
+            Coords coords = m_board.getActualRow  (true, x, y);
+            System.out.println("Black;  Actual Coords "+coords.toString()+"  length
+"+coords.getLength());
+            coords = injooard. getPossibleRow  (true, x, y) ;
+            System.out.println("Black;  Possible Coords  "tcoords.toString()+"  length
+"+coords.getLength());
+
+            coords = m__board. getActualRow  (false, x, y) ;
+            System.out.println("White;  Actual Coords "fcoords.toString()+"  length
+"+coords.getLength());
+            coords = m_board.getPossibleRow  (false, x,  y);
+            System.out.println("White;  Possible Coords  "tcoords.toString()+"  length
+"+coords.getLength());
+        }
+        catch  (Exception ex)  {
+            System.out.println(" Exception; "+ex.getMessage());
+        }
+    }
+}
+
+                                                                                                                                                               

@@ -1,0 +1,32 @@
+-- collection; venus; use HashMap
+`makePackage()`
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+`makeStartClass(getCollectionClassName())`
+
+	private Map<`getKeyBeanClassName()`, `getCollectionItemClassName()`> m_collection;
+
+`makeMembers()`
+
+	public `getCollectionClassName()` () {m_collection = new HashMap<`getKeyBeanClassName()`, `getCollectionItemClassName()`> ();}
+	public `getCollectionClassName()` (int capacity) {m_collection = new HashMap<`getKeyBeanClassName()`, `getCollectionItemClassName()`> (capacity);}
+`makeConstructorArgs(getCollectionClassName())`
+
+	public void add (`getKeyBeanClassName()` key, `getCollectionItemClassName()` item) {if (key != null && item != null) m_collection.put (key, item);}
+	public int getSize() {return m_collection.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+`makeGetters()`
+
+`makeSetters()`
+
+// TODO; define public DddKeyItemInfo getKeyItemInfo
+
+	public boolean isExists (`getKeyBeanClassName()` key) {return m_map.containsKey (key);}
+	public `getCollectionItemClassName()` getItem (`getKeyBeanClassName()` key) {return m_map.get (key);}
+
+`makeHashMapToString()`
+}

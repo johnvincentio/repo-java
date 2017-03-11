@@ -1,0 +1,96 @@
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {
+			codePair = (CodePair) iter.next();
+
+
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+
+
+public class LoginAction extends BaseHeaderAction {
+	private String saveUser;
+
+package com.idc.plod;
+
+public class LoginAction extends BaseHeaderAction {
+	private String saveUser;
+	private boolean cookied;
+
+public class LoginAction extends BaseHeaderAction {
+	private static final long serialVersionUID = 1L;
+
+	private String user;
+	private String password;
+	private String saveUser;
+	private boolean option;		// true if redirected to login by the MemberFilter
+	private boolean cookied = false;
+	private String first;
+	private String last;
+
+public class LoginAction extends BaseHeaderAction {
+	private String user;
+	private String password;
+	private String saveUser;
+	private boolean option;
+	private boolean cookied;
+	private String first;
+	private String last;
+
+public class LoginAction extends BaseHeaderAction {
+	private String saveUser;
+	private boolean cookied = false;
+
+
+
+package com.idc.plod;
+
+public class LoginAction extends BaseHeaderAction implements Something {		// another comment
+	private static final long serialVersionUID = 1L;
+	String user;
+	private String saveUser;		// comment of some kind
+	private boolean cookied = false;
+
+package com.idc.plod;
+
+public class LoginAction implements Something {		// another comment
+	private String user;
+	private String saveUser;		// comment of some kind
+	private boolean cookied = false;
+
+package com.idc.plod;
+
+public class LoginAction extends BaseHeaderAction {		// another comment
+	private String user;
+	private String saveUser;		// comment of some kind
+	private boolean cookied = false;
+
+package com.idc.plod;
+
+public class LoginAction {		// another comment
+	private String user;
+	private String saveUser;		// comment of some kind
+	private boolean cookied = false;
+
+package com.idc.plod;
+
+public class LoginAction {		// another comment
+	String user;
+	private String saveUser;		// comment of some kind
+	private boolean cookied = false;
+
+
+public class LoginAction extends BaseHeaderAction {
+	private static final long serialVersionUID = 1L;
+
+	private String user;
+	private String password;
+	private String saveUser;
+	private boolean option;		// true if redirected to login by the MemberFilter
+	private boolean cookied = false;
+	private String first;
+	private String last;
+
+
+
+

@@ -1,0 +1,34 @@
+
+Requirements 
+[ Back To Top ]
+
+
+To generate a report using JasperReports you will need following things: 
+
+·         Sun JDK 1.4 or Later version
+
+·         jasperreports-{version}.jar
+
+·         commons-beanutils-{version}.jar
+
+·         commons-collections-{version}.jar
+
+·         commons-digester-{version}.jar
+
+·         commons-logging-{version}.jar
+
+·         xercesImpl.jar-for parsing XML
+
+·         itext-{version}.jar-For creating PDF formatted report 
+
+·         poi-{version}.jar-For creating XLS formatted report 
+
+·         If you want to access database, you must have to provide a JDBC driver. 
+
+·         Acrobat Reader 
+
+These are the minimum requirements for creating a report. You might have to add more JAR files for using other features of JasperReports. For example, to create a chart you have to add jfreechart-{version}.jar file. All these jar files are already included in the lib/dist directory of JasperReports, so you do not have to download these.
+ 
+Download jasperreports-1.3.0-project. zip or any other version of 
+JasperReports from http://jasperreports.sourceforge.net. Then unzip it where you want.
+

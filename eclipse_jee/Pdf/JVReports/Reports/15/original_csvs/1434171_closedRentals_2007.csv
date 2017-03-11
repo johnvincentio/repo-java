@@ -1,0 +1,5 @@
+Account#,Account Name,Contract#,Start Date,Closed Date,Equipment#,Quantity,Description,Ordered By,Purchase Order,Job Name,Year Returned
+1434171,ABC INC,22323785,01/15/07,05/25/07,412099004                     ,1.00,FORKLIFT / CONSTR / HI-REACH / 9000# / 4WD / DSL  ,LEE  BILL           ,9876                ,ARDMORE AIRPARK               ,2007
+1434171,ABC INC,22323785,01/15/07,05/25/07,477408001                     ,1.00,BOOM / 40' / 2W / TELESCOPIC / DSL              ,LEE  BILL           ,9876                ,ARDMORE AIRPARK               ,2007
+1434171,ABC INC,22323784,05/04/07,05/25/07,408064187                     ,1.00,FORKLIFT / CONSTR / STRMAST / 6000# / 2WD / DSL   ,LEE  BILL           ,7654                ,MUSKOGEE POWER PLANT          ,2007
+1434171,ABC INC,22323783,05/21/07,05/25/07,477406025                     ,1.00,BOOM / 40' / 2W / TELESCOPIC / DSL              ,LEE  BILL           ,7654                ,BAPTIST CHURCH                ,2007

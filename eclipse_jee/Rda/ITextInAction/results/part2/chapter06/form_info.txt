@@ -1,0 +1,19 @@
+CP_2: Checkbox
+CP_3: Checkbox
+GP_7: Checkbox
+GP_8: Checkbox
+MA_2: Checkbox
+MA_3: Checkbox
+director: Text
+duration: Text
+title: Text
+year: Text
+GP_3: Checkbox
+category: Radiobutton
+GP_4: Checkbox
+CP_1: Checkbox
+Possible values for CP_1:
+ - Yes
+ - Off
+Possible values for category:
+fest, rive, s-am, kauf, fdir, kuro, lee, Off, comp, kim, anim, worl, zha, toro, fran, hero, teen, kubr, spec, scan

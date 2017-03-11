@@ -1,0 +1,1785 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class Template {
+	private File m_file;
+	private StringBuffer m_buf = new StringBuffer();
+	public Template (final File file) {m_file = file;}
+	public Template (final String str) {m_file = new File(str);} 
+
+	public void process() {
+		BufferedReader buf = null;
+		String line;
+		try {
+			buf = new BufferedReader(new FileReader(m_file));
+			while ((line = buf.readLine()) != null) {m_buf.append(line+"\n");}
+			buf = null;
+		}
+		catch (IOException exception) {
+			System.out.println("Exception "+exception.getMessage());
+			System.out.println("Trouble reading file "+m_file.getPath());
+//			exception.printStackTrace();
+		}
+		finally {
+			try {
+				if (buf != null) buf.close();
+			}
+			catch (IOException exception2) {
+				System.out.println("Exception "+exception2.getMessage());
+				System.out.println("Trouble closing file "+m_file.getPath());
+				exception2.printStackTrace();
+			}
+		}		
+	}
+	public void replace (int num, String strReplace) {
+		String from = "{--("+Integer.toString(num)+")--}";
+		JVString str = new JVString(m_buf.toString());
+//		System.out.println("(1) str :"+str.getString()+":");
+		str.replace(from, strReplace);
+//		System.out.println("(2) str :"+str.getString()+":");
+		m_buf = new StringBuffer(str.getString());
+	}
+	public String getTemplate() {return m_buf.toString();}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.coder;
+
+import java.util.regex.*;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class StringSplitter {
+
+	private String[] m_splitStrings;
+	private int m_nextSplit = 0;
+
+	public StringSplitter (String strbuf, String div) {
+		Pattern pattern = Pattern.compile(div);
+		m_splitStrings = pattern.split(strbuf);
+	}
+	public int length() {return m_splitStrings.length;}
+	public boolean hasNext() {return hasNext(1);}
+	public boolean hasNext(int items) {
+		int num = m_splitStrings.length - m_nextSplit;
+		if (num < items) return false;
+		return true;
+	}
+	public String getNext() {return m_splitStrings[m_nextSplit++];}
+	public int getNextInt() {
+		String strMsg = m_splitStrings[m_nextSplit++];
+		Integer intNumber = new Integer(strMsg);
+		return intNumber.intValue();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakePageHelper extends MakeCode {
+	public MakePageHelper (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (TAB+"public static "+getHttpPageInfoClassName()+" get" + getHttpPageInfoClassName());
+		appendNL (" (HttpServletRequest request, boolean clearSession) {");
+		appendNL (TAB+TAB+getHttpPageInfoClassName()+" pageInfo = "+getHttpPageInfoClassName()+".getInstance(request.getSession());");
+		appendNL (TAB+TAB+"if (clearSession)");
+		appendNL (TAB+TAB+TAB+getHttpPageInfoClassName()+".clearSession(request.getSession());");
+		appendNL (TAB+TAB+"if (pageInfo.isInitialLoad()) {");
+		appendNL (TAB+TAB+"}");
+		appendNL (TAB+TAB+"return pageInfo;");
+		appendNL (TAB+"}");
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.io.File;
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeJsp extends MakeCode {
+	public MakeJsp (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		CodePair codePair;
+		appendNL();
+		String strFile = "JSPHeader";
+		Template template = new Template(new File(strFile));
+		template.process();
+		appendNL (template.getTemplate());
+
+		append ("<%@ page "+addKeyPair("language","java"));
+		append (" "+addKeyPair("contentType","text/html; charset=utf-8"));
+		appendNL (" "+addKeyPair("pageEncoding","utf-8")+" %>");
+		appendNL ("<%@ taglib "+addKeyPair("uri","/WEB-INF/c.tld")+" "+addKeyPair("prefix","c")+" %>");
+		appendNL ("<%@ taglib "+addKeyPair("uri","com.hertz.hercutil.presentation.tags")+" "+addKeyPair("prefix","h")+" %>");
+		appendNL ("<%@ page "+addKeyPair("import","com.hertz.herc.framework.page.MyPageBroker")+" %>");
+		appendNL ("<%@ page "+addKeyPair("import","com.hertz.herc.framework.MyBroker")+" %>");
+		appendNL();
+
+		append ("<c:set "+addKeyPair("var","info"));
+		append (" "+addKeyPair("value","<%= MyPageBroker.getMethodHttpPageInfo(request, true) %>"));
+		appendNL (" />");
+		append ("<c:set "+addKeyPair("var","info"));
+		append (" "+addKeyPair("value","<%= MyBroker.getMethodInfo(request) %>"));
+		appendNL (" />");
+		appendNL();
+		appendNL ("<% com.hertz.hercutil.framework.AppBroker.setCurrentURL(request); %>");
+		appendNL();
+		appendNL ("<h2>CHANGE_THIS</h2>");
+		appendNL();
+		appendNL ("<div>");
+		appendNL (TAB+"<jsp:include page="+addQuotes("/helpers/enumerateErrorsView.jsp")+" />");
+		appendNL ("</div>");
+		appendNL();
+		append("<br/><a "+addKeyPair("href","<h:url "+addKeyPair("target","nextView.jsp")+" />"));
+		appendNL (">Do something</a><br/><br/>");
+		appendNL();
+
+		appendNL ("<c:url "+addKeyPair("var","nextURL")+" "+addKeyPair("value","/section/index.jsp"));
+		appendNL (TAB+"<c:param "+addKeyPair("name","targetPage")+" "+addKeyPair("value","nextView.jsp"));
+		appendNL ("</c:url>");
+		append("<br/><a "+addKeyPair("href","${nextURL}"));
+		appendNL (">Do something else</a><br/><br/>");
+		appendNL();
+
+		appendNL ("<div>");
+		appendNL (TAB+"<b>Section - CHANGE THIS:</b><br/>");
+
+		appendNL (TAB+"<form "+addKeyPair("method","post")+
+				" "+addKeyPair("action","<c:url "+addKeyPair("value","/handlers/MyHandler")+" />")+">");
+		append (TAB+TAB);
+		appendNL ("<input "+addKeyPair("name","action")+" "+addKeyPair("value","create")+" "+addKeyPair("type","hidden")+" />");
+		appendNL();
+		appendNL (TAB+TAB+"<table "+addKeyPair("cellpadding","0")+" "+addKeyPair("cellspacing","0")+" "+addKeyPair("border","0")+">");
+		appendNL (TAB+TAB+TAB+"<tr>");
+		if (! getCodeTable().isEmpty()) {
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				appendNL (TAB+TAB+TAB+TAB+"<td>"+codePair.getName()+"</td>");
+			}
+		}		
+		appendNL (TAB+TAB+TAB+"</tr>");
+
+		appendNL (TAB+TAB+TAB+"<tr>");
+		if (! getCodeTable().isEmpty()) {
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				appendNL (TAB+TAB+TAB+TAB+"<td>");
+				append (TAB+TAB+TAB+TAB+TAB);
+				append ("<input "+addKeyPair("name",codePair.getName()));
+				append (" "+addKeyPair("type","text"));
+				appendNL (" "+addKeyPair("value","${pageInfo."+codePair.getName()+"}")+" />");
+				appendNL (TAB+TAB+TAB+TAB+"</td>");
+			}
+		}
+		appendNL (TAB+TAB+TAB+"</tr>");
+		appendNL (TAB+TAB+"</table>");
+		appendNL (TAB+TAB+"<input "+addKeyPair("type","submit")+
+				" "+addKeyPair("name","key")+
+				" "+addKeyPair("value","CHANGE_BUTTON_LABEL")+" />");
+		appendNL (TAB+"</form>");
+		appendNL ("</div>");
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeHttpPageInfo extends MakeCode {
+	public MakeHttpPageInfo (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (makePackage());
+		appendNL();
+		appendNL ("import java.io.Serializable;");
+		appendNL ("import javax.servlet.http.HttpSession;");
+		appendNL();
+		appendNL ("import com.hertz.irac.framework.presentation.HTTPInfo;");
+		appendNL();
+		appendNL ("public class "+getHttpPageInfoClassName()+" extends HTTPInfo implements Serializable {");
+		append (makeHttpInfo(getHttpPageInfoClassName()));
+		appendNL();
+		appendNL(TAB+"private boolean initialLoad = true;");
+		appendNL(TAB+"public boolean isInitialLoad() {return initialLoad;}");
+		appendNL(TAB+"private boolean error = false;");
+		appendNL(TAB+"public boolean isError() {return error;}");
+		appendNL(TAB+"public void setError (boolean error) {this.error = error;}");
+		appendNL();
+		append (makeMembers());
+		appendNL();
+		append (makeGetters());
+		appendNL();
+		append (makeSetters());
+		appendNL();
+		appendNL (TAB+"public void copyFormInfo ("+getFormInfoClassName()+" formInfo)	{");
+		appendNL (TAB+TAB+"formInfo.copyTo(this);");
+		appendNL (TAB+TAB+"initialLoad = false;");
+		appendNL (TAB+"}");
+		appendNL();
+		append (makeToString());
+		append (makeEndClass());
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeHttpInfo extends MakeCode {
+	public MakeHttpInfo (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (makePackage());
+		appendNL();
+		appendNL ("import java.io.Serializable;");
+		appendNL ("import javax.servlet.http.HttpSession;");
+		appendNL();
+		appendNL ("import com.hertz.irac.framework.presentation.HTTPInfo;");
+		appendNL();
+		appendNL ("public class "+getHttpInfoClassName()+" extends HTTPInfo implements Serializable {");
+		append (makeHttpInfo(getHttpInfoClassName()));
+		appendNL();
+		append (makeMembers());
+		appendNL();
+		append (makeGetters());
+		appendNL();
+		append (makeSetters());
+		appendNL();
+		append (makeToString());
+		append (makeEndClass());
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeHandler extends MakeCode {
+	public MakeHandler (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		CodePair codePair;
+		String name = getBaseClassName()+"Handler";
+		appendNL();
+		append (makePackage());
+		appendNL();
+		appendNL ("import java.io.IOException;");
+		appendNL ("import javax.servlet.Servlet;");
+		appendNL ("import javax.servlet.ServletException;");
+		appendNL ("import javax.servlet.http.HttpServlet;");
+		appendNL ("import javax.servlet.http.HttpServletRequest;");
+		appendNL ("import javax.servlet.http.HttpServletResponse;");
+		appendNL();
+		appendNL ("import com.hertz.herc.framework.UserBroker;");
+		appendNL ("import com.hertz.hercutil.framework.LogBroker;");
+		appendNL ("import com.hertz.hercwebutil.framework.AppBroker;");
+		appendNL ("import com.hertz.hercwebutil.framework.ErrorPageBroker;");
+		appendNL ("import com.hertz.hercutil.presentation.UtilHelper;");
+		appendNL ("import com.hertz.hercwebutil.presentation.URLConstants;");
+		appendNL ("import com.hertz.hercwebutil.presentation.URLHelper;");
+		appendNL ("import com.hertz.irac.framework.HertzSystemException;");
+		appendNL();
+		appendNL ("import com.hertz.hercwebutil.presentation.JVRequest;");
+		appendNL ("import "+getPackageName()+"."+getHttpPageInfoClassName()+";");
+		appendNL ("import "+getPackageName()+"."+getFormInfoClassName()+";");
+		appendNL();
+		appendNL ("public class "+name+" extends HttpServlet implements Servlet {");
+
+		appendNL (TAB+"protected void doGet(HttpServletRequest request, HttpServletResponse response)");
+		appendNL (TAB+TAB+TAB+TAB+"throws ServletException, IOException {");
+		appendNL (TAB+TAB+"ErrorPageBroker.goError(this, request, response, \"doGet used in \" + getServletName());");
+		appendNL (TAB+"}");
+
+		appendNL (TAB+"protected void doPost(HttpServletRequest request, HttpServletResponse response)");
+		appendNL (TAB+TAB+TAB+TAB+"throws ServletException, IOException {");
+		appendNL (TAB+TAB+"LogBroker.debug(this, \">>> \" + getServletName() + \"::doPost\");");
+		appendNL (TAB+TAB+"try {");
+		appendNL (TAB+TAB+TAB+"doWork (request, response);");
+		appendNL (TAB+TAB+TAB+"LogBroker.debug(this, \"<<< \" + getServletName() + \"::doPost\");");
+		appendNL (TAB+TAB+"}");
+		appendNL (TAB+TAB+"catch (HertzSystemException ex) {");
+		appendNL (TAB+TAB+TAB+"ErrorPageBroker.goError(this, request, response, ex);");
+		appendNL (TAB+TAB+"}");
+		appendNL (TAB+"}");
+
+		appendNL (TAB+"private void doWork (HttpServletRequest request, HttpServletResponse response)");
+		appendNL (TAB+TAB+TAB+TAB+"throws HertzSystemException, ServletException, IOException {");
+		appendNL (TAB+TAB+"JVRequest.getInstance().showAll(request,"+addQuotes(name)+");");
+		appendNL ("//"+TAB+TAB+"String action = request.getParameter("+addQuotes("action")+");");
+		appendNL ("//"+TAB+TAB+"System.out.println("+addQuotes("action :")+"+action);");
+
+		appendNL (TAB+TAB+"boolean bError = true;");
+		appendNL (TAB+TAB+"boolean bValidated = false;");
+		appendNL (TAB+TAB+getHttpPageInfoClassName()+" httpPageInfo = "+getHttpPageInfoClassName()+".getInstance(request.getSession());");
+		appendNL (TAB+TAB+getFormInfoClassName()+" formInfo = new "+getFormInfoClassName()+"();");
+		appendNL();
+
+		appendNL("//"+TAB+TAB+"if (UtilHelper.isSet(formInfo.getApprove())) bApproved = true;");
+		appendNL ("//"+TAB+TAB+"if ("+addQuotes("create")+".equals(action)) {");
+		appendNL (TAB+TAB+"bValidated = formInfo.validate(request);");
+		appendNL (TAB+TAB+"if (bValidated) bError = false;");
+		appendNL (TAB+TAB+"if (! bError) {");
+		appendNL ("/*");
+		if (! getCodeTable().isEmpty()) {
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				appendNL ("formInfo."+methodGetter(codePair)+";");
+			}
+		}
+		appendNL (TAB+TAB+TAB+"if (.... more validation ... ) {");
+		appendNL (TAB+TAB+TAB+TAB+"formInfo.addError ("+addQuotes("There is an error somewhere!")+");");
+		appendNL (TAB+TAB+TAB+"}");
+		appendNL (TAB+TAB+TAB+"else {");
+		appendNL (TAB+TAB+TAB+TAB+"all is ok...maybe add a record!");
+		appendNL (TAB+TAB+TAB+TAB+"bError = false;");
+		appendNL (TAB+TAB+TAB+"}");
+		appendNL ("*/");
+		appendNL (TAB+TAB+"}");
+
+		appendNL (TAB+TAB+"String strURL;");
+		appendNL (TAB+TAB+"if (formInfo.isErrors()) bError = true;");
+		appendNL (TAB+TAB+"if (bError) {");
+		appendNL (TAB+TAB+TAB+"httpPageInfo.copyFormInfo(formInfo);");
+		append (TAB+TAB+TAB+"strURL = URLHelper.buildIndexPath (request, URLConstants.PATH_RENTALS,");
+		appendNL (addQuotes("myErrorPageView.jsp")+");");
+		appendNL (TAB+TAB+"} else {");
+		append (TAB+TAB+TAB+"strURL = URLHelper.buildIndexPath (request, URLConstants.PATH_RENTALS,");
+		appendNL (addQuotes("myNextPageView.jsp")+");");
+		appendNL (TAB+TAB+TAB+getHttpPageInfoClassName()+".clearSession(request.getSession());");
+		appendNL (TAB+TAB+"}");
+		appendNL (TAB+TAB+"response.sendRedirect (strURL);");
+		appendNL (TAB+"}");
+		append (makeEndClass());
+		appendNL();
+		return getBuffer();
+	}
+}
+/*
+public class CreateCompany {
+	
+	private String companyName1;
+	private String companyName2;
+	private String companyDescription;
+	private String annualVolume;
+	private String ytdVolume;
+	private String potentialVolume;
+	private String existingCompany;
+	
+	private String create;
+	private String existing;
+*/
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeFormInfo extends MakeCode {
+	public MakeFormInfo (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (makePackage());
+		appendNL();
+		appendNL ("import com.hertz.hercwebutil.presentation.FormInfo;");
+		appendNL ("import com.hertz.hercutil.presentation.UtilHelper;");
+		appendNL ("import com.hertz.irac.framework.HertzSystemException;");
+		appendNL();
+		appendNL ("public class "+getFormInfoClassName()+" extends FormInfo {");
+		append (makeMembers());
+		appendNL();
+		append (makeGetters());
+		appendNL();
+		append (makeSetters());
+
+		CodePair codePair;
+		appendNL();
+		appendNL (TAB+"protected void doValidation() throws HertzSystemException {");
+		if (! getCodeTable().isEmpty()) {
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				appendNL (TAB+TAB+"if (! UtilHelper.isSet("+codePair.getName()+"))");
+				appendNL (TAB+TAB+TAB+"addError ("+QUOTE+codePair.getName()+" is required."+QUOTE+");");
+			}
+		}
+		appendNL (TAB+"}");
+
+		append (makeToString());
+		append (makeEndClass());
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeDataV2 extends MakeCode {
+	 
+	public MakeDataV2 (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		CodePair codePair;
+//		boolean bFirst;
+		Iterator iter;
+		if (! getCodeTable().isEmpty()) {
+/*
+			append ("(");
+			bFirst = true;
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				if (! bFirst) append (",");
+				bFirst = false;
+				append (codePair.getName());
+			}
+			appendNL (")");
+			appendNL();
+
+			append ("values (");
+			bFirst = true;
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				if (bFirst)
+					append ("?");
+				else
+					append (", ?");
+				bFirst = false;
+			}
+			appendNL (")");
+			appendNL();
+
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				append ("this.");
+				append (codePair.getName());
+				append (" = (String) hashMap.get(");
+				append (codePair.getName());
+				appendNL (");");
+			}
+			appendNL();
+			appendNL();
+
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				append ("pstmt.setString(++i, creditApplicationUSInfo.");
+				append (methodGetter(codePair));
+				appendNL (");");
+			}
+			appendNL();
+			appendNL();
+*/
+/*
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				append ("LogBroker.debug(classRef,");
+				append (addQuotes (codePair.getName()+" ("));
+				append ("+zlen(c.");
+				append (methodGetter(codePair));
+				append (")+"+addQuotes (") "));
+				append ("+c.");
+				append (methodGetter(codePair));
+				appendNL (");");
+			}
+			appendNL();
+			appendNL();
+*/
+			iter = getCodeTable().getItems();
+			while (iter.hasNext()) {
+				codePair = (CodePair) iter.next();
+				append ("LogBroker.debug(classRef,");
+				append (addQuotes (codePair.getName()+" ("));
+				append ("+zlen(encrypt(c.");
+				append (methodGetter(codePair));
+				append ("))+"+addQuotes (") "));
+				append ("+encrypt(c.");
+				append (methodGetter(codePair));
+				appendNL ("));");
+			}
+			appendNL();
+			appendNL();
+		}
+		return getBuffer();
+	}
+}
+//pstmt.setString(++i, creditApplicationUSInfo.getStatus());
+/*
+	private String submitted;
+	
+	private String immediateProcess;
+	private String immediateDay;
+	private String immediateMonthYear;
+	private String businessName;
+	private String businessAddress1;
+	private String businessAddress2;
+	private String businessCity;
+	private String businessCountryState;
+	private String businessPostalCode;
+	private String businessPhone;
+	private String businessFax;
+	private String billingIsBusiness;
+	private String billingContact;
+	private String billingAddress1;
+	private String billingAddress2;
+	private String billingCity;
+	private String billingCountryState;
+	private String billingPostalCode;
+	private String billingPhone;
+	private String billingFax;
+	private String businessType;
+	private String businessTypeDescription;
+	private String businessTypeEmployees;
+	
+	private String corporateTaxID;
+	private String corporateMonthFormed;
+	private String corporateYearFormed;
+	private String corporateCountryStateFormed;
+	private String corporateYearsOwned;
+	private String corporateContractorLicense;
+	private String corporateContractorLicenseMonth;
+	private String corporateContractorLicenseYear;
+	private String corporateParentCorp;
+	private String corporateCity;
+	private String corporateCountryState;
+	private String corporatePostalCode;
+	private String corporateDUN;
+	private String corporateDUNNumber;
+	private String corporateInitialCredit;
+	private String corporateMonthlyCredit;
+	
+	private String bankName;
+	private String bankContact;
+	private String bankCheckingAccount;
+	private String bankLoanAccount;
+	private String bankCity;
+	private String bankPhone;
+	private String bondingName;
+	private String bondingAddress1;
+	private String bondingAddress2;
+	private String bondingCity;
+	private String bondingCountryState;
+	private String bondingPostalCode;
+	private String bondingPhone;
+	private String bondingFax;
+	private String additionalPurchaseOrder;
+	private String additionalTaxExempt;
+	private String additionalLiabilityInsurance;
+	private String additionalPhysicalDamage;
+	private String authorizedBank;
+	private String authorizedPrefix;
+	private String authorizedFirstName;
+	private String authorizedMiddleName;
+	private String authorizedLastName;
+	private String authorizedSuffix;
+	private String authorizedEmail1;
+	private String authorizedEmail2;
+
+*/
+//this.eventenddate = (String) hashMap.get("event_end_date");
+
+/*
+
+	private String name;
+	private String contact;
+	private String account;
+	private String city;
+	private String countryState;
+	private String postalCode;
+	private String phone;
+	private String fax;
+
+*/
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.io.File;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeData extends MakeCode {
+	 
+	public MakeData (CodeTable codeTable) {
+		super (codeTable);
+	}
+	/*
+	* Section broker, for example: UserBroker.java
+	*
+	* 1 - RentalJobLocationsInfo
+	* 2 - RentalJobLocationItemInfo
+	* 3 - rentalJobLocationsInfo
+	* 4 - rentalJobLocationItemInfo
+	*/
+	public String makeCode() {
+		String strFile = "DataTemplate";
+		Template template = new Template(new File(strFile));
+		template.process();
+		template.replace(1, getCollectionClassName());
+		template.replace(2, getBeanClassName());
+		template.replace(3, getCollectionVariableName());
+		template.replace(4, getBeanVariableName());
+		template.replace(5, getPackageName());
+		template.replace(6, getBaseClassName());
+		return template.getTemplate();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeCollection extends MakeCode {
+	public MakeCollection (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (makePackage());
+		appendNL();
+		appendNL ("import java.util.ArrayList;");
+		appendNL ("import java.util.Iterator;");
+		appendNL ("import java.io.Serializable;");
+		appendNL();
+		appendNL ("public class "+getBaseClassName()+" implements Serializable {");
+
+		appendNL (TAB+"private ArrayList m_list = new ArrayList();");
+		append (makeMembers());
+		appendNL();
+
+		append (makeConstructorArgs(getBaseClassName()));
+		appendNL();
+
+		appendNL (TAB+"public Iterator getItems() {return m_list.iterator();}");
+		appendNL (TAB+"public void add ("+getCollectionItemClassName()+" item) {m_list.add(item);}");
+		appendNL (TAB+"public int getSize() {return m_list.size();}");
+		appendNL (TAB+"public boolean isNone() {return getSize() < 1;}");
+		appendNL();
+		append (makeGetters());
+		append (makeSetters());
+
+		CodePair codePair;
+		boolean bFirst = true;
+		appendNL();
+		appendNL (TAB+"public String toString() {");
+		appendNL (TAB+TAB+"StringBuffer buf = new StringBuffer();");
+		appendNL (TAB+TAB+"for (int i=0; i<m_list.size(); i++)");
+		appendNL (TAB+TAB+TAB+"buf.append((("+getCollectionItemClassName()+") m_list.get(i)).toString());");
+		append (TAB+TAB+"return ");
+		if (! getCodeTable().isEmpty()) {
+			append (QUOTE+"("+QUOTE);
+			Iterator iter = getCodeTable().getItems();
+			while (iter.hasNext()) {			// declare the member variables
+				codePair = (CodePair) iter.next();
+				if (! bFirst) append ("+"+QUOTE+","+QUOTE);
+				bFirst = false;
+				append ("+"+methodGetter(codePair));
+			}
+			append ("+"+QUOTE+"),"+QUOTE+"+");
+		}
+		append (QUOTE+"("+QUOTE+"+");
+		append ("buf.toString()");
+		append ("+"+QUOTE+")"+QUOTE);
+		appendNL (";");
+		appendNL (TAB+"}");
+
+		append (makeEndClass());
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.coder;
+
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public abstract class MakeCode {
+	public static final String NL = "\n";
+	public static final String TAB = "\t";
+	public static final String QUOTE = "\"";
+
+	private StringBuffer m_buf = new StringBuffer();
+	private CodeTable m_codeTable;
+	public MakeCode (CodeTable codeTable) {m_codeTable = codeTable;}
+	public CodeTable getCodeTable() {return m_codeTable;}
+
+	public void append (String s) {m_buf.append(s);}
+	public void appendNL (String s) {append(s); append(NL);}
+	public void appendNL() {append(NL);}
+	public String getBuffer() {return m_buf.toString();}
+	public void showbuf (String msg) {System.out.println(msg+" "+getBuffer());}
+
+	public String getPackageName() {return m_codeTable.getPackageName();}
+	public String getBaseClassName() {return m_codeTable.getBaseClassName();}
+	public String getSuperClassName() {return m_codeTable.getSuperClass();}
+	public boolean isSuperClass() {return m_codeTable.isSuperClass();}
+	public String getBeanClassName() {return m_codeTable.getBaseClassName() + "ItemInfo";}
+	public String getCollectionClassName() {return m_codeTable.getBaseClassName() + "Info";}
+	public String getCollectionItemClassName() {return m_codeTable.getBaseClassName() + "ItemInfo";}
+
+	public String getCollectionVariableName() {
+		JVString s = new JVString(getCollectionClassName());
+		s.initLower();
+		return s.getString();
+	}
+	public String getBeanVariableName() {
+		JVString s = new JVString(getBeanClassName());
+		s.initLower();
+		return s.getString();
+	}
+	public String getFormInfoClassName() {return m_codeTable.getBaseClassName() + "FormInfo";}
+	public String getHttpPageInfoClassName() {return m_codeTable.getBaseClassName() + "HttpPageInfo";}
+	public String getHttpInfoClassName() {return m_codeTable.getBaseClassName() + "HttpInfo";}
+
+	public static String methodName (String s) {
+		JVString jvstr = new JVString(s);
+		jvstr.initUpper();
+		return jvstr.getString();
+	}
+	public static String variableName (String s) {
+		JVString jvstr = new JVString(s);
+		jvstr.initLower();
+		return jvstr.getString();
+	}
+	public static String methodGetter (CodePair codePair) {
+		if ("boolean".equals(codePair.getType()))
+			return "is" + methodName(codePair.getName()) + "()";
+		return "get" + methodName(codePair.getName()) + "()";
+	}
+	public static String addQuotes (String s) {
+		return QUOTE + s + QUOTE;
+	}
+	public static String addKeyPair (String key, String value) {
+		return key + "=" + addQuotes (value);
+	}
+
+	public String makePackage() {return "package "+getPackageName()+";"+NL;}
+	public String makeStartClass() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("public class ").append(getBaseClassName());
+		buf.append(" implements Serializable");
+		if (isSuperClass()) buf.append(" extends ").append(getSuperClassName());
+		buf.append (" {").append(NL);
+		buf.append (TAB).append ("private static final long serialVersionUID = 1L;").append(NL).append(NL);
+		return buf.toString();
+	}
+	public String makeEndClass() {return "}"+NL+NL;}
+
+	public String makeMembers() {
+		StringBuffer buf = new StringBuffer();
+		CodePair codePair;
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {
+			codePair = (CodePair) iter.next();
+			buf.append (TAB+codePair.getVisible()+" "+codePair.getType()+" "+codePair.getName());
+			if (codePair.isValue()) buf.append(" = ").append(codePair.getValue());
+			buf.append (";");
+			if (codePair.isComment()) buf.append("\t\t// ").append(codePair.getComment());
+			buf.append (NL);
+		}
+		return buf.toString();
+	}
+
+	public String makeConstructor(String className) {
+		if (m_codeTable.isEmpty()) return "";
+		return TAB+"public "+className+"() {}"+NL;
+	}
+	public String makeConstructorArgs(String className) {
+		if (m_codeTable.isEmpty()) return "";
+		boolean bFirst = true;
+		CodePair codePair;
+		StringBuffer buf = new StringBuffer();
+		buf.append (TAB+"public "+className+" (");
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {	// declare the member variables
+			codePair = (CodePair) iter.next();
+			if (! bFirst) buf.append (", ");
+			bFirst = false;
+			buf.append (codePair.getType()+" "+codePair.getName());
+		}
+		buf.append (") {"+NL);
+
+		iter = m_codeTable.getItems();
+		while (iter.hasNext()) {			// copy params to member variables
+			codePair = (CodePair) iter.next();
+			buf.append (TAB+TAB+"this."+codePair.getName()+" = "+codePair.getName()+";"+NL);
+		}
+		buf.append (TAB+"}"+NL);
+		return buf.toString();
+	}
+	public String makeGetters() {
+		if (m_codeTable.isEmpty()) return "";
+		CodePair codePair;
+		StringBuffer buf = new StringBuffer();
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {
+			codePair = (CodePair) iter.next();
+			buf.append (TAB+"public "+codePair.getType()+" ");
+			buf.append (methodGetter(codePair));
+			buf.append (" {return "+codePair.getName()+";}"+NL);
+		}
+		return buf.toString();
+	}
+	public String makeSetters() {
+		if (m_codeTable.isEmpty()) return "";
+		CodePair codePair;
+		StringBuffer buf = new StringBuffer();
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {
+			codePair = (CodePair) iter.next();
+			buf.append (TAB+"public void set");
+			buf.append (methodName(codePair.getName()));
+			buf.append (" ("+codePair.getType()+" "+codePair.getName()+") ");
+			buf.append ("{this."+codePair.getName()+" = ");
+			buf.append (codePair.getName()+";}"+NL);
+		}
+		return buf.toString();
+	}
+
+	public String makeToString() {
+		if (m_codeTable.isEmpty()) return "";
+		CodePair codePair;
+		StringBuffer buf = new StringBuffer();
+		boolean bFirst = true;
+		buf.append (TAB+"public String toString() {"+NL);
+		buf.append (TAB+TAB+"return ");
+		if (! getCodeTable().isEmpty()) {
+			buf.append (addQuotes("("));
+			Iterator iter = m_codeTable.getItems();
+			while (iter.hasNext()) {		// declare the member variables
+				codePair = (CodePair) iter.next();
+ 				if (! bFirst) buf.append ("+"+addQuotes(","));
+				bFirst = false;
+				buf.append ("+"+methodGetter(codePair));
+			}
+			buf.append ("+"+addQuotes(")"));
+		}
+		buf.append (";"+NL);
+		buf.append (TAB+"}"+NL);
+		return buf.toString();
+	}
+	public String makeHttpInfo(String name) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(TAB+"public static final String SESSION_ID = ");
+		buf.append(name+".class.getPackage() + "+name+".class.getName();"+NL+NL);
+		buf.append(TAB+"private "+name+"(){}"+NL);
+		buf.append(TAB+"public static "+name+" getInstance (HttpSession session) {"+NL);
+		buf.append(TAB+TAB+name+" httpInfo = ("+name+") ");
+		buf.append("session.getAttribute(SESSION_ID);"+NL);
+		buf.append(TAB+TAB+"if (httpInfo == null) {"+NL);
+		buf.append(TAB+TAB+TAB+"httpInfo = new "+name+"();"+NL);
+		buf.append(TAB+TAB+TAB+"session.setAttribute (SESSION_ID, httpInfo);"+NL);
+		buf.append(TAB+TAB+"}"+NL);
+		buf.append(TAB+TAB+"httpInfo.session = session;"+NL);
+		buf.append(TAB+TAB+"return httpInfo;"+NL);
+		buf.append(TAB+"}"+NL);
+		buf.append(TAB+"public static void clearSession (HttpSession session) throws IllegalArgumentException {"+NL);
+		buf.append(TAB+TAB+"if (session == null)"+NL);
+		buf.append(TAB+TAB+TAB+"throw new IllegalArgumentException ("+QUOTE+"Session was null"+QUOTE+");"+NL);
+//		buf.append(TAB+TAB+"else"+NL);
+		buf.append(TAB+TAB+"session.removeAttribute (SESSION_ID);"+NL);
+		buf.append(TAB+"}"+NL);
+		return buf.toString();
+	}
+}
+/*
+	public String makeMembersInit() {
+		StringBuffer buf = new StringBuffer();
+		CodePair codePair;
+		Iterator iter = m_codeTable.getItems();
+		while (iter.hasNext()) {
+			codePair = (CodePair) iter.next();
+			buf.append (TAB+"private "+codePair.getType()+" "+codePair.getName());
+			buf.append (" = "+addQuotes("")+";"+NL);
+		}
+		return buf.toString();
+	}
+	public String makeBoolean() {
+	if (m_codeTable.isEmpty()) return "";
+	CodePair codePair;
+	StringBuffer buf = new StringBuffer();
+	Iterator iter = m_codeTable.getItems();
+	while (iter.hasNext()) {
+		codePair = (CodePair) iter.next();
+		if ("boolean".equals(codePair.getType())) {
+//			codePair = (CodePair) iter.next();
+			buf.append (TAB+"public "+codePair.getType());
+			buf.append (" is"+methodName(codePair.getName())+"() ");
+			buf.append ("{return "+codePair.getName());
+			buf.append (" = true;}"+NL);
+		}
+	}
+	return buf.toString();
+}
+*/
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class MakeBean extends MakeCode {
+	public MakeBean (CodeTable codeTable) {
+		super (codeTable);
+	}
+
+	public String makeCode() {
+		appendNL();
+		append (makePackage());
+		appendNL();
+		append ("import java.io.Serializable;");
+		appendNL();
+		appendNL();
+		append (makeStartClass());
+		append (makeMembers());
+//		append (makeConstructor(getBeanClassName()));
+		append (makeConstructorArgs(getBaseClassName()));
+		append (makeGetters());
+		appendNL();
+		append (makeSetters());
+		appendNL();
+//		append (makeBoolean());
+		append (makeToString());
+		append (makeEndClass());
+		return getBuffer();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class JVString {
+	private String m_string;
+	public JVString(String str) {m_string = str;}
+
+	public void replace(String pattern, String replace) {
+		int s = 0;
+		int e = 0;
+		StringBuffer buf = new StringBuffer();
+	
+		while ((e = m_string.indexOf(pattern, s)) >= 0) {
+			buf.append(m_string.substring(s, e));
+			buf.append(replace);
+			s = e + pattern.length();
+		}
+		buf.append(m_string.substring(s));
+		m_string = buf.toString();
+	}
+	public void insert(int nNumber) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(nNumber).append(m_string);
+		m_string = buf.toString();
+	}
+	public void insert(String str) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(str).append(m_string);
+		m_string = buf.toString();
+	}
+	public void initUpper() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(m_string.substring(0, 1).toUpperCase());
+		buf.append(m_string.substring(1));
+		m_string = buf.toString();
+	}
+	public void initLower() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(m_string.substring(0, 1).toLowerCase());
+		buf.append(m_string.substring(1));
+		m_string = buf.toString();
+	}
+	public String getString() {return m_string;}
+	public void dump(String msg) {
+		System.out.println("--- dump String; "+msg+" :"+m_string+":");
+		StringBuffer buf = new StringBuffer(m_string);
+		char chr;
+		for (int i=0; i<buf.length(); i++) {
+			chr = buf.charAt(i);
+			int iv = chr;
+			System.out.println("(i) "+i+" :"+chr+": :"+iv+":");
+		}
+	}
+	public void removeNull() {
+//		dump("before");
+		StringBuffer ibuf = new StringBuffer(m_string);
+		StringBuffer obuf = new StringBuffer();
+		char chr;
+		for (int i=0; i<ibuf.length(); i++) {
+			chr = ibuf.charAt(i);
+			int iv = chr;
+			if (iv > 0) obuf.append(chr);
+		}
+		m_string = obuf.toString();
+//		dump("after");
+	}
+	public boolean isEmpty(String value) {
+		if (value == null) return true;
+		if ("".equals(value.trim())) return true;
+		return false;
+	}
+
+	public String getCapitalized(String str) {
+		char ch;
+		char prevCh = '.';	
+		int max = str.length();
+		char data[] = new char[max];
+
+		for (int i = 0;  i < max;  i++) {
+			ch = str.charAt(i);
+			if (Character.isLetter(ch)  &&  ! Character.isLetter(prevCh)) {
+				data[i] = Character.toUpperCase(ch);		
+			} else
+				data[i] = Character.toLowerCase(ch);	   
+   			prevCh = ch;		  // prevCh for next iteration is ch.
+   		}
+   		str = new String(data);
+   		return str;
+   	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class CodeTable {
+	private String packageName = "com.idc.package";
+	private String baseClassName;
+	private String superClass;
+	private String implementsClass;
+	private ArrayList<CodePair> m_list = new ArrayList<CodePair>();
+
+	public String getPackageName() {return packageName;}
+	public void setPackageName (String s) {packageName = s;}
+	public String getBaseClassName() {return baseClassName;}
+	public void setBaseClassName (String s) {baseClassName = s;}
+	public String getSuperClass() {return superClass;}
+	public void setSuperClass (String s) {superClass = s;}
+	public boolean isSuperClass() {
+		if (superClass == null || superClass.length() < 1) return false;
+		return true;
+	}
+	public String getImplementsClass() {return implementsClass;}
+	public void setImplementsClass (String s) {implementsClass = s;}
+	public boolean isImplementsClass() {
+		if (implementsClass == null || implementsClass.length() < 1) return false;
+		return true;
+	}
+
+	public void add(CodePair item) {m_list.add(item);}
+	public Iterator getItems() {return m_list.iterator();}
+	public int size() {return m_list.size();}
+	public boolean isEmpty() {return size() < 1;}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("(Package) ("+getPackageName()+") \n\t(Class "+getBaseClassName()+") (SuperClass "+
+				getSuperClass()+") (Implements "+getImplementsClass()+")\n");
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((CodePair) m_list.get(i)).toString());
+		return buf.toString();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import com.idc.coder.JVString;
+import com.idc.coder.StringSplitter;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class CodeParser {
+
+	public CodeTable parser(String strText) {
+		CodeTable codeTable = new CodeTable();
+		String strInput = cleanTabs (strText);
+		System.out.println("strText\n"+strText+"\n");
+		System.out.println("strInput\n"+strInput+"\n");
+		StringSplitter lines = new StringSplitter (strInput, "\n");		// parse out lines
+		while (lines.hasNext()) {
+			String comment = "";
+			StringSplitter codeLines = new StringSplitter (lines.getNext(), "//");	// parse out comments
+			String code = cleanColon(codeLines.getNext().trim());
+			if (codeLines.hasNext()) comment = codeLines.getNext().trim();
+			System.out.println("\ncode :"+code+":");
+			System.out.println("Comment :"+comment+":");
+
+			StringSplitter words = new StringSplitter (code, " ");	// parse out words
+			String word1 = words.getNext();
+			if (! words.hasNext()) continue;
+			String word2 = words.getNext();
+			System.out.println("word1 :"+word1+":");
+			System.out.println("word2 :"+word2+":");
+			if ("package".equals(word1)) {
+				codeTable.setPackageName(word2);		// package name
+				continue;
+			}
+
+			if ("static".equals(word1) || "static".equals(word2)) continue;
+			if ("final".equals(word1) || "final".equals(word2)) continue;
+
+			String word3, word4, word5;
+			if ("class".equals(word1) || "class".equals(word2)) {		// class
+				if ("class".equals(word1))
+					word3 = word2;
+				else {
+					if (! words.hasNext()) continue;
+					word3 = words.getNext().trim();
+				}
+				codeTable.setBaseClassName(word3);		// class name
+				if (! words.hasNext()) continue;
+				word4 = words.getNext().trim();
+				if (! words.hasNext()) continue;
+				word5 = words.getNext().trim();
+				if ("extends".equals(word4)) {
+					codeTable.setSuperClass(word5);
+					if (! words.hasNext()) continue;
+					word4 = words.getNext().trim();
+					if (! words.hasNext()) continue;
+					word5 = words.getNext().trim();
+				}
+				if ("implements".equals(word4)) {
+					codeTable.setImplementsClass(word5);
+				}
+				continue;				
+			}
+
+			CodePair codePair = new CodePair();
+			if ("public".equals(word1) || "private".equals(word1) || "protected".equals(word1)) {
+				codePair.setVisible(word1);
+				codePair.setType(word2);
+				if (! words.hasNext()) continue;
+				word2 = words.getNext().trim();
+			}
+			else
+				codePair.setType(word1);
+			codePair.setName(word2);
+			codePair.setComment(comment);
+
+			if (words.hasNext()) {
+				word3 = words.getNext().trim();
+				if ("=".equals(word3)) {
+					if (words.hasNext()) codePair.setValue(words.getNext().trim());
+				}
+			}
+			codeTable.add (codePair);
+		}
+		System.out.println("codeTable "+codeTable.toString());
+		return codeTable;
+	}
+
+	private String cleanTabs (String s) {
+		JVString jvstr = new JVString(s);
+		jvstr.replace("\t"," ");
+		return jvstr.getString();
+	}
+	private String cleanColon (String s) {
+		JVString jvstr = new JVString(s);
+		jvstr.replace(";","");
+		return jvstr.getString();
+	}
+}
+
+/*
+	private String test() {
+		return cleanCode (
+		"		 int barcodeid; " +
+		"		 boolean itemid; " +
+		"		 		 String company; " +
+		"		 		 		 long imageurl; float name; double dblFred; char chrPloy;");
+	}
+*/
+
+/*
+public CodeTable parserOLD(String strText) {
+	CodeTable codeTable = new CodeTable();
+	String strInput = cleanCode (strText);
+	System.out.println("strText\n"+strText+"\n");
+	System.out.println("strInput\n"+strInput+"\n");
+
+	StringSplitter splits = new StringSplitter (strInput, " ");
+	if (splits.length() < 1) {
+		System.out.println ("\n\n\t\tYour code makes no sense\n\n");
+		return codeTable;
+	}
+
+	codeTable.setPackageName("com.idc.coder");
+	codeTable.setBaseClassName("MyClass");
+	String strText1, strText2;
+	while (splits.hasNext()) {
+		strText1 = splits.getNext();
+		if (strText1 == null || strText1.length() < 1) continue;
+		if ("{".equals(strText1)) continue;
+		if ("package".equals(strText1)) {
+			if (! splits.hasNext()) break;
+			codeTable.setPackageName(splits.getNext().trim());
+			continue;
+		}
+		if ("public".equals(strText1)) continue;
+		if ("private".equals(strText1)) continue;
+		if ("class".equals(strText1)) {
+			if (! splits.hasNext()) break;
+			codeTable.setBaseClassName(splits.getNext().trim());
+			continue;
+		}
+		if ("implements".equals(strText1)) {
+			if (! splits.hasNext()) break;
+			strText2 = splits.getNext().trim();
+			continue;
+		}
+		if ("extends".equals(strText1)) {
+			if (! splits.hasNext()) break;
+			codeTable.setSuperClass(splits.getNext().trim());
+			continue;
+		}
+		if (! splits.hasNext()) break;		 		 // no matching pair
+		strText2 = splits.getNext();
+		System.out.println("Code Pair :"+strText1+" "+strText2);
+		codeTable.add (new CodePair(strText1, strText2));
+	}
+	System.out.println("codeTable "+codeTable.toString());
+	return codeTable;
+}
+
+private String cleanCode (String s) {
+	JVString jvstr = new JVString(s);
+	jvstr.replace("\t"," ");
+	jvstr.replace("\n"," ");
+	jvstr.replace(";"," ");
+	return jvstr.getString();
+}
+*/
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class CodePair {
+	private String visible = "private";
+	private String type;
+	private String name;
+	private String value = "";
+	private String comment = "";
+
+	public String getVisible() {return visible;}
+	public String getType() {return type;}
+	public String getName() {return name;}
+	public String getValue() {return value;}
+	public String getComment() {return comment;}
+
+	public boolean isValue() {
+		if (value == null || value.length() < 1) return false;
+		return true;
+	}
+	public boolean isComment() {
+		if (comment == null || comment.length() < 1) return false;
+		return true;
+	}
+
+	public void setVisible(String s) {visible = s;}
+	public void setType(String s) {type = s;}
+	public void setName(String s) {name = s;}
+	public void setValue(String s) {value = s;}
+	public void setComment(String s) {comment = s;}
+
+	public String toString() {return "(CodePair) ("+getVisible()+","+getType()+","+getName()+","+getValue()+","+getComment()+")\n";}
+}
+	
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.event.*;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class AppInput extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private JTextArea m_textArea;
+
+	public AppInput() {}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(50,35);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(true);
+		m_textArea.setTabSize(4);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+		BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll, BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+		BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));		 //t,l,b,r
+
+		pane.add(midPane,BorderLayout.CENTER);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(200, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+		new Runnable() {
+			public void run() {
+				m_textArea.append(msg);
+				m_textArea.append("\n");
+			}
+		}
+		);
+	}
+	public void resetMessagesArea () {
+		SwingUtilities.invokeLater (
+		new Runnable() {
+			public void run() {
+				m_textArea.setText("");
+			}
+		}
+		);
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JMenuItem) {
+			JMenuItem mi = (JMenuItem) source;
+			String itemName = mi.getText();
+			System.out.println("name :"+itemName+":");
+			if (itemName.equals("Input")) {
+				resetMessagesArea();
+			}
+		}
+	}
+	public String getUserCode() {return m_textArea.getText();}
+}
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.event.*;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class AppCode extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private App m_app;
+	private JTextArea m_textArea;
+
+	public AppCode(App app) {m_app = app;}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(50,35);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(false);
+		m_textArea.setTabSize(4);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+		JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll, BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));//t,l,b,r
+
+		pane.add(midPane,BorderLayout.CENTER);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+
+	private void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+		new Runnable() {
+			public void run() {
+				m_textArea.append(msg);
+				m_textArea.append("\n");
+			}
+		}
+		);
+	}
+	public void resetMessagesArea () {
+		SwingUtilities.invokeLater (
+		new Runnable() {
+			public void run() {
+				m_textArea.setText("");
+			}
+		}
+		);
+	}
+	public void addCode (final String s) {
+		setMessagesArea (s);
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JMenuItem) {
+			JMenuItem mi = (JMenuItem) source;
+			String itemName = mi.getText();
+			System.out.println("name :"+itemName+":");
+
+			resetMessagesArea();
+			CodeTable codeTable = (new CodeParser()).parser
+			(m_app.getAppInput().getUserCode());
+
+			if (itemName.equals("Bean")) {
+				addCode (((new MakeBean(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("Collection")) {
+				addCode (((new MakeCollection(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("FormInfo")) {
+				addCode (((new MakeFormInfo(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("HttpPageInfo")) {
+				addCode (((new MakeHttpPageInfo(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("HttpInfo")) {
+				addCode (((new MakeHttpInfo(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("Jsp")) {
+				addCode (((new MakeJsp(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("Handler")) {
+				addCode (((new MakeHandler(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("PageBroker")) {
+				addCode (((new MakePageHelper(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("Data")) {
+				addCode (((new MakeDataV2(codeTable)).makeCode()));
+			}
+			else if (itemName.equals("Output")) {
+				resetMessagesArea();
+			}
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.coder;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class App extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private AppInput m_appInput;
+	private AppCode m_appCode;
+	public App(String msg) {
+		super(msg);
+		setContentPane(makeMyContentPane());
+		setJMenuBar (makeMenu());
+		setSize(900,700);		 		 // width, height
+		setVisible(true);
+	}
+	public static void main (String args[]) {
+		JFrame frame = new App ("Code Helper Program");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	private Container makeMyContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new GridLayout(1, 2, 0, 0));
+
+		m_appInput = new AppInput();
+		m_appCode = new AppCode(this);
+		JSplitPane splitPane = new JSplitPane(
+				JSplitPane.HORIZONTAL_SPLIT,
+				m_appInput.makeContentPane(),
+				m_appCode.makeContentPane());
+
+		splitPane.setDividerLocation(300);
+		splitPane.setOneTouchExpandable(true);
+		pane.add(splitPane);
+		return pane;
+	}
+	private JMenuBar makeMenu() {
+		JMenu menuFile = new JMenu("File");
+		menuFile.add (new JVMenuItem("Exit", this));
+
+		JMenu menuCode = new JMenu("Code");
+		menuCode.add (new JVMenuItem("Bean", getAppCode()));
+		menuCode.add (new JVMenuItem("Collection", getAppCode()));
+
+		JMenu menu = new JMenu("FormInfo");
+		menu.add (new JVMenuItem("FormInfo", getAppCode()));
+		menu.add (new JVMenuItem("HttpPageInfo", getAppCode()));
+		menu.add (new JVMenuItem("HttpInfo", getAppCode()));
+		menu.add (new JVMenuItem("Jsp", getAppCode()));
+		menu.add (new JVMenuItem("Handler", getAppCode()));
+		menu.add (new JVMenuItem("PageBroker", getAppCode()));
+		menuCode.add (menu);
+
+		JMenu menu2 = new JMenu("Data");
+		menu2.add (new JVMenuItem("Data", getAppCode()));
+		menuCode.add (menu2);
+
+		JMenu menuClear = new JMenu("Clear");
+		menuClear.add (new JVMenuItem("Input", getAppInput()));
+		menuClear.add (new JVMenuItem("Output", getAppCode()));
+
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(menuFile);
+		menuBar.add(menuCode);
+		menuBar.add(menuClear);
+		return menuBar;
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JMenuItem) {
+			JMenuItem mi = (JMenuItem) source;
+			String itemName = mi.getText();
+//			System.out.println("name :"+itemName+":");
+			if (itemName.equals("Exit")) {
+				doStopClient();
+			}
+		}
+	}
+	public void doStopClient() {System.exit(0);}
+	public AppInput getAppInput() {return m_appInput;}
+	public AppCode getAppCode() {return m_appCode;}
+
+	private final class JVMenuItem extends JMenuItem {
+		private static final long serialVersionUID = 1;
+		public JVMenuItem (String name, ActionListener listener) {
+			super (name);
+			this.addActionListener (listener);
+		}
+	}
+}

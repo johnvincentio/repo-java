@@ -1,0 +1,191 @@
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+@echo off
+set JAVA_HOME=C:\Program Files\IBM\SDP70\jdk
+set path=%JAVA_HOME%\bin;%PATH%;c:\jv\utils
+rem
+set Classpath=C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\irac7\wrkspc\Toolbox\Jars\db2java.zip;C:\irac7\wrkspc\Toolbox\Jars\jt400.jar;C:\irac7\wrkspc\Toolbox\Jars\commons-lang-2.3.jar;%JAVA_HOME%\lib
+rem set Classpath=C:\irac7\wrkspc\Toolbox\Toolbox;%JAVA_HOME%\lib
+java com.idc.appender.App
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+#Unit testing properties
+ut.database.driver=
+ut.database.url=
+ut.database.username=
+ut.database.password=
+
+# Hibernate
+hibernate.showSql = false
+hibernate.dialect = org.hibernate.dialect.DB2Dialect
+hibernate.hbm2ddl.auto = create
+#hibernate.cache.provider = net.sf.ehcache.hibernate.EhCacheProvider
+hibernate.hibernate.cache.use_query_cache=false
+#hibernate.cache.use_second_level_cache=true
+#hibernate.cache.configurationResourceName=classpath:
+hibernate.bytecode.provider = cglib
+hibernate.connection.release_mode=on_close
+
+hibernate.generate_statistics=false
+hibernate.cache.use_structured_entries=true
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+	   xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+	<!-- Abstract Dao -->
+	<bean id="abstractDao" abstract="true" init-method="init">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+		
+		
+	<!-- Dao Implementations -->	
+	<bean id="dao" parent="abstractDao" class="com.hertz.ecom.framework.dao.hibernate.DaoHibernate" />
+ 	<bean id="countryDao" parent="abstractDao" class="com.hertz.ecom.dao.hibernate.CountryDao" />
+ 		
+	 <!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	 <property name="mappingResources">
+		<list>
+<!-- 	   <value>/com/hertz/ecom/dao/hibernate/hbm/Location.hbm.xml</value> -->	 
+	 	   <value>/com/hertz/ecom/dao/hibernate/hbm/Country.hbm.xml</value>
+	 	   <value>/com/hertz/ecom/dao/hibernate/hbm/City.hbm.xml</value>
+	 	   <value>/com/hertz/ecom/dao/hibernate/hbm/State.hbm.xml</value>
+		 </list>
+	</property>
+	<property name="hibernateProperties">
+		<props>
+		 		<prop key="hibernate.show_sql">${hibernate.showSql}</prop> 
+			<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+			<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+		 <!--	<prop key="hibernate.bytecode.provider">${hibernate.bytecode.provider}</prop>
+			<prop key="hibernate.cache.provider_class">${hibernate.cache.provider}</prop>
+			<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+			<prop key="hibernate.hibernate.cache.use_query_cache">${hibernate.hibernate.cache.use_query_cache}</prop>
+			<prop key="hibernate.cache.configurationResourceName">${hibernate.cache.configurationResourceName}</prop>-->
+			<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+		</props>
+	</property>
+	</bean>
+	
+	
+	<!-- Datasource -->
+	 
+
+<!-- 	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/com/hertz/iHertzDB" />	--> 
+   		
+	<!-- Transaction Manager -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" >
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+
+</beans>
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.hertz.ecom.locations.model">
+  <class name="State" table="location_state">
+  	<id name="id" column="location_state_id" type="long" unsaved-value="0">
+		<!--  		<generator class="increment"/>-->
+		<generator class="native"/>
+	</id>
+	 <property name="stateProvinceCode" not-null="true" column="state_province_code" length="2"/>
+	 <property name="hzStateProvinceCode" column="hz_state_province_code" not-null="true" length="2"/>
+	 <property name="displayDl" column="display_dl" type="boolean" not-null="true"/>
+	 <property name="displayAddr" column="display_addr" type="boolean" not-null="true"/>
+	 <property name="displayDest" column="display_dest" type="boolean" not-null="true"/>
+	 <many-to-one name="country" class="Country" not-null="true" foreign-key="none" fetch="join" lazy="false" cascade="none"></many-to-one>
+
+  </class>
+  
+</hibernate-mapping>
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+<dbtool>
+
+	<scenario>
+		<name>herc</name>
+		<driver>COM.ibm.db2.jdbc.app.DB2Driver</driver>
+		<url>jdbc:db2:</url>
+		<username>prc4031</username>
+		<password>mall258$</password>
+		<databasename>IDEVDB</databasename>
+		<schema>HERCDB</schema>
+		<system>linux</system>
+	</scenario>
+
+	<scenario>
+		<name>hercmigration</name>
+		<driver>COM.ibm.db2.jdbc.app.DB2Driver</driver>
+		<url>jdbc:db2:</url>
+		<username>prc4031</username>
+		<password>mall258$</password>
+		<databasename>IDEVDB</databasename>
+		<schema>HERCMIGRATIONDB</schema>
+		<system>linux</system>
+	</scenario>
+
+	<scenario>
+		<name>irac</name>
+		<driver>COM.ibm.db2.jdbc.app.DB2Driver</driver>
+		<url>jdbc:db2:</url>
+		<username>prc4031</username>
+		<password>mall258$</password>
+		<databasename>IDEVDB</databasename>
+		<schema>DB2INST1</schema>
+		<system>linux</system>
+	</scenario>
+
+	<scenario>
+		<name>as400US</name>
+		<driver>com.ibm.as400.access.AS400JDBCDriver</driver>
+		<url>jdbc:as400://</url>
+		<username>prc4031</username>
+		<password>qaw$3xct</password>
+		<databasename>AS4DEV</databasename>
+		<schema>RMHCQDATA</schema>
+		<system>as400</system>
+	</scenario>
+
+	<scenario>
+		<name>as400CA</name>
+		<driver>com.ibm.as400.access.AS400JDBCDriver</driver>
+		<url>jdbc:as400://</url>
+		<username>prc4031</username>
+		<password>qaw$3xct</password>
+		<databasename>AS4HRCCD</databasename>
+		<schema>WSDATA</schema>
+		<system>as400</system>
+	</scenario>
+
+</dbtool>
+

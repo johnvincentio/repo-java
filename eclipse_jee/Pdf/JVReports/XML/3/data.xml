@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<extract_01 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<account>
+		<name>ABC INC</name>
+		<account_number>1434171</account_number>
+	</account>
+
+	<account>
+		<name>CDE INC</name>
+		<account_number>45769</account_number>
+	</account>
+
+</extract_01>

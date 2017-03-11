@@ -1,0 +1,230 @@
+
+//	private long m_nMaxSolutions = -1;		// default to no limit
+//	private boolean m_bFoundMaxSolutions;	// limit the number of solutions
+
+
+/*
+		if (args[1].toLowerCase().equals("all")) {
+			System.out.println("allMain");
+			if (args[2] != null && (! args[2].toLowerCase().equals("all"))) {
+				m_nMaxSolutions = Integer.parseInt(args[2]);
+				if (m_nMaxSolutions < 0) m_nMaxSolutions = -1;
+			}
+			for (int x = 0; x < XLIMIT; x++) {
+				for (int y = 0; y < YLIMIT; y++) start(new Pair(x,y));
+			}
+			Output.timing ("There are no more possible solutions. Exiting...");
+			Output.flush();
+		}
+		else {
+			System.out.println("oneMain");
+			if (args[3] != null && (! args[3].toLowerCase().equals("all"))) {
+				m_nMaxSolutions = Integer.parseInt(args[3]);
+				if (m_nMaxSolutions < 0) m_nMaxSolutions = -1;
+			}
+			start(new Pair(Integer.parseInt(args[1]),Integer.parseInt(args[2])));
+		}
+*/
+
+
+/*
+	private static final String INSERT_SQL_1 = "insert into `jv_schema_1`.`KNIGHT_SOLUTIONS` (ID, RUN_DATE, SIZE_X_POS, SIZE_Y_POS, START_X_POS, START_Y_POS, " + 
+			"SOLUTION_NUMBER, MOVE_COUNTER, MOVE_AWAY_TYPE, MOVE_FROM_X_POS, MOVE_FROM_Y_POS) " + 
+			"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_SQL_2 = "insert into `jv_schema_1`.`KNIGHT_TOTALS` (ID, SIZE_X_POS, SIZE_Y_POS, START_X_POS, START_Y_POS, SOLUTIONS, TOTAL_MOVES) " + 
+			"values (?, ?, ?, ?, ?, ?, ?)";
+
+	public void doInsert (Pair size, Pair start, long solution_number, int move_counter, int move_away_type, int move_from_x_pos, int move_from_y_pos) {
+		try {
+			m_pstmt_1.setLong(1, m_unique_id);
+			m_pstmt_1.setDate(2, m_runDate);
+			m_pstmt_1.setInt(3, size.getX());
+			m_pstmt_1.setInt(4, size.getY());
+			m_pstmt_1.setInt(5, start.getX());
+			m_pstmt_1.setInt(6, start.getY());
+			m_pstmt_1.setLong(7, solution_number);
+			m_pstmt_1.setInt(8, move_counter);
+			m_pstmt_1.setInt(9, move_away_type);
+			m_pstmt_1.setInt(10, move_from_x_pos);
+			m_pstmt_1.setInt(11, move_from_y_pos);
+			m_pstmt_1.execute();
+		}
+		catch (Exception ex) {
+			System.err.println("doInsert; Error; "+ex.getMessage());
+		}		
+	}
+	public void doInsertGameRecord (Pair size, Pair start) {
+		doInsert (size, start, 0, 0, 0, 0, 0);
+	}
+*/
+
+
+/*
+MySQL code:
+
+private DBMySQL m_dbMySQL = new DBMySQL();
+
+m_dbMySQL.createTotalsRecord (size, start);								// insert totals record into database for this scenario		
+m_dbMySQL.updateTotalsRecord (totalSolutions, totalMoves);				// update totals statistics
+m_dbMySQL.doInsertSubTotals (totalSolutions, currentSolutionTotalMoves, timing);	// add solution statistics to the database
+board.doInsertSolutionFound (m_dbMySQL, totalSolutions);	
+
+	public void doInsertSolutionFound (DBMySQL dbMySQL, long solution) {
+		for (int y = m_squares[0].length - 1; y >= 0; y--) {
+			for (int x = 0; x < m_squares.length; x++) {
+				Square square = m_squares[x][y];
+				dbMySQL.doInsertMoves (solution, square.getMoveCounter(), new Pair(x, y), square.getMoveAwayType(), square.getFrom());
+			}
+		}
+	}
+
+*/
+
+
+	@SuppressWarnings("unused")
+	private void doPlayCase (int type) {
+		try {
+			long max_solutions = 100;
+			switch (type) {
+			case 1:					// all start positions for a board size of x = 3 && y = [3, 8]
+			{
+				int max_x = 3;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 2:					// all start positions for a range of given board sizes x = 4 and y = [3, 8]
+			{
+				int max_x = 4;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 3:					// all start positions for a range of given board sizes x = 5 and y = [3, 8]
+			{
+				int max_x = 5;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 4:					// all start positions for a range of given board sizes x = 6 and y = [3, 8]
+			{
+				int max_x = 6;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 5:					// all start positions for a range of given board sizes x = 7 and y = [3, 8]
+			{
+				int max_x = 7;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 6:					// all start positions for a range of given board sizes x = 8 and y = [3, 8]
+			{
+				int max_x = 8;
+				for (int board_y = 3; board_y <= 8; board_y++) {
+					Pair size = new Pair (max_x, board_y);
+					for (int x = 0; x < max_x; x++) {
+						for (int y = 0; y < board_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 12:					// all start positions for a range of given board sizes y = 4 and x = [3, 8]
+			{
+				int max_y = 4;
+				for (int board_x = 3; board_x <= 8; board_x++) {
+					Pair size = new Pair (board_x, max_y);
+					for (int x = 0; x < board_x; x++) {
+						for (int y = 0; y < max_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 13:					// all start positions for a range of given board sizes y = 5 and x = [3, 8]
+			{
+				int max_y = 5;
+				for (int board_x = 3; board_x <= 8; board_x++) {
+					Pair size = new Pair (board_x, max_y);
+					for (int x = 0; x < board_x; x++) {
+						for (int y = 0; y < max_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 14:					// all start positions for a range of given board sizes y = 6 and x = [3, 8]
+			{
+				int max_y = 6;
+				for (int board_x = 3; board_x <= 8; board_x++) {
+					Pair size = new Pair (board_x, max_y);
+					for (int x = 0; x < board_x; x++) {
+						for (int y = 0; y < max_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 15:					// all start positions for a range of given board sizes y = 7 and x = [3, 8]
+			{
+				int max_y = 7;
+				for (int board_x = 3; board_x <= 8; board_x++) {
+					Pair size = new Pair (board_x, max_y);
+					for (int x = 0; x < board_x; x++) {
+						for (int y = 0; y < max_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 16:					// all start positions for a range of given board sizes y = 8 and x = [3, 8]
+			{
+				int max_y = 8;
+				for (int board_x = 3; board_x <= 8; board_x++) {
+					Pair size = new Pair (board_x, max_y);
+					for (int x = 0; x < board_x; x++) {
+						for (int y = 0; y < max_y; y++) startScenario (size, new Pair (x, y), max_solutions);
+					}
+				}
+			}
+				break;
+			case 96:
+			{
+				int max_x = 5;
+				int max_y = 8;
+				Pair size = new Pair (max_x, max_y);
+				for (int x = 0; x < max_x; x++) {
+					for (int y = 0; y < max_y; y++)
+						startScenario (size, new Pair (x, y), max_solutions);
+				}
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		catch (Exception ex) {
+			System.err.println ("Game::doPlayGame Exception; "+ex.getMessage());
+		}
+	}
+
+

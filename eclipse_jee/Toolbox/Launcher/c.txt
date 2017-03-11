@@ -1,0 +1,242 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+<launcher>
+
+	<scenario name="radtool7" 
+		application="java" 
+		main="com.idc.rad.gui.App" 
+		classpath="C:\development\herc_09_04\RadTool2;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin; C:\WINDOWS\system32; C:\WINDOWS; c:\jv\utils" 
+		cwd="c:\tmp" >
+		<params>
+			<param name="7"/>
+			<param name="c:\jv\utils\rad7.properties"/>
+		</params>
+		<envs>
+			<env name="jv" value="something"/>
+		</envs>
+	</scenario>
+
+	<scenario name="radtool6" 
+		application="java" 
+		main="com.idc.rad.gui.App" 
+		classpath="C:\development\herc_09_04\RadTool2;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin; C:\WINDOWS\system32; C:\WINDOWS; c:\jv\utils" 
+		cwd="c:\tmp" >
+		<params>
+			<param name="C:\jv\utils\rad6_irac.properties"/>
+		</params>
+	</scenario>
+
+	<scenario name="grepdirgui" 
+		application="java" 
+		main="com.idc.grepgui.GrepdirGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appcleaner" 
+		application="java" 
+		main="com.idc.appender.AppCleaner" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appcoder" 
+		application="java" 
+		main="com.idc.coder.App" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appender" 
+		application="java" 
+		main="com.idc.appender.App" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="dbtool" 
+		application="java" 
+		main="com.idc.dbtool.DBToolGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\irac7\wrkspc\Toolbox\Jars\db2java.zip;C:\irac7\wrkspc\Toolbox\Jars\jt400.jar;
+C:\irac7\wrkspc\Toolbox\Jars\commons-lang-2.3.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="diffallgui" 
+		application="java -Xms1g -Xmx1g" 
+		main="com.idc.diff.all.gui.DiffallGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+			<params>
+				<param name="c:\jv\utils\diffallgui.properties"/>
+			</params>
+	</scenario>
+
+	<scenario name="appender" 
+		application="java" 
+		main="com.idc.diff.file.AppGUI" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="FilesSinceGui" 
+		application="java" 
+		main="com.idc.filesgui.FilesSinceGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="Jarlist" 
+		application="java" 
+		main="com.idc.file.jar.Jarlist" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+</launcher>
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
+
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+	</appender>
+
+	<appender name="fileAppender" class="org.apache.log4j.FileAppender">
+		<param name="File" value="/tmp/toolbox.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] [%t] %p - %m%n" />
+		</layout>
+	</appender>
+
+	<root>
+		<priority value="all" />	<!-- debug, error -->
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="fileAppender" />
+	</root>
+
+</log4j:configuration>
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0"?>
+
+<project name="toolbox" default="make_jar" basedir="."> 
+
+	<property name="my.jar.file" value="c:/jv/utils/launcher.jar"/>
+	<property name="my.manifest.file" value="mymanifest.txt"/>
+	<property name="my.version" value="1.0.0"/>
+
+	<target name="clean">
+		<echo message="Deleting My JAR file - ${my.jar.file}"/>	
+		<delete file="${my.jar.file}" />
+	</target>
+
+	<target name="timestamp">
+		<tstamp>
+			<format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+		</tstamp>
+	</target>
+
+	<target name="make_manifest" depends="timestamp">
+		<echo message="Creating manifest file - ${my.manifest.file}"/>	
+		<delete file="${my.manifest.file}" />
+		<manifest file="${my.manifest.file}">
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Class-Path" value="toolbox.jar log4j-1.2.13.jar"/>
+			<attribute name="Main-Class" value="com.idc.launcher.Launcher"/>
+			<section name="com/idc/launcher">
+				<attribute name="Specification-Title" value="Java Launcher Jar"/>
+				<attribute name="Specification-Version" value="${my.version}"/>
+				<attribute name="Specification-Vendor" value="Jars idc"/>
+				<attribute name="Implementation-Title" value="launcher"/>
+				<attribute name="Implementation-Version" value="${my.version} ${my.datestamp}"/> 
+				<attribute name="Implementation-Vendor" value="idc"/>
+			</section>
+			<section name="com/idc/launcher/">
+				<attribute name="Sealed" value="true"/>
+			</section>
+		</manifest>
+	</target>
+
+	<target name="make_jar" depends="clean, make_manifest">
+		<echo message="Creating My JAR file - ${my.jar.file}"/>
+		<echo message="base directory ${basedir}"/>
+		<jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+			<fileset dir="${basedir}" includes="**/**.class" />
+		</jar>
+	</target>
+
+</project>
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.idc.file.exec.ExecuteCommandThread;
+import com.idc.file.exec.PrintLine;
+import com.idc.trace.LogHelper;
+import com.idc.xml.smart.AttributeInfo;
+import com.idc.xml.smart.AttributeItemInfo;
+import com.idc.xml.smart.JVxml;
+import com.idc.xml.smart.NodeInfo;
+import com.idc.xml.smart.NodeItemInfo;
+
+public class Launcher {
+	public static void main(String[] args) {
+		LogHelper.info (">>> Launcher::main");
+		(new Launcher()).doApp (args);
+		LogHelper.info ("<<< Launcher::main");
+	}
+
+	private void doApp (String[] args) {
+		if (args.length < 2) {
+			LogHelper.fatal ("Launcher Usage; Launcher scenario launcher_file");
+			return;
+		}
+
+		File launcherFile = new File (args[1]);
+		if (! launcherFile.isFile()) {
+			LogHelper.fatal ("Launcher file :"+args[1]+": not found");
+			return;
+		}

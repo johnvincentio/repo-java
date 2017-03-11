@@ -1,0 +1,32 @@
+results/part1/chapter01/hello_landscape1.pdf
+Number of pages: 1
+Size of page 1: [0.0,0.0,612.0,792.0]
+Rotation of page 1: 90
+Page size with rotation of page 1: Rectangle: 792.0x612.0 (rot: 90 degrees)
+Is rebuilt? false
+Is encrypted? false
+
+results/part1/chapter01/hello_landscape2.pdf
+Number of pages: 1
+Size of page 1: [0.0,0.0,792.0,612.0]
+Rotation of page 1: 0
+Page size with rotation of page 1: Rectangle: 792.0x612.0 (rot: 0 degrees)
+Is rebuilt? false
+Is encrypted? false
+
+results/part1/chapter03/movie_templates.pdf
+Number of pages: 8
+Size of page 1: [0.0,0.0,595.0,842.0]
+Rotation of page 1: 90
+Page size with rotation of page 1: Rectangle: 842.0x595.0 (rot: 90 degrees)
+Is rebuilt? false
+Is encrypted? false
+
+results/part1/chapter05/hero1.pdf
+Number of pages: 1
+Size of page 1: [-1192.0,-1685.0,1192.0,1685.0]
+Rotation of page 1: 0
+Page size with rotation of page 1: Rectangle: 2384.0x3370.0 (rot: 0 degrees)
+Is rebuilt? false
+Is encrypted? false
+

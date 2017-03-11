@@ -1,0 +1,63 @@
+Help File
+
+Frequently Asked Questions (Or at least will be):
+
+1. Q.How does the alarm clock get set?
+   A.Just click on the numbers. Clicking on the
+     minutes will adjust the minute, clicking on
+     the hour will adjust the hour, and clicking
+     on am/pm will adjust am/pm.
+
+2. Q.What color is am or pm?
+   A.Am is green and pm is red.
+
+3. Q.Why can't the time be adjusted?
+   A.The time depends on the Real Time Clock. If the Real
+     Time Clock is adjusted, the time for the clock will
+     be adjusted within 15 seconds. Why does it take so
+     long to adjust? The clock automatically updates
+     itself so the time doesn't get thrown off when
+     you run heavy applications. It also assures you
+     that this clock will remain accurate.
+
+4. Q.I can't hear any sounds?
+   A.Make sure the output to your system mixer is turned
+     up and also make sure your speakers are turned up,
+     too. If it is not that then try updating your version
+     of the Java Runtime Environment to at least 1.4.2! If
+     you still have a problem, either Java doesn't
+     support your sound card or your sound driver has
+     been installed incorrectly. Ealier version of the
+     JRE do not support the Java Media Framework. So you
+     either have to download and install it youself or
+     upgrade to the latest version of the Java Runtime
+     Environment (JRE). As of 1.3 the Java Media
+     Framework was included.
+
+     If the items stated above did not help, try
+     downloading the JAR file again.
+
+5. Q.What is "Don't Let Me Sleep"?
+   A.Don't Let Me Sleep is a function which disables all
+     functions, for the alarm clock, for approx. 30
+     seconds. The disable alarm function, the close
+     function , the snooze function, the control panel
+     and help panel are all disabled.
+
+6. Q.How long is the snooze?
+   A.The snooze is approx. 8 minutes long.
+
+7. Q.What is all this Time Zone Stuff about?
+   A.If you don't plan on doing any travelling you don't
+     even have to touch this. If you are travelling, set
+     the first Combo Box to the time zone you live in, in
+     the second Combo Box set the time zone you are going
+     to be in or are in. I.E. If you live in British
+     Columbia and you are going to or are in New York, set
+     the first Combo Box to -8 GMT and the second Combo
+     Box to -3 GMT and the clock will be adjusted
+     according to your system clock which must be set to
+     your home time zone.
+     
+     IMPORTANT: If the system clock is adjusted the time
+     zones must NOT be adjusted.

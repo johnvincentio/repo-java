@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+Please note:
+	& must be converted to &amp;
+curl -k https://www.hertzentertainment.com/hesws/rest/vehicle/all
+curl -k https://www.hertzentertainment.com/hesws/rest/equipment/all
+curl -k https://www.hertzentertainment.com/hesws/rest/truck/all
+curl -k https://www.hertzentertainment.com/hesws/rest/grip/all
+curl -k https://www.hertzentertainment.com/hesws/rest/lighting/all
+
+curl -k https://www.hertzentertainment.com/hesws/rest/vehicle/all
+
+ -->
+ 
+<loadtest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<stages server="www.hertzentertainment.com" port="80" contextroot="hesws" protocol="https">
+		<stage url="/rest/vehicle/all" method="get" description="Get all vehicles"/>
+		<stage url="/rest/equipment/all" method="get" description="Get all equipment"/>
+		<stage url="/rest/truck/all" method="get" description="Get all trucks"/>
+		<stage url="/rest/grip/all" method="get" description="Get all grips"/>
+		<stage url="/rest/lighting/all" method="get" description="Get all lighting"/>
+	</stages>
+</loadtest>

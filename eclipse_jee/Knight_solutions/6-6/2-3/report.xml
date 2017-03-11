@@ -1,0 +1,15 @@
+<scenario>
+  <size>
+    <x>6</x>
+    <y>6</y>
+  </size>
+  <start>
+    <x>2</x>
+    <y>3</y>
+  </start>
+  <startTime>1409117629134</startTime>
+  <endTime>1409117629491</endTime>
+  <solutions>100</solutions>
+  <totalMoves>12065</totalMoves>
+  <elapsedTime>357</elapsedTime>
+</scenario>

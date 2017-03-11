@@ -1,0 +1,69 @@
+BODY {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+TD {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+P {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+UL {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+OL {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+LI {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+B {	FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold}
+
+A:link {	COLOR: #0050ff; TEXT-DECORATION: none}
+
+A:visited {	COLOR: #0050ff; TEXT-DECORATION: none}
+
+A:active {	COLOR: #000099; TEXT-DECORATION: underline}
+
+A:hover {	COLOR: #000099; TEXT-DECORATION: underline}
+
+.logondata {	background-color:  #0055b8; COLOR: #000000; FONT_FAMILY: arial,verdana: FONT_SIZE: 10px; FONT-WEIGHT: normal; TEXT-DECORATION: none}
+
+.logonlabel {	background-color:  #0055b8; COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+	
+.logonbg{ 	background-color:  #0055b8 }	
+
+.data {	COLOR: #0000ff; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.tabledata {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: normal; TEXT-DECORATION: none}
+
+.tabledata2 {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: normal; TEXT-DECORATION: none}
+
+.tabledatared {	COLOR: red; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.tablecredit {	COLOR: #cc0000; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: normal; TEXT-DECORATION: none}
+
+.tableheader1 {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 14px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.tableheader2 {	COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.tableheader3 {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.white {	COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: normal}
+
+.whitebold {	COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold}
+
+.whitemid {	COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 11px; FONT-WEIGHT: bold}
+
+.whitesmall {	COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: bold}
+
+.button { background-color: #009999; color: white; font-weight: bold; font-size: 12px; }
+
+.company {  COLOR: #0000ff; FONT-FAMILY: arial,verdana; FONT-SIZE: 16px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.history {  COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold; FONT-STYLE: italic; TEXT-DECORATION: none}
+
+.footer {  COLOR: #ffffff; FONT-FAMILY: arial,verdana; FONT-SIZE: 9px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.footerblack {  COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.help {  COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 10px; TEXT-DECORATION: none}
+
+.menu {	COLOR: #000000; FONT-FAMILY: arial,verdana; FONT-SIZE: 14px; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+.redbold {	COLOR: red; FONT-FAMILY: arial,verdana; FONT-SIZE: 12px; FONT-WEIGHT: bold}
+
+.greenscreen {	COLOR: black; FONT-FAMILY: Courier New; FONT-SIZE: 12px; FONT-WEIGHT: normal}

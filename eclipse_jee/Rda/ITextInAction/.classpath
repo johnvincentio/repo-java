@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="book/lib/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-bridge.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-css.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-dom.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-ext.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-gvt.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-parser.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-script.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-svg-dom.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-util.jar"/>
+	<classpathentry kind="lib" path="book/lib/batik-xml.jar"/>
+	<classpathentry kind="lib" path="book/lib/bcmail-jdk15-146.jar"/>
+	<classpathentry kind="lib" path="book/lib/bcprov-jdk15-146.jar"/>
+	<classpathentry kind="lib" path="book/lib/bctsp-jdk15-146.jar"/>
+	<classpathentry kind="lib" path="book/lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="book/lib/itext-asian.jar"/>
+	<classpathentry kind="lib" path="book/lib/itext-asiancmaps.jar"/>
+	<classpathentry kind="lib" path="book/lib/itext-hyph-xml.jar"/>
+	<classpathentry kind="lib" path="book/lib/iText-xml.jar"/>
+	<classpathentry kind="lib" path="book/lib/iText-xtra.jar"/>
+	<classpathentry kind="lib" path="book/lib/iText.jar"/>
+	<classpathentry kind="lib" path="book/lib/jcommon.jar"/>
+	<classpathentry kind="lib" path="book/lib/jfreechart.jar"/>
+	<classpathentry kind="lib" path="book/lib/mysql-connector-java-5.1.8-bin.jar"/>
+	<classpathentry kind="lib" path="book/lib/servlet.jar"/>
+	<classpathentry kind="lib" path="book/lib/xerces_2_5_0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

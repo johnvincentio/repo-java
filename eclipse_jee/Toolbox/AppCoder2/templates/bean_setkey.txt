@@ -1,0 +1,36 @@
+-- bean; set key
+
+package `getPackageName()`;
+
+import java.io.Serializable;
+
+/**
+ *	Describe a `getKeyBeanClassName()`
+ *
+ * @author John Vincent
+ */
+ 
+`makeStartClass(getKeyBeanClassName())`
+
+`makeMembers(true)`
+
+`makeConstructorArgs (getKeyBeanClassName(), true)`
+
+`makeGetters()`
+
+`makeSetters()`
+
+	public int hashCode() {return hashCode;}
+	public boolean equals (Object obj) {
+		if (obj == null || ! (obj instanceof `getKeyBeanClassName()`)) return false;
+		if (this.hashCode != obj.hashCode()) return false;
+		return true;
+	}
+
+`makeToString()`
+
+/*
+TODO;  move this code to the collection class
+`makeKeyGetMethods()`
+*/
+}

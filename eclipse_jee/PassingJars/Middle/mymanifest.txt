@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: 2.3 (IBM Corporation)
+Built-By: John
+Main-Class: com.idc.middle.Middle
+Class-Path: base.jar
+
+Name: com/idc/middle
+Specification-Title: Jars Test
+Specification-Version: l.0.0
+Specification-Vendor: Jars idc
+Implementation-Title: middle
+Implementation-Version: l.0.0 23-February-2009 09:58:12
+Implementation-Vendor: idc
+
+Name: com/idc/middle/
+Sealed: true
+

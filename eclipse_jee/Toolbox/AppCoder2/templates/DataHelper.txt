@@ -1,0 +1,13 @@
+package com.hertz.herc.presentation.util.replication;
+
+import java.util.Iterator;
+
+import com.hertz.herc.presentation.util.migration.MigrationLogger;
+
+/**
+ *	Class that handles replicated `getBaseClassName()` data tasks
+ *
+ * @author John Vincent
+ */
+
+`makeDataHelper()`

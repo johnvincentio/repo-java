@@ -1,0 +1,1568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jira>
+	<Header>
+		<key type="Template Version">
+			<jira value="1078">
+				<Value>501.0</Value>
+			</jira>
+		</key>
+		<key type="Jira Number">
+			<jira value="1078">
+				<Value>1078.0</Value>
+			</jira>
+		</key>
+		<key type="SR Number">
+			<jira value="1078">
+				<Value>52854.0</Value>
+			</jira>
+		</key>
+		<key type="Description">
+			<jira value="1078">
+				<Value>Airclic GPS Reporting</Value>
+			</jira>
+		</key>
+	</Header>
+	<Vendor_Change>
+		<key type="RentalMan">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="AS400">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Etrieve">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Rouse">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Mindshare">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="AirClick">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="SQLServer">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="DB2">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays></Mandays>
+			</jira>
+		</key>
+		<key type="Fleet">
+			<jira value="1078">
+				<Type>None</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Other">
+			<jira value="1078">
+				<Type>Medium</Type>
+				<Mandays>10.0</Mandays>
+			</jira>
+		</key>
+	</Vendor_Change>
+	<Irac_Framework_Change>
+		<key type="AdminTool">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Database">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Irac Framework">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="LDAP">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Properties files">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="MapQuest">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Server Change">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Irac_Framework_Change>
+	<Etrieve_Change>
+		<key type="Etrieve">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="RentalManExtracts.jar">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Server Change">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Etrieve_Change>
+	<Herc_Required_Server_Change>
+		<key type="Datasource">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="NSB">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Classpath">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Jars ">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Required_Server_Change>
+	<Herc_Required_Firewall_Change>
+		<key type="Herc Servers">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="DM Prod">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="DM Qual">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Any other external access">
+			<jira value="1078">
+				<Type>Yes</Type>
+				<Mandays>10.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Required_Firewall_Change>
+	<Herc_Required_Interwoven_Change>
+		<key type="General Interwoven change">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Add Interwoven copy script">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Update Interwoven copy script">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Required_Interwoven_Change>
+	<Herc_Required_LDAP_Change>
+		<key type="New Data Object">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Changed Data Object">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Herc Member Profile">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="AdminTool Member Profile">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Required_LDAP_Change>
+	<Herc_Required_Database_Change>
+		<key type="Replication">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="New Table">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="New Index">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Table update">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Table removed">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="New Datasource">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Updated Datasource">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Deleted datasource">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Demo data update">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="System data update">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Data requires translation">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Required_Database_Change>
+	<Herc_Change_to_Vendor>
+		<key type="Rouse">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Mindshare">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Fleet">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="AS400">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="RentalMan">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="RentalMan Extracts Jar">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Irac">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Airclick">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Etrieve">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Other">
+			<jira value="1078">
+				<Type>Yes</Type>
+				<Mandays>10.0</Mandays>
+			</jira>
+		</key>
+	</Herc_Change_to_Vendor>
+	<Type_of_Herc_change>
+		<key type="New Component">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="New Jars">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Updated Jars ">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Herc Properties Files">
+			<jira value="1078">
+				<Type>Yes</Type>
+				<Mandays>2.0</Mandays>
+			</jira>
+		</key>
+		<key type="LDAP api">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="DAO Framework Change">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Cache Framework Change">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="New Session Objects">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+		<key type="Updated Session Objects">
+			<jira value="1078">
+				<Type>No</Type>
+				<Mandays>0.0</Mandays>
+			</jira>
+		</key>
+	</Type_of_Herc_change>
+	<Functionality>
+		<key type="Reports">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="Email">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="Job Scheduler">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="New Job">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="SEO urls">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="AdminTool">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="Developer only Testing">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="AS400">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="Overdue Rentals">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="Release/Extend">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+	</Functionality>
+	<Component>
+		<key type="HercAdminToolWeb">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="HercATCommonUTIL">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="HercFranchiseWeb">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercJobEJB">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercJobSchedulerWeb">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercMindshare">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercMobileWeb">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercPresentationUTIL">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="HercSalesWeb">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercWeb">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="HercUTIL">
+			<jira value="1078">
+				<Type>Yes</Type>
+			</jira>
+		</key>
+		<key type="JasperEJB">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="RentalManEJB">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="HercRouse">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+		<key type="ServicePumpsWeb">
+			<jira value="1078">
+				<Type>No</Type>
+			</jira>
+		</key>
+	</Component>
+	<Factors>
+		<key type="Code">
+			<jira value="1078">
+				<Type>New</Type>
+				<Factor></Factor>
+			</jira>
+		</key>
+		<key type="Java Refactoring">
+			<jira value="1078">
+				<Type>No</Type>
+				<Factor></Factor>
+			</jira>
+		</key>
+		<key type="Scope Classification">
+			<jira value="1078">
+				<Type>Small</Type>
+				<Factor>0.0</Factor>
+			</jira>
+		</key>
+		<key type="Complexity Classification">
+			<jira value="1078">
+				<Type>Small</Type>
+				<Factor>0.0</Factor>
+			</jira>
+		</key>
+		<key type="Risk">
+			<jira value="1078">
+				<Type>Small</Type>
+				<Factor>0.0</Factor>
+			</jira>
+		</key>
+	</Factors>
+	<Project_Factors>
+		<key type="Functional Requirements">
+			<jira value="1078">
+				<Precentage>0.2</Precentage>
+				<High_Level>7.0</High_Level>
+				<Detailed>5.2</Detailed>
+			</jira>
+		</key>
+		<key type="Architecture/Design">
+			<jira value="1078">
+				<Precentage>0.2</Precentage>
+				<High_Level>7.0</High_Level>
+				<Detailed>5.2</Detailed>
+			</jira>
+		</key>
+		<key type="Developer Testing">
+			<jira value="1078">
+				<Precentage>0.2</Precentage>
+				<High_Level>7.0</High_Level>
+				<Detailed>5.2</Detailed>
+			</jira>
+		</key>
+		<key type="Unit Testing">
+			<jira value="1078">
+				<Precentage>1.0</Precentage>
+				<High_Level>35.0</High_Level>
+				<Detailed>26.0</Detailed>
+			</jira>
+		</key>
+		<key type="RMM">
+			<jira value="1078">
+				<Precentage>0.2</Precentage>
+				<High_Level>7.0</High_Level>
+				<Detailed>5.2</Detailed>
+			</jira>
+		</key>
+		<key type="Qual">
+			<jira value="1078">
+				<Precentage>0.1</Precentage>
+				<High_Level>3.5</High_Level>
+				<Detailed>2.6</Detailed>
+			</jira>
+		</key>
+		<key type="DM Qual">
+			<jira value="1078">
+				<Precentage>0.1</Precentage>
+				<High_Level>3.5</High_Level>
+				<Detailed>2.6</Detailed>
+			</jira>
+		</key>
+		<key type="DM Prod">
+			<jira value="1078">
+				<Precentage>0.1</Precentage>
+				<High_Level>3.5</High_Level>
+				<Detailed>2.6</Detailed>
+			</jira>
+		</key>
+		<key type="PP">
+			<jira value="1078">
+				<Precentage>0.1</Precentage>
+				<High_Level>3.5</High_Level>
+				<Detailed>2.6</Detailed>
+			</jira>
+		</key>
+		<key type="Prod">
+			<jira value="1078">
+				<Precentage>0.1</Precentage>
+				<High_Level>3.5</High_Level>
+				<Detailed>2.6</Detailed>
+			</jira>
+		</key>
+	</Project_Factors>
+	<Pre_Development>
+		<key type="Requirements Review and Feedback">
+			<jira value="1078">
+				<High_Level_Estimate>3.0</High_Level_Estimate>
+				<Detail_Level_Estimate>3.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Create High Level Estimates">
+			<jira value="1078">
+				<High_Level_Estimate>0.7000000000000001</High_Level_Estimate>
+				<Detail_Level_Estimate>0.52</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Analysis">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Pre_Development>
+	<Development>
+		<key type="Coding">
+			<jira value="1078">
+				<High_Level_Estimate>35.0</High_Level_Estimate>
+				<Detail_Level_Estimate>26.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Scope Classification">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate>0.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Complexity Classification">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Risk">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Vendor Change">
+			<jira value="1078">
+				<High_Level_Estimate>10.0</High_Level_Estimate>
+				<Detail_Level_Estimate>3.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Irac Framework">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate>0.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Etrieve">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate>0.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Required Server Change">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Required Firewall Change">
+			<jira value="1078">
+				<High_Level_Estimate>10.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Required Interwoven Change">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Required LDAP Change">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Required Database Change">
+			<jira value="1078">
+				<High_Level_Estimate>0.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Herc Change to Vendor">
+			<jira value="1078">
+				<High_Level_Estimate>10.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Type of Herc change">
+			<jira value="1078">
+				<High_Level_Estimate>2.0</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Architecture/Design">
+			<jira value="1078">
+				<High_Level_Estimate>7.0</High_Level_Estimate>
+				<Detail_Level_Estimate>5.2</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Test Plan and Test Case Development and Peer Review">
+			<jira value="1078">
+				<High_Level_Estimate>2.0</High_Level_Estimate>
+				<Detail_Level_Estimate>0.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Developer Testing">
+			<jira value="1078">
+				<High_Level_Estimate>7.0</High_Level_Estimate>
+				<Detail_Level_Estimate>5.2</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Unit Testing">
+			<jira value="1078">
+				<High_Level_Estimate>35.0</High_Level_Estimate>
+				<Detail_Level_Estimate>26.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Code Review">
+			<jira value="1078">
+				<High_Level_Estimate>3.0</High_Level_Estimate>
+				<Detail_Level_Estimate>3.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Release Notes">
+			<jira value="1078">
+				<High_Level_Estimate>2.0</High_Level_Estimate>
+				<Detail_Level_Estimate>1.0</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Development>
+	<Deployment>
+		<key type="RMM Implementation Support">
+			<jira value="1078">
+				<High_Level_Estimate>7.0</High_Level_Estimate>
+				<Detail_Level_Estimate>5.2</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="QUAL Implementation Support">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="PP Implementation Support">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="PROD Implementation Support">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="DM Qual">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="DM Prod">
+			<jira value="1078">
+				<High_Level_Estimate>3.5</High_Level_Estimate>
+				<Detail_Level_Estimate>2.6</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Deployment>
+	<Totals>
+		<key type="Pre-Development">
+			<jira value="1078">
+				<High_Level_Estimate>10.0</High_Level_Estimate>
+				<Detail_Level_Estimate>8.2</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Development">
+			<jira value="1078">
+				<High_Level_Estimate>123.0</High_Level_Estimate>
+				<Detail_Level_Estimate>69.4</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Deployment">
+			<jira value="1078">
+				<High_Level_Estimate>24.5</High_Level_Estimate>
+				<Detail_Level_Estimate>18.2</Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Totals>
+	<High_Level_Estimates>
+		<key type="Estimator">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Effort Estimate">
+			<jira value="1078">
+				<High_Level_Estimate>157.5</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Cost Estimate">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Assumptions">
+			<jira value="1078">
+				<High_Level_Estimate>None</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Date Completed">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</High_Level_Estimates>
+	<Detailed_Estimates>
+		<key type="Estimator">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Effort Estimate">
+			<jira value="1078">
+				<High_Level_Estimate>95.80000000000001</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Cost Estimate">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Assumptions">
+			<jira value="1078">
+				<High_Level_Estimate>None</High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Date Completed">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Detailed_Estimates>
+	<Architect>
+		<key type="Architect">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Project Risk">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Rollback Estimate">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Date Completed">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Level_Estimate></Detail_Level_Estimate>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Architect>
+	<Deliverables>
+		<key type="AT">
+			<jira value="1078">
+				<High_Level_Estimate>4.0</High_Level_Estimate>
+				<Detail_Estimate>5.0</Detail_Estimate>
+				<People>pawel</People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="M PageHelper, PageInfo">
+			<jira value="1078">
+				<High_Level_Estimate>2.0</High_Level_Estimate>
+				<Detail_Estimate>2.0</Detail_Estimate>
+				<People>ravi/pawel</People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="M Handlers">
+			<jira value="1078">
+				<High_Level_Estimate>3.0</High_Level_Estimate>
+				<Detail_Estimate>3.0</Detail_Estimate>
+				<People>Ravi</People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Member Reports">
+			<jira value="1078">
+				<High_Level_Estimate>4.0</High_Level_Estimate>
+				<Detail_Estimate>4.0</Detail_Estimate>
+				<People>ravi/jv</People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Scheduled Jobs">
+			<jira value="1078">
+				<High_Level_Estimate>2.0</High_Level_Estimate>
+				<Detail_Estimate>2.0</Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="Mapping">
+			<jira value="1078">
+				<High_Level_Estimate>20.0</High_Level_Estimate>
+				<Detail_Estimate>10.0</Detail_Estimate>
+				<People></People>
+				<Comments>see comments</Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+				<High_Level_Estimate></High_Level_Estimate>
+				<Detail_Estimate></Detail_Estimate>
+				<People></People>
+				<Comments></Comments>
+			</jira>
+		</key>
+	</Deliverables>
+	<Comments>
+		<key type="Firewall: need access to the GPS Reports Server from Dev, Qual, PP, Prod and locally">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Does the GPS Server need to use SSL?">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="How well does the GPS Reports Server scale?">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="How reliable is the GPS reports server?">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="What is the plan in case of GPS Reports Server failure?">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Do we need a license for Commercial use of Google Maps?">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Check the performance of the GPS Server">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Unit Testing; most would be PageHelper and Handlers.">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Developer testing required for the new reports">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="Would need Unit Testing for any URL param encoding">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+		<key type="">
+			<jira value="1078">
+			</jira>
+		</key>
+	</Comments>
+</jira>

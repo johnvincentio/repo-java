@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<project name="hsqldb" default="create" basedir=".">
+
+	<property name="database.file" value="/tmp/jv.db"/>
+	<property name="db.driver" value="org.hsqldb.jdbcDriver"/>
+	<property name="db.url" value="jdbc:hsqldb:file:${database.file};shutdown=true"/>
+	<property name="db.user" value="sa"/>
+	<property name="db.pw" value=""/>
+	<property name="app.output" value="/tmp/jv.txt"/>
+
+	<path id="hsqldb.classpath">
+	    <pathelement path="resources/lib/hsqldb.jar"/>
+	</path>
+
+	<target name="create">
+		<property name="my.sql.script" value="resources/sql/create.sql"/>
+		<echo message="Run SQL script ${my.sql.script}"/>
+		<antcall target="run-sql">
+			<param name="app.sql.script" value="${my.sql.script}"/>
+		</antcall>
+	</target>
+
+	<target name="drop">
+		<property name="my.sql.script" value="resources/sql/drop.sql"/>
+		<echo message="Run SQL script ${my.sql.script}"/>
+		<antcall target="run-sql">
+			<param name="app.sql.script" value="${my.sql.script}"/>
+		</antcall>
+	</target>
+
+	<target name="select">
+		<property name="my.sql.script" value="resources/sql/select.sql"/>
+		<echo message="Run SQL script ${my.sql.script}"/>
+		<antcall target="run-sql">
+			<param name="app.sql.script" value="${my.sql.script}"/>
+		</antcall>
+	</target>
+
+	<target name="insert">
+		<property name="my.sql.script" value="resources/sql/insert.sql"/>
+		<echo message="Run SQL script ${my.sql.script}"/>
+		<antcall target="run-sql">
+			<param name="app.sql.script" value="${my.sql.script}"/>
+		</antcall>
+	</target>
+
+    <target name="run-sql">
+        <echo message="Run Sql script ${app.sql.script} using ${db.driver} ${db.url}"/>
+        <sql driver="${db.driver}"
+             url="${db.url}"
+             userid="${db.user}"
+             password="${db.pw}"
+             onerror="continue" 
+        	 output="${app.output}" 
+             src="${app.sql.script}">  
+            <classpath refid="hsqldb.classpath"/>
+        </sql> 
+    </target>
+</project>

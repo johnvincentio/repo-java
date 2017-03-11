@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<extract_01 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<account>
+		<name>ABC INC</name>
+		<account_number>1434171</account_number>
+		<equipment>
+			<category>123</category>
+			<classification>3421</classification>
+		</equipment>
+		<equipment>
+			<category>456</category>
+			<classification>6521</classification>
+		</equipment>
+		<equipment>
+			<category>789</category>
+			<classification>5678</classification>
+		</equipment>		
+	</account>
+
+	<account>
+		<name>CDE INC</name>
+		<account_number>45769</account_number>
+		<equipment>
+			<category>543</category>
+			<classification>6521</classification>
+		</equipment>
+		<equipment>
+			<category>576</category>
+			<classification>6531</classification>
+		</equipment>		
+	</account>
+
+</extract_01>

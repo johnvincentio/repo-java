@@ -1,0 +1,184 @@
+Alarm Clock by Nu Systems
+Author: Edward Wegner (alias Nu Systems)
+Sounds By: Edward Wegner using Audacity
+Images By: Edward Wegner
+
+-----------------------------------------------
+Pre Agreement
+
+1. By viewing my email address you SHALL NOT 
+   ABUSE it in any way. Should you SPAM me or
+   sign me up for SPAM or unwanted emails, you
+   will have to deal with the consequences of
+   your actions. So I'm going to say it right
+   now: "I DO NOT GIVE ANYONE PERMISSION TO
+   SEND ME EMAILS UNLESS OTHERWISE STATED FOR
+   THE SPECIFIC PURPOSE STATED AND NO OTHER
+   PURPOSE." If you include a bug report plus
+   SPAM, that will also be a violation of this
+   agreement.
+-----------------------------------------------
+Terms and Conditions
+
+1. This software is FREEWARE and it is provided
+   AS IS. As it is you will have to abide by all
+   the terms listed in this agreement. This
+   software may be distributed freely without
+   any changes other than those listed below (see
+   REDISTRIBUTION WITH CHANGES). Distribution of
+   this software must remain free, not bundled
+   with, but not limited to, adware, spyware, or
+   any other software of the like. Should you
+   redistribute this software with, but not
+   limited to, adware, and spyware, the
+   distributor shall have to stop the distribution 
+   of their software with my software bundled with
+   it and pay for any costs indured due to their
+   action(s).   
+
+2. DISCLAIMER: This alarm clock may not be used
+   for important applications such as getting up
+   at the last minute to get to work on time.
+   You should use a secondary alarm clock should
+   this program fail or use this alarm clock as a
+   secondary alarm clock. Before depending on
+   this alarm clock you should either test it out
+   on the weekend when you sleep in or when ever
+   you can sleep in with out consequence. Should
+   you fail to turn up the volume on your
+   speakers and/or your sound card, you will
+   acknowledge that you were at fault and not the
+   program. I do guarantee that this software
+   is/was not bundled with any software when I
+   distributed the software. Should you download
+   my software as redistributed and it comes
+   bundled with unwanted software, report it to
+   my email at a220169@hotmail.com.
+   
+3. REDISTRIBUTION WITH CHANGES is allowed
+   unless the changes made to the software
+   cause undesired or unwanted operation to the
+   recipient of the altered software. This
+   includes, but is not limited to, DATA MINING,
+   ADWARE, SPYWARE, AND TROJANS. If you break
+   this term of the agreement you will pay for
+   any damages that follow due to your actions.
+   To redistribute this software you MUST keep
+   this "terms of use" agreement with the
+   software. The redistributed software must
+   also be freeware and must remain free after
+   redistribution. You must not REMOVE my name
+   and/or my alias from any part or all parts of
+   the software. In addition to the former, you
+   must also add your name with the following
+   tags to the top of this document:
+   "Redistributed By: yourname or company" and
+   "Software Altered By: yourname or company".
+   If you remove my tones you can ONLY remove
+   my name from the "Sounds By: " tag and
+   replace it with the respectful owner(s) of
+   the sound file(s) you are using. The sounds
+   you use must be of legal use: either purchased,
+   used with permission, and/or made by the
+   programmer and/or team the programmer is part
+   of. Any changes that remove the display of
+   this agreement including, but not limited to,
+   assigning true to the agree variable is not
+   permitted. Changing the sole function of
+   this program is also not permitted. The sole
+   function of this program is the original
+   function of the program. The original source
+   files, images, audio, and text documents 
+   including this agreement must also be put
+   into your JAR file which this software must
+   be distributed and redistributed as.
+   
+4. REDISTRIBUTING AS BUNDLED SOFTWARE: you may
+   only bundle this software with legitamite,
+   ethical software only. This term may
+   override any of the terms listed in this
+   agreement or it may supplement those terms.
+   THIS SOFTWARE MAY NOT BE BUNDLED WITH ADWARE,
+   SPYWARE, TROJANS, DATA MINERS OR ANY SOFTWARE
+   OF THE LIKE, and ADWARE, SPYWARE, TROJANS,
+   DATA MINERS, OR ANY SOFTWARE OF THE LIKE MAY
+   NOT BE BUNDLED WITH THIS SOFTWARE. When
+   bundling this software:
+   
+   A. You must NOTIFY AND ALLOW the recipient
+      to CHOOSE to install the bundled software,
+      where the bundled software cannot violate
+      the terms and conditions of this agreement,
+      or
+      
+   B. You must NOTIFY AND ALLOW the recipient of
+      your software to CHOOSE to install this
+      software, where this software cannot be
+      bundled with other software if the terms and
+      conditions of this agreement are violated.
+   
+5. DEFINITIONS:
+   A. By ADWARE, SPYWARE, TROJANS, DATA
+   MINERS OR ANY SOFTWARE OF THE LIKE, it is meant
+   that any software that is undesired and/or
+   unwanted by the recipient, causes undesired
+   and/or unwanted operation of the recipients
+   computer, workstation, server, etc., any
+   software that is installed on the recipients
+   computer without the prior knowledge and/or
+   consent of the recipient, collection and
+   transfer of data on or from the recipients
+   computer, workstation, server, etc. to
+   another computer, workstation, server, etc.,
+   the collecting of data to serve ads on the
+   recipients computer, workstation, server, etc.,
+   and/or any software that can be used as a
+   gateway for any ADWARE, SPYWARE, TROJANS, DATA
+   MINERS OR ANY SOFTWARE OF THE LIKE on the
+   recipients computer, workstation, server, etc.
+   
+   B. The transfer of data includes, but is not
+   limited to, the transfer of personal
+   information, information used to track a
+   persons internet and browsing usage,
+   information that can track a computer,
+   workstation, server, etc. remotely, and
+   information that can identify a computer,
+   workstation, server, etc. on an intranet or
+   the internet.
+   
+6. Any subsequent terms and conditions that seem to
+   be or are in conflict with these terms and
+   conditions shall be disregarded and these terms
+   and conditions shall be taken as the only terms
+   and conditions pertaining to the conflict. If
+   any terms and conditions strengthen these terms
+   and conditions, the term and condition in both
+   agreements shall be acknowledged.
+   
+7. The act of bundling this software means that
+   you have agreed to these terms and conditions
+   even if you haven't read these terms and
+   conditions. This also applies to redistributing,
+   and modifying the any or all parts of the software
+   and/or source code and any or all documents that
+   are part of this software.
+
+8. Any added terms and conditions may not override,
+   be in conflict, or veto any terms and conditions
+   of this agreement. Should there be any of the
+   above listed conditions this agreement shall
+   have precedence over those term(s) and
+   condition(s). I shall reserve the right to
+   veto any term(s) and condition(s) that appear
+   to veto any terms(s) and condition(s) of this
+   agreement including my right to veto.
+
+9. Emails will be welcomed for bug reports, and
+   software abuse claims. No other reasons. If so
+   it will be in violation of the Pre Agreement
+   you have already agreed to.
+
+   By checking agree below, you agree to abide
+   by these terms and conditions listed in this
+   agreement.

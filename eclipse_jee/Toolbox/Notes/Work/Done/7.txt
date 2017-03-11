@@ -1,0 +1,2160 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.textfilter;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import com.idc.swing.JVMessagesArea;
+import com.idc.swing.progress.JVProgressBar;
+import com.idc.trace.LogHelper;
+import com.idc.utils.JVString;
+
+public class AppInput extends JPanel implements ActionListener, DropTargetListener {
+	private static final long serialVersionUID = 1;
+
+	private JComboBox m_comboDirs;
+
+	private JVMessagesArea m_messagesArea;	
+
+	private JButton m_btnClearText;
+	private JButton m_btnApp;
+	private JLabel m_txtStatus;
+	private JVProgressBar m_progress;
+
+	private TextFilterGUI m_app;
+	public AppInput(TextFilterGUI app) {m_app = app;}
+
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+
+	public Container makeContentPane() {
+		JPanel paneA = new JPanel();
+		m_comboDirs = new JComboBox();
+		for (int num = 1; num < 20; num++) m_comboDirs.addItem(num);
+		m_comboDirs.addActionListener(this);
+
+		JPanel paneB = new JPanel();
+		paneB.add (new JLabel("Configuration:"));
+		paneB.add(m_comboDirs);
+
+		JPanel topPane = new JPanel();
+		topPane.setLayout(new BorderLayout());
+		topPane.add(paneA, BorderLayout.NORTH);
+		topPane.add(paneB, BorderLayout.SOUTH);
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		midPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		m_messagesArea = new JVMessagesArea();
+		m_messagesArea.makeContentPane(40, 80);
+		m_messagesArea.getTextArea().setEditable(true);
+		m_messagesArea.getTextArea().setDragEnabled(true);
+		midPane.add(new JScrollPane(m_messagesArea.getTextArea()),BorderLayout.CENTER);
+
+		JPanel lowPane = new JPanel();
+		m_btnClearText = new JButton("Clear Text");
+		m_btnClearText.addActionListener(this);
+		lowPane.add(m_btnClearText);
+		m_btnApp = new JButton("Execute");
+		m_btnApp.setDefaultCapable(true);
+		m_btnApp.addActionListener(this);
+		lowPane.add(m_btnApp);
+
+		m_txtStatus = new JLabel();
+		m_progress = new JVProgressBar();
+		lowPane.add (m_txtStatus);
+		lowPane.add(m_progress);
+
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);
+		return pane;
+	}
+
+	public JVMessagesArea getMessagesArea() {return m_messagesArea;}
+	public JVProgressBar getProgressBar() {return m_progress;}
+	public Integer getSelectedItem() {return (Integer) m_comboDirs.getSelectedItem();}
+
+	public void setButtonText (boolean bBtn) {
+		final String msg;
+		if (bBtn) msg = "Execute";
+		else msg = "Stop";
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnApp.setText(msg);
+				}
+			}
+		);
+	}
+	public void setStatusMessage (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_txtStatus.setText(msg);
+					validate();
+				}
+			}
+		);
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JButton) {
+			if (source == m_btnApp) {
+				JButton jb = (JButton) e.getSource();
+				String strBtn = jb.getText();
+				if (strBtn.equals("Execute")) {
+					m_app.startThread();
+					setButtonText(false);
+				}
+				else if (strBtn.equals("Stop")) {
+					m_app.stopThread();
+					setButtonText(true);
+				}							
+			}
+			else if (source == m_btnClearText)
+				m_messagesArea.clear();
+		}
+		else
+			LogHelper.info("else type");
+	}
+
+	public synchronized void drop(DropTargetDropEvent e) {
+		LogHelper.info(">>> drop");
+		try {
+			Transferable tr = e.getTransferable();
+			if (tr.isDataFlavorSupported (DataFlavor.javaFileListFlavor)) {
+				e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+				java.util.List fileList = (java.util.List)
+				tr.getTransferData(DataFlavor.javaFileListFlavor);
+				Iterator iterator = fileList.iterator();
+				while (iterator.hasNext()) {
+					File file = (File)iterator.next();
+					readFile (file.getAbsolutePath());
+					m_messagesArea.reposition();
+				}
+				e.getDropTargetContext().dropComplete(true);
+			} else {
+				System.err.println ("Rejected");
+				e.rejectDrop();
+			}
+		}
+		catch (IOException io) {
+			io.printStackTrace();
+			e.rejectDrop();
+		}
+		catch (UnsupportedFlavorException ufe) {
+			ufe.printStackTrace();
+			e.rejectDrop();
+		}
+		LogHelper.info ("<<< drop");
+	}
+	public void dragEnter(DropTargetDragEvent e) {
+//		LogHelper.info("--- Abc:dragEnter");
+	}
+	public void dragExit(DropTargetEvent e) {
+//		LogHelper.info("--- Abc:dragExit");
+	}
+	public void dragOver(DropTargetDragEvent e) {
+//		LogHelper.info("--- Abc:dragOver");
+	}
+	public void dropActionChanged(DropTargetDragEvent e) {
+//		LogHelper.info("--- Abc:dropActionChanged");
+	}
+	private void readFile(final String filename) {
+//		LogHelper.info(">>> readFile");
+		BufferedReader buf = null;
+		String line;
+		try {
+			buf = new BufferedReader(new FileReader(filename));
+			while ((line = buf.readLine()) != null) {
+				JVString jvstr = new JVString(line);
+				jvstr.replace("\t","	");
+				m_messagesArea.add (jvstr.getString());
+			}
+			m_messagesArea.reposition();
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		finally {
+			try {
+				if (buf != null) buf.close();
+			}
+			catch (IOException exception2) {
+				exception2.printStackTrace();
+			}
+		}
+//		LogHelper.info("<<< readFile");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.textfilter;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import com.idc.swing.JVMessagesArea;
+
+/**
+ * @author John Vincent
+ */
+
+public class AppOutput extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private JVMessagesArea m_messagesArea;
+	private JButton m_btnClearText;
+
+	public AppOutput() {}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_messagesArea = new JVMessagesArea();
+		m_messagesArea.makeContentPane(40, 80);		
+		m_messagesArea.getTextArea().setLineWrap(false);
+		m_messagesArea.getTextArea().setEditable(false);
+		m_messagesArea.getTextArea().setBorder(BorderFactory.createCompoundBorder (
+				BorderFactory.createEmptyBorder(5,5,5,5),m_messagesArea.getTextArea().getBorder()));
+
+		JScrollPane scroll = new JScrollPane (m_messagesArea.getTextArea(),
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll, BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder (
+				BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));//t,l,b,r
+
+		JPanel lowPane = new JPanel();
+		m_btnClearText = new JButton("Clear Text");
+		m_btnClearText.addActionListener(this);
+		lowPane.add(m_btnClearText);
+
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);
+		return pane;
+	}
+	public JVMessagesArea getMessagesArea() {return m_messagesArea;}
+
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JButton) {
+			if (source == m_btnClearText)
+				m_messagesArea.clear();
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.textfilter;
+
+import com.idc.trace.LogHelper;
+
+public class AppThread extends Thread {
+	private TextFilterGUI m_app;
+	private boolean m_bPleaseSuspendThisThread = true;
+	private boolean m_bStop = false;
+	
+	public AppThread (TextFilterGUI app) {
+		LogHelper.info(">>> AppThread::constructor");
+		m_app = app;
+		m_bPleaseSuspendThisThread = true;
+		LogHelper.info("<<< AppThread::constructor");		
+	}
+	public void setSuspend() {m_bPleaseSuspendThisThread = true;}
+	public boolean getStopStatus() {return m_bStop;}
+	private synchronized void setResume() {
+		m_bPleaseSuspendThisThread = false;
+		notify();
+	}
+	public void setStart () {
+		m_bStop = false;
+		setResume();
+	}
+	public void setStop() {
+		m_bStop = true;
+	}
+	public void run() {
+		LogHelper.info(">>> AppThread::run");
+		try {
+			synchronized (this) {
+				while (m_bPleaseSuspendThisThread) {
+					LogHelper.info("suspending thread");
+					wait();
+				}
+			}
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}			
+		m_app.doTextFilter();
+		m_app.getAppInput().setButtonText(true);
+		LogHelper.info("<<< AppThread::run");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.textfilter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.idc.trace.LogHelper;
+
+public class TextFilter {
+	private TextFilterGUI m_app;
+	public TextFilter (TextFilterGUI app) {m_app = app;}
+	public boolean isExecutionStopped() {return m_app.getAppThread().getStopStatus();}
+
+	private void handleProgressIndicator() {m_app.getAppInput().getProgressBar().setProgressBar();}
+	private void addMessage () {m_app.getAppOutput().getMessagesArea().add();}
+	private void addMessage (String msg) {m_app.getAppOutput().getMessagesArea().add(msg);}
+
+	public void doTextFilter (Integer scenario, String text) {
+		handleProgressIndicator();
+
+		if (isExecutionStopped()) return;
+		handleProgressIndicator();
+
+		if (isExecutionStopped()) return;
+		handleProgressIndicator();
+		addMessage("Filtering text using "+scenario);
+
+		if (scenario.intValue() == 1)
+			doFilter1 (text);
+		else if (scenario.intValue() == 2)
+			doFilter2 (text);
+		else if (scenario.intValue() == 3)
+			doFilter3 (text);
+		else if (scenario.intValue() == 4)
+			doFilter4 (text);
+		else if (scenario.intValue() == 5)
+			doFilter5 (text);
+		else if (scenario.intValue() == 6)
+			doFilter6 (text);
+
+		handleProgressIndicator();
+		addMessage();
+		handleProgressIndicator();
+		LogHelper.info("exiting...");
+	}
+
+	private void doFilter1 (String text) {
+		List<String[]> list = getList (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String[] sa = (String[]) iter.next();
+			addMessage (sa[1]+" "+sa[3]);
+		}
+	}
+	private void doFilter2 (String text) {
+		List<String[]> list = getList (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String[] sa = (String[]) iter.next();
+			addMessage ("select companyid, accountid, approved, active, accounttype, narpaccountid "+
+					"from hercdb.companyaccounts "+
+					" where account='"+sa[3]+"' and countrycode = 1;");
+		}
+	}
+	private void doFilter3 (String text) {
+		List<String[]> list = getList (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String[] sa = (String[]) iter.next();
+			addMessage ("select companyid, accountid, approved, active, account, accounttype, narpaccountid "+
+					"from hercdb.companyaccounts where account = '"+sa[3]+"' and narpaccountid = "+
+					"(select accountid from hercdb.companyaccounts where account='"+sa[1]+"' and accounttype = 2 and countrycode = 1);");
+		}
+	}
+	
+	private void doFilter4 (String text) {
+		List<String> list = getList2 (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String sa = (String) iter.next();
+			addMessage (sa);
+		}
+	}
+	private void doFilter5 (String text) {
+		List<String[]> list = getList3 (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String[] sa = (String[]) iter.next();
+			addMessage ("select companyid, accountid, approved, active, accounttype, narpaccountid "+
+					"from hercdb.companyaccounts "+
+					" where account='"+sa[0]+"' and countrycode = 1;");
+			addMessage ("select companyid, accountid, approved, active, accounttype, narpaccountid "+
+					"from hercdb.companyaccounts "+
+					" where accountid="+sa[1]+" and countrycode = 1;");
+		}
+	}
+	private void doFilter6 (String text) {
+		List<String[]> list = getList4 (text);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			String[] sa = (String[]) iter.next();
+			addMessage ("select memberid, accountid, approved, approverid "+
+					"from hercdb.memberaccounts "+
+					" where memberid = "+sa[2]+" and accountid = "+sa[1]+";");
+		}
+	}
+
+
+	private List<String[]> getList (String text) {
+		List<String[]> list = new ArrayList<String[]>();
+		String[] lines = text.split("\n");
+		int count1 = lines.length;
+		for (int num1=0; num1<count1; num1++) {
+			String s1 = lines[num1].trim();
+			if (s1.length() < 1) continue;
+			int p1 = s1.indexOf("ADD");
+			if (p1 < 0) continue;
+			System.out.println("s1 :"+s1+":");
+			int pe = s1.length();
+			String s2 = s1.substring(p1+5);
+			System.out.println("pe "+pe);
+			System.out.println("s2 :"+s2+":");
+			String s3 = s2.replace('\'', ' ').trim();
+			String s4[] = s3.split(" ");
+			list.add (s4);
+		}
+		return list;
+	}
+
+	/*
+	No narp admins were found for Narp Local Account 2393229 Account id 1230034300103503865 Country 2 Company id 300242400073868341 Narp id 300242500073868341'							   
+	*/
+	private List<String> getList2 (String text) {
+		List<String> list = new ArrayList<String>();
+		String[] lines = text.split("\n");
+		int count1 = lines.length;
+		for (int num1=0; num1<count1; num1++) {
+			String s1 = lines[num1].trim();
+			if (s1.length() < 1) continue;
+			int p1 = s1.indexOf("No narp admins were found");
+			if (p1 < 0) continue;
+			System.out.println("s1 :"+s1+":");
+			int p2 = s1.indexOf("Narp id");
+			String s2 = s1.substring(p2+7);
+			System.out.println("s2 :"+s2+":");
+			String s3 = s2.replace('\'', ' ').trim();
+			if (! list.contains(s3)) list.add (s3);
+		}
+		return list;
+	}
+
+	/*
+	Add Company Account :2846926: accountid 1230000100104878845'							   
+	*/
+	private List<String[]> getList3 (String text) {
+		List<String[]> list = new ArrayList<String[]>();
+		String[] lines = text.split("\n");
+		int count1 = lines.length;
+		for (int num1=0; num1<count1; num1++) {
+			String s1 = lines[num1].replace(':', ' ').trim();
+			if (s1.length() < 1) continue;
+			int p2 = s1.indexOf("Add Company Account ");
+			if (p2 < 0) continue;
+			System.out.println("s1 :"+s1+":");
+			int p3 = s1.indexOf("accountid");
+			String s2 = s1.substring(p2+"Add Company Account ".length(), p3 - 1).trim();
+			System.out.println("s2 :"+s2+":");
+			String s3 = s1.substring(p3+9).replace('\'', ' ').trim();
+			System.out.println("s3 :"+s3+":");
+			String[] sa = {s2, s3};
+			list.add (sa);
+		}
+		return list;
+	}
+
+	/*
+	For Company Account 2846926: accountid 1230000100104878845 Add member account for memberid 300000100080871965'					   
+	 */
+	private List<String[]> getList4 (String text) {
+		List<String[]> list = new ArrayList<String[]>();
+		String[] lines = text.split("\n");
+		int count1 = lines.length;
+		for (int num1=0; num1<count1; num1++) {
+			String s1 = lines[num1].replace(':', ' ').replace('\'', ' ').trim();
+			if (s1.length() < 1) continue;
+			int p2 = s1.indexOf("For Company Account ");
+			if (p2 < 0) continue;
+			System.out.println("s1 :"+s1+":");
+			int p3 = s1.indexOf("accountid");
+			int p4 = s1.indexOf("Add member account for memberid");
+			String s2 = s1.substring(p2+"For Company Account ".length(), p3 - 1).trim();	// account
+			System.out.println("s2 :"+s2+":");
+			String s3 = s1.substring(p3+9, p4 - 1).replace('\'', ' ').trim();						// accountid
+			System.out.println("s3 :"+s3+":");
+			String s4 = s1.substring(p4+"Add member account for memberid".length());		// memberid
+			System.out.println("s4 :"+s4+":");
+			String[] sa = {s2, s3, s4};
+			list.add (sa);
+		}
+		return list;
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.textfilter;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import com.idc.trace.LogHelper;
+
+public class TextFilterGUI extends JFrame {
+	private static final long serialVersionUID = 1;
+
+	private JTabbedPane m_tabbedPane;
+	private AppInput m_appInput;
+	private AppOutput m_appOutput;
+	private AppThread m_appThread = null;
+	public AppInput getAppInput() {return m_appInput;}
+	public AppOutput getAppOutput() {return m_appOutput;}
+	public AppThread getAppThread() {return m_appThread;}
+
+	public TextFilterGUI (String msg, String[] args) {
+		super(msg);
+		LogHelper.info(">>> TextFilterGUI");
+		setContentPane(makeContentPane());
+		this.addWindowListener (new WindowAdapter() {
+			public void windowClosing (WindowEvent e) {
+				doStopClient();
+			}
+		});
+		setSize(700,900);
+		pack();
+		setVisible(true);
+		LogHelper.info("<<< DBToolGui");
+	}
+
+	public static void main(String[] args) {
+		new TextFilterGUI("TextFilterGUI", args);
+	}
+	public void setSize (int width, int height) {
+		super.setSize (width, height);
+		validate();
+		repaint();
+	}
+	private Container makeContentPane() {
+		m_tabbedPane = new JTabbedPane();
+		m_appInput = new AppInput(this);
+		m_appOutput = new AppOutput();
+		m_tabbedPane.addTab("Input", m_appInput.makeContentPane());
+		m_tabbedPane.addTab("Output", m_appOutput.makeContentPane());
+
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+		pane.add(m_tabbedPane,BorderLayout.CENTER);
+		return pane;
+	}
+
+	public void startThread() {
+		m_appThread = new AppThread(this);
+		m_appThread.start();
+		m_appThread.setStart();		
+	}
+	public void stopThread() {
+		m_appThread.setStop();
+	}
+	public void doStopClient() {
+		if (m_appThread != null) {
+			m_appThread.setStop();
+			try {
+				while (m_appThread.isAlive()) {
+					LogHelper.info("thread is alive");
+					Thread.sleep(10);
+					LogHelper.info("Sleeping");
+				}
+				LogHelper.info("thread is not alive");
+			}
+			catch (InterruptedException e) {
+				LogHelper.info("no sleep");
+			}
+		}
+		m_appThread = null;
+		LogHelper.info("exiting app...");
+		System.exit(0);
+	}
+
+	public void doTextFilter() {
+		LogHelper.info(">>> doTextFilter");
+		getAppInput().setStatusMessage("Executing...");
+		String text = getAppInput().getMessagesArea().getTextArea().getSelectedText();
+		if (text == null || text.length() < 1)
+			text = getAppInput().getMessagesArea().getTextArea().getText();
+//		LogHelper.info("text :"+text+":");
+		Integer scenario = getAppInput().getSelectedItem();
+		getAppInput().getProgressBar().initProgressBar();
+		getAppOutput().getMessagesArea().clear();
+		TextFilter textFilter = new TextFilter(this);
+		textFilter.doTextFilter(scenario, text);
+		if (textFilter.isExecutionStopped()) {
+			getAppOutput().getMessagesArea().add("---------------------------------------");	
+			getAppOutput().getMessagesArea().add("Execution stopped by user");
+			getAppOutput().getMessagesArea().add("---------------------------------------");
+			getAppInput().setStatusMessage("Stopped...");
+		}
+		else {		
+			getAppOutput().getMessagesArea().add("---------------------------------------");	
+			getAppOutput().getMessagesArea().add("Execution is complete");
+			getAppOutput().getMessagesArea().add("---------------------------------------");
+			getAppInput().getProgressBar().setMaxProgressBar();
+			getAppInput().setStatusMessage("Finished...");		
+		}
+		LogHelper.info("<<< doTextFilter");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+public class Card {
+	int m_nSuit;
+	int m_nCard;
+	public Card (int suit, int card) {
+		m_nSuit = suit;
+		m_nCard = card;
+	}
+	public Card (Card card) {
+		m_nSuit = card.getSuit();
+		m_nCard = card.getCard();
+	}
+	public int getSuit() {return m_nSuit;}
+	public int getCard() {return m_nCard;}
+	public String toString() {
+		return "("+getSuitName(getSuit())+" "+getCard()+")";
+	}
+	private String getSuitName(int suit) {
+		switch(suit) {
+			case 1: return "Spade";
+			case 2: return "Heart";
+			case 3: return "Diamond";
+			case 4: return "Club";
+			default:
+		}
+		return "yuk";
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+
+import com.idc.trace.LogHelper;
+
+public class Deck {
+	private List<Card> m_list = new ArrayList<Card>(); // make a deck of cards
+	public Deck() {
+		for (int i=1; i<5; i++) {
+			for (int j=1; j<14; j++)
+				m_list.add(new Card(i,j));
+		}
+	}
+	public Card takeCard() {			// take a card from the deck
+		Collections.shuffle(m_list);
+		Card myCard = new Card((Card) m_list.get(0));	// take a card
+		m_list.remove(0);						// remove card from the deck
+		LogHelper.info("Deck:get; "+myCard.toString());
+		return myCard;			// return the card
+	}
+	public boolean isEmpty() {return m_list.isEmpty();}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Hand {
+	private List<Card> m_list = new ArrayList<Card>();	// cards in a players hand
+	public void add(Card card) {m_list.add(card);}
+	public Iterator getItems() {return m_list.iterator();}
+	public int getPoints() {
+		int count = 0;
+		for (int i=0; i<m_list.size(); i++)
+			count += ((Card) m_list.get(i)).getCard();
+		return count;
+	}
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((Card) m_list.get(i)).toString());
+		return buf.toString();
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+public class Main {
+	public static void main (String[] args) {
+		(new MyServer(2)).start();
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+import com.idc.trace.LogHelper;
+
+public class MyServer extends Thread {
+	private final int m_nMaxPlayers;		// maximum number of players
+	private Players m_players;				// the players
+	private Deck m_deck;					// the deck of cards
+
+	public MyServer(final int num) {
+		m_nMaxPlayers = num;
+		m_players = new Players(this, m_nMaxPlayers);
+		m_deck = new Deck();
+	}
+	public void run() {
+		LogHelper.info("MyServer:run");
+		for (int i=0; i<m_nMaxPlayers; i++)
+			m_players.setWorkerStart(i);		// start the player threads
+		mySleep(1000);							// let the threads run until they suspend
+
+		while (true) {
+			if (m_deck.isEmpty()) break;		// no cards left = game over
+			if (! m_players.hasNextValidPlayer()) break;	// no valid next player = game over
+			m_players.setWorkerResume();		// resume the current player thread
+			if (! hasCurrentPlayerMoved()) break;	// wait for worker thread
+			m_players.rankPlayers();				// do any new ranking
+			m_players.showHands("MyServer:run; showHands()");
+		}
+		LogHelper.info("MyServer:run; stopping threads");
+		for (int i=0; i<m_nMaxPlayers; i++) {
+			m_players.setWorkerStop(i);		// set worker thread to stop
+			m_players.setWorkerResume(i);	// set worker thread to resume, and thus stop
+		}
+		mySleep(1000);		// let threads get done
+		m_players.showHands("MyServer:all done");	// show the player data
+	}
+	private boolean hasCurrentPlayerMoved() {		// allow current player to finish a turn
+		yield();
+		for (int loop=0; loop<5; loop++) {
+			if (m_players.hasCurrentPlayerMoved()) return true;
+			LogHelper.info("before yield()");
+			yield();
+		}
+		return false;
+	}
+	private void mySleep(int num) {			// take a short nap
+		try {
+			Thread.sleep(num);
+		}
+		catch (InterruptedException ie) {
+			LogHelper.error("Could not sleep");
+		}
+	}
+	public Deck getDeck() {return m_deck;}
+	public void workerMyTurn(int num) {m_players.setWorkerTurn(num);}	// used by worker threads
+}
+
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+import com.idc.trace.LogHelper;
+
+public class MyWorker extends Thread {
+	private int m_nId;			// player id
+	private MyServer m_server;	// ref to the server
+
+	private boolean m_bSuspendThread;		// true if thread should be suspended
+	private boolean m_bStopThread;			// true if thread should be stopped
+	private boolean m_bWaiting;				// true if thread is waiting
+
+	public void setSuspend() {m_bSuspendThread = true;}
+	public synchronized void setResume() {
+		m_bSuspendThread = false;
+		notify();
+	}
+	public synchronized void setStop() {m_bStopThread = true;}
+	private boolean isStopped() {return m_bStopThread;}
+	public boolean getWaiting() {return m_bWaiting;}
+
+	public MyWorker (int id, MyServer server) {
+		LogHelper.info("MyWorker(constructor); player "+id);
+		m_nId = id;
+		m_server = server;
+		m_bSuspendThread = true;		// want the thread to wait when started
+		m_bStopThread = false;
+		m_bWaiting = false;
+	}
+	public void run() {
+		LogHelper.info("MyWorker:run player "+m_nId);
+		m_bWaiting = false;			// thread is running
+		while (! isStopped()) {		// while thread has not been requested to stop
+			try {
+				synchronized (this) {
+					while (m_bSuspendThread) {	// thread has been set to suspended
+						LogHelper.info("MyWorker:run; thread waiting; player "+m_nId);
+						m_bWaiting = true;		// thread is waiting
+						wait();					// suspend the thread
+					}
+				}
+			}
+			catch (InterruptedException ex) {
+				LogHelper.error("Trouble: "+ex.getMessage());
+			}
+			m_bWaiting = false;				// thread is running
+			LogHelper.info("MyWorker:run; thread woken; player "+m_nId);
+			if (! isStopped()) {		// was thread set to stop when it was suspended?
+				LogHelper.info("MyWorker:run; workerMyTurn(); player "+m_nId);
+				m_server.workerMyTurn(m_nId);		// make this players move
+				setSuspend();						// set this thread to suspend
+			}
+		}
+		LogHelper.info("MyWorker:run; thread stopped; player "+m_nId);
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.cards;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.idc.trace.LogHelper;
+
+public class Players {
+	private MyServer m_server;			// back ref to the server
+	private List<PlayerInfo> m_players = new ArrayList<PlayerInfo>();	// list of the players
+	private final int m_nMaxPlayers;	// maximum number of players
+	private int m_nCurrentPlayer;		// current player
+	private int m_nRank = 0;			// player ranking counter
+
+	public Players (MyServer server, int num) {
+		LogHelper.info("Players(constructor); number of players "+num);
+		m_server = server;
+		m_nMaxPlayers = num;
+		for (int i=0; i<m_nMaxPlayers; i++)
+			m_players.add(new PlayerInfo(num, new MyWorker(i, m_server)));
+		m_nCurrentPlayer = -1;
+	}
+	private MyWorker getWorker(int num) {return getPlayerInfo(num).getWorker();}
+	public void setWorkerStart(int num) {getWorker(num).start();}
+	public void setWorkerResume(int num) {getWorker(num).setResume();}
+	public void setWorkerResume() {setWorkerResume(m_nCurrentPlayer);}
+	public void setWorkerStop(int num) {getWorker(num).setStop();}
+	public void setWorkerTurn(int num) {
+		getPlayerInfo(num).getHand().add(m_server.getDeck().takeCard());
+		getPlayerInfo(num).setMoved(true);		// set player moved flag
+	}
+	private PlayerInfo getPlayerInfo(int num) {return (PlayerInfo) m_players.get(num);}
+	private boolean isFinished(int points) {	// set victory condition
+		if (points > 20) return true;
+		return false;
+	}
+	public void rankPlayers() {
+		for (int i=0; i<m_nMaxPlayers; i++) {
+			PlayerInfo player = getPlayerInfo(i);
+			if (! player.isDone() && isFinished(player.getPoints())) {
+				player.setDone();
+				player.setRank(++m_nRank);	// rank the player
+			}
+		}
+	}
+	public boolean hasCurrentPlayerMoved() {
+		if (m_nCurrentPlayer < 0) return true;	// no current player
+		if (! getWorker(m_nCurrentPlayer).isAlive()) return false;	// thread died
+		if (! getWorker(m_nCurrentPlayer).getWaiting()) return false;	// not done
+		if (! getPlayerInfo(m_nCurrentPlayer).getMoved()) return false;	// moved flag not set
+		return true;
+	}
+	public boolean hasNextValidPlayer() {
+		int count = 0;	// let all players finish
+		for (int i=0; i<m_nMaxPlayers; i++) {
+			if (getPlayerInfo(i).isDone()) count++;
+		}
+
+		count = 0;
+		while (true) {		// find a valid next player
+			m_nCurrentPlayer++;		// try next player
+			count++;
+			if (count > m_nMaxPlayers) break;	// only loop once through the players
+			if (m_nCurrentPlayer >= m_nMaxPlayers) m_nCurrentPlayer = 0;	// back to the top
+			PlayerInfo playerInfo = getPlayerInfo(m_nCurrentPlayer);
+			if (! playerInfo.isDone()) {
+				playerInfo.setMoved(false);
+				return true;		// is this player finished
+			}
+		}
+		return false;		// could not find a valid next player
+	}
+	public void showHands(String msg) {
+		LogHelper.info("showHands; "+msg);
+		for (int i=0; i<m_nMaxPlayers; i++) {
+			PlayerInfo player = getPlayerInfo(i);
+			LogHelper.info("Player "+i+" Ranked "+player.getRank()+
+				" has the following hand "+player.showHand());
+		}
+		LogHelper.info("showHands complete");
+	}
+	public class PlayerInfo {
+		private int m_nPlayer;		// player number
+		private MyWorker m_worker;	// worker thread
+		private Hand m_hand;		// players hand
+		private boolean m_bDone;	//true when player has reached a victory condition
+		private int m_nRank;		// player ranking
+		private boolean m_bMoved;	// true if worker has completed a move
+		public PlayerInfo (int num, MyWorker worker) {
+			m_nPlayer = num;
+			m_worker = worker;
+			m_hand = new Hand();
+			m_bDone = false;
+			m_nRank = 0;
+			m_bMoved = false;
+		}
+		public int getPlayer() {return m_nPlayer;}
+		public MyWorker getWorker() {return m_worker;}
+		public Hand getHand() {return m_hand;}
+		public boolean isDone() {return m_bDone;}
+		public void setDone() {m_bDone = true;}
+		public String showHand() {return m_hand.toString();}
+		public int getPoints() {return m_hand.getPoints();}
+		public int getRank() {return m_nRank;}
+		public void setRank(int num) {m_nRank = num;}
+		public boolean getMoved() {return m_bMoved;}
+		public void setMoved(boolean b) {m_bMoved = b;}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.File;
+
+public class Count {
+	private int m_nTypes;
+	private long m_nTotalFilesCount = 0;
+	private long m_nTotalLinesCount = 0;
+	private long m_nFiles[];
+	private long m_nLines[];
+
+	private static final String[] m_astrTypes = { "other", "class", "jar",
+			"psf", "java", "sql", "jacl", "tld", "wsdl", "jsp", "js", "xml",
+			"xsl", "xsd", "xmi", "dtd", "html", "htm", "css", "log", "txt",
+			"ldif", "properties", "mf", "runtime", "websettings", "modulemaps",
+			"j2ee", "compatibility", "website-config", "gph", "dnx",
+			"webspheredeploy", "classpath", "project" };
+
+	public static void main(String[] args) {
+		Count count = new Count();
+		count.doCount(args[0]);
+	}
+
+	private void doCount(String arg) {
+		m_nTypes = m_astrTypes.length;
+		// System.out.println("m_nTypes "+m_nTypes);
+		m_nFiles = new long[m_nTypes];
+		m_nLines = new long[m_nTypes];
+		for (int i = 0; i < m_nTypes; i++) {
+			m_nFiles[i] = 0;
+			m_nLines[i] = 0;
+		}
+		String strDir = null;
+		// System.out.println(">>> doCount; arg :"+arg+":");
+		if (arg != null && arg.length() > 0)
+			strDir = arg;
+		else
+			strDir = System.getProperty("user.dir");
+		File tmpfile = new File(strDir);
+		if (!tmpfile.isDirectory()) {
+			System.out.println("Directory " + strDir + " does not exist");
+			System.exit(1);
+		}
+		// strDir = "C:\\work6\\wrkspc\\work\\Jar";
+		// System.out.println("Searching directories :"+strDir+":");
+		doDirectory(strDir);
+		doReport(strDir);
+		// System.out.println("Search is complete");
+	}
+
+	private void doDirectory(String strDir) {
+		File file = new File(strDir);
+		doDirectory(file);
+	}
+
+	private void doDirectory(File dir) {
+		File[] allFiles;
+		File file;
+
+		// handle files
+
+		// System.out.println(">>> doDirectory; "+dir.getPath());
+		if (!dir.isDirectory())
+			return;
+		allFiles = dir.listFiles();
+		for (int i = 0; i < allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isFile()) {
+				// System.out.println("(File) i = "+i+" file
+				// :"+file.getPath()+":");
+				doFile(file);
+			}
+		}
+
+		// handle directories
+
+		allFiles = dir.listFiles();
+		for (int i = 0; i < allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isDirectory()) {
+				// System.out.println("(Directory) i = "+i+" file
+				// :"+file.getPath()+":");
+				doDirectory(file);
+			}
+		}
+		// System.out.println("<<< doDirectory");
+	}
+
+	private void doFile(File file) {
+		// System.out.println(">>> doFile; "+file.getPath());
+		if (!file.isFile())
+			return;
+		int nType = getFileType(file);
+		// System.out.println("Type "+nType+" file "+file.getPath());
+		m_nFiles[nType]++;
+		m_nTotalFilesCount++;
+		if (nType < 1) {
+			System.out.println("Other: " + file.getPath());
+			return;
+		}
+		if (nType < 4)
+			return;
+
+		long lCntr = 0;
+		BufferedReader buf = null;
+		// String line;
+		try {
+			buf = new BufferedReader(new FileReader(file));
+			while ((buf.readLine()) != null) {
+				m_nTotalLinesCount++;
+				lCntr++;
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				if (buf != null)
+					buf.close();
+			} catch (IOException exception2) {
+				exception2.printStackTrace();
+			}
+		}
+		m_nLines[nType] += lCntr;
+		// System.out.println("<<< doFile; "+file.getPath());
+		return;
+	}
+
+	private int getFileType(File file) {
+		String strName = file.getName();
+		// System.out.println("strName :"+strName+":");
+		int num = strName.lastIndexOf(".");
+		if (num < 0) {
+			System.out.println("Unknown type; file is: "+strName);
+			return 0; // no extension
+		}
+		String strExt = strName.substring(num + 1, strName.length());
+		// System.out.println("strExt :"+strExt+":");
+		m_nTypes = m_astrTypes.length;
+		for (int i = 0; i < m_nTypes; i++) {
+			if (strExt.equalsIgnoreCase(m_astrTypes[i])) return i;
+		}
+		System.out.println("Unknown type; file is: "+strName);
+		return 0;
+	}
+
+	private void doReport(String strDir) {
+		System.out.println("Scan Directory " + strDir);
+		System.out.println("Total Number of Files " + m_nTotalFilesCount);
+		System.out.println("Total Number of Lines " + m_nTotalLinesCount);
+
+		System.out.println("File type statistics: (type, files, lines)");
+		for (int i = 0; i < m_nTypes; i++) {
+			System.out.println("(" + m_astrTypes[i] + ", " + m_nFiles[i] + ", "
+					+ m_nLines[i] + ")");
+		}
+		System.out.println("Done");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file;
+
+import java.io.*;
+
+public class JVFile {
+	private static final int DATA_BLOCK_SIZE=1024;
+
+	public static boolean copyFile (String strFromFile, String strToFile) {
+//		System.out.println("Copying file "+strFromFile+" to file "+strToFile);
+		int byteCount;
+		try {
+			FileInputStream fis = new FileInputStream (strFromFile);
+			BufferedInputStream bufIn = new BufferedInputStream (fis, DATA_BLOCK_SIZE);
+
+			FileOutputStream fos = new FileOutputStream (strToFile);
+			BufferedOutputStream bufOut = new BufferedOutputStream (fos, DATA_BLOCK_SIZE);
+
+			byte[] data = new byte[1024];
+			while ((byteCount = bufIn.read(data, 0, DATA_BLOCK_SIZE)) != -1) {
+				bufOut.write (data, 0, byteCount);
+			}
+			bufIn.close();
+			bufOut.flush();
+			bufOut.close();
+		}
+		catch (IOException ex) {
+			System.out.println("Unable to copy the file; "+ex.getMessage());
+			return false;
+		}
+		return true;
+	}
+	public static boolean writeFile (String strText, String strFile) {
+		return writeFile (strText, new File (strFile));
+	}
+	public static boolean writeFile (String strText, File file) {
+		try {
+			PrintWriter pw = new PrintWriter (new BufferedWriter (new FileWriter(file)));
+			pw.print(strText);
+			pw.flush();
+			pw.close();
+			return true;
+		}
+		catch (IOException ex) {
+			System.out.println("Unable to write the file; "+ex.getMessage());
+			return false;
+		}
+	}
+	public static void removeFile (String strFile) {removeFile(new File(strFile));}
+	public static void removeFile (File file) {
+		System.out.println("Removing file "+file.getPath());
+		if (file.isFile()) file.delete();
+	}
+	public static String getName (String strName) {
+		if (strName == null || strName.length() < 1) return "";
+		int pos = strName.indexOf('.');
+		if (pos < 0) return strName;
+		return strName.substring(0,pos);
+	}
+	public static String getExtension (String strName) {
+		if (strName == null || strName.length() < 1) return "";
+		int pos = strName.indexOf('.');
+		if (pos < 0) return "";
+		return strName.substring(pos+1);
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file.exec;
+
+public class App {
+	public static void main(String[] arg) throws Exception {
+		ExecuteCommand process = new ExecuteCommand();
+		String[] cmd1 = {"pwd"};
+		String[] cmd2 = {"ls"};
+		PrintLine out = new PrintLine();
+		process.executeCommand(cmd1, out);
+		process.executeCommand(cmd2, out);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file.exec;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class ExecuteCommand {
+	private StringBuffer m_sb;
+
+	public void executeCommand (String[] strCmd) {
+		System.out.println (strCmd);
+//		System.out.println ("OS :"+getOSName()+":");
+		m_sb = new StringBuffer();
+		try {
+			Process process = Runtime.getRuntime().exec(strCmd);
+			InputStream in = new BufferedInputStream (process.getInputStream());
+			for (;;) {
+				int c = in.read();
+				if (c == -1) break;
+				m_sb.append ((char) c);
+			}
+			in.close();
+		}
+		catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+//		System.out.println (m_sb.toString());
+	}
+	public String getOutput() {return m_sb.toString();}
+	public String getOSName() {return System.getProperty ("os.name");}
+
+	public void executeCommand (String[] strCmd, OutputLine cout) {
+		try {
+//			System.out.println("strCmd "+strCmd[0]);
+			Process process = Runtime.getRuntime().exec(strCmd);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String lineRead = null;
+			while((lineRead = reader.readLine()) != null) {
+				cout.println(lineRead);
+			}
+			reader.close();
+		}
+		catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.file.exec;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class ExecuteCommandThread extends Thread {
+	String[] m_strCmd;
+	OutputLine m_cout;
+	public ExecuteCommandThread (String[] strCmd, OutputLine cout) {
+		m_strCmd = strCmd;
+		m_cout = cout;
+	}
+	public void run() {
+		BufferedReader reader = null;
+		try {
+//			System.out.println("strCmd "+m_strCmd[0]);
+			Process process = Runtime.getRuntime().exec(m_strCmd);
+			reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String lineRead = null;
+			while((lineRead = reader.readLine()) != null) {
+				m_cout.println(lineRead);
+			}
+		}
+		catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+		finally {
+			try {
+				reader.close();
+			}
+			catch (IOException ex) {}
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file.exec;
+
+public interface OutputLine {
+	public void println(String msg);
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.file.exec;
+
+public class PrintLine implements OutputLine {
+	public void println(String msg) {
+		System.out.println(msg);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file.shred;
+
+import java.io.*;
+
+public class Shred {
+//	private static final int DATA_BLOCK_SIZE=1024;
+
+	public static void main (String[] args) {
+		Shred app = new Shred();
+		app.makeZeroes (args[0]);
+	}
+	private void makeZeroes (String strFile) {
+		try {
+			File file = new File (strFile);
+			long fileLen = file.length();
+			System.out.println("length "+fileLen);
+			RandomAccessFile raf = new RandomAccessFile (file, "rw");
+			for (long pos = 0; pos < fileLen; pos++) {
+				raf.seek(pos);
+				raf.writeByte(0);
+			}
+			raf.close();
+		}
+		catch (IOException ex) {
+			System.out.println("Unable to shred file "+strFile);
+		}
+	}
+/*
+	private void doMyDump (String s) {
+		(new CharDump (s, 30)).dump();
+		(new ByteDump (s, 30)).dump();
+		(new OctalDump (s, 30)).dump();
+		(new HexDump (s, 30)).dump();
+	}
+*/
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.file.zip;
+
+import java.io.*;
+import java.util.zip.*;
+import java.util.Enumeration;
+
+public class Zip {
+	private String m_strZipfile;
+	private static final int DATA_BLOCK_SIZE=1024;
+	public Zip(String[] args) {
+		if (args.length < 1) {
+			myMsg("Usage: Zip zipfile");
+			System.exit(0);
+		}
+		m_strZipfile = args[0];
+		myMsg("Passed Zip File :"+m_strZipfile);
+	}
+	public static void main (String[] args) {
+		Zip zip = new Zip (args);
+		zip.doList();
+		zip.doGet();
+		zip.doCreate();
+	}
+	private void doList() {
+		try {
+			ZipFile zf = new ZipFile(m_strZipfile);
+			for (Enumeration entries = zf.entries(); entries.hasMoreElements();) {
+			String zipEntryName = ((ZipEntry)entries.nextElement()).getName();
+				myMsg("Zipfile entry "+zipEntryName);
+			}
+		}
+		catch (IOException e) {
+			myMsg("Trouble "+e.getMessage());
+		}
+	}
+	private void doGet() {
+		BufferedOutputStream bufOut;
+		FileOutputStream fos;
+		ZipInputStream zipInput;
+		ZipEntry zipEntry;
+		byte[] data;
+		int byteCount;
+		try {
+			zipInput = new ZipInputStream(
+					new FileInputStream(m_strZipfile));
+			while ((zipEntry = zipInput.getNextEntry()) != null) {
+				fos = new FileOutputStream("tmp/"+zipEntry.getName());
+				myMsg("File "+zipEntry.getName());
+				bufOut = new BufferedOutputStream(fos, DATA_BLOCK_SIZE);
+				data = new byte[DATA_BLOCK_SIZE];
+			while ((byteCount = zipInput.read(data, 0, DATA_BLOCK_SIZE)) != -1) {
+					bufOut.write(data, 0, byteCount);
+				}
+				bufOut.flush();
+				bufOut.close();
+			}
+			zipInput.close();
+		}
+		catch (IOException e) {
+			myMsg("Trouble; "+e.getMessage());
+		}
+	}
+	private void doCreate() {
+		try {
+			FileOutputStream fos = new FileOutputStream("/tmp/test.zip");
+			ZipOutputStream zipOutput = new ZipOutputStream(fos);
+			zipOutput.setMethod(ZipOutputStream.DEFLATED);
+			doCreateDirectory(zipOutput, new File(System.getProperty("user.dir")));
+			zipOutput.close();
+		}
+		catch (IOException e) {
+			myMsg("Trouble; "+e.getMessage());
+		}
+	}
+	private void doCreateDirectory(ZipOutputStream zipOutput, File dir) {
+		File [] allFiles = dir.listFiles();
+		File file;
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isFile())
+				doCreateFile (zipOutput, file);
+			else
+				doCreateDirectory (zipOutput, file);
+		}
+	}
+	private void doCreateFile(ZipOutputStream zipOutput, File file) {
+		int byteCount;
+		try {
+			String dataFile = file.getPath();
+			myMsg("Adding file "+dataFile);
+			FileInputStream fis = new FileInputStream(dataFile);
+			BufferedInputStream BufIn = new BufferedInputStream(fis);
+			ZipEntry zipEntry = new ZipEntry(dataFile);
+			zipOutput.putNextEntry(zipEntry);
+			byte [] data = new byte[DATA_BLOCK_SIZE];
+			while ((byteCount = BufIn.read(data, 0, DATA_BLOCK_SIZE)) != -1) {
+				zipOutput.write(data, 0, byteCount);
+			}
+			zipOutput.flush();
+			zipOutput.closeEntry();
+			BufIn.close();
+		}
+		catch (IOException e) {
+			myMsg("Trouble; "+e.getMessage());
+		}
+	}
+	private void myMsg (String msg) {System.out.println(msg);}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.filesgui;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import com.idc.swing.date.DateTimeButton;
+import com.idc.trace.LogHelper;
+
+public class FilesSinceGui extends JFrame implements ActionListener, PropertyChangeListener {
+	private static final long serialVersionUID = 1;
+	private static final int MAX_CNTR=1000;
+	private int m_cntr = 0;
+	private static final String PROPERTIES_FILE="grepdirgui.properties";
+	private String m_strEditor;
+	private JTextArea m_messagesArea;
+	private JTextField m_dirField;
+	private JTextField m_editField;
+	private JButton m_btnApp;
+	private JButton m_btnDir;
+	private JButton m_btnEdit;
+	private JButton m_btnClear;
+	private JLabel m_txtStatus;
+	private JProgressBar m_progress;
+	private JFileChooser m_fileChooser;
+	private DateTimeButton m_startDateTimeButton;
+
+	private AppThread m_appThread;
+	private FilesSince m_filesSince;
+	private boolean m_bAppOver = false;
+
+	public FilesSinceGui (String msg) {
+		super(msg);
+		m_filesSince = new FilesSince(this);
+		m_appThread = new AppThread(this);
+		m_appThread.start();
+		makeFileChooser();
+		setContentPane(makeContentPane());
+		this.addWindowListener	(new WindowAdapter() {
+			public void windowClosing (WindowEvent e) {
+				doStopClient();
+			}
+		});
+		setSize(700,900);
+		pack();
+		setVisible(true);
+	}
+	public AppThread getAppThread() {return m_appThread;}
+	public boolean isAppOver() {return m_bAppOver;}
+	public static void main(String[] args) {
+		new FilesSinceGui("FilesSinceGui");
+	}
+	public void makeFileChooser() {
+		m_fileChooser = new JFileChooser();
+		m_fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		String strCwd = System.getProperty("user.dir");
+		m_fileChooser.setCurrentDirectory(new File(strCwd));
+	}
+	public void doStopClient() {
+		m_bAppOver = true;
+		m_appThread.setStop();
+		try {
+			while (m_appThread.isAlive()) {
+				LogHelper.info("thread is alive");
+				Thread.sleep(10);
+				LogHelper.info("Sleeping");
+			}
+			LogHelper.info("thread is not alive");
+		}
+		catch (InterruptedException e) {
+			LogHelper.info("no sleep");
+		}
+		LogHelper.info("exiting app...");
+		System.exit(0);
+	}
+
+	private Container makeContentPane() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(PROPERTIES_FILE));
+		} catch (IOException ioe) {
+			System.err.println("Exception getting properties; "+ioe.getMessage());
+		}
+		m_strEditor = prop.getProperty("GUI_EDITOR");
+		LogHelper.info("gui_editor :"+m_strEditor+":");
+
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel topPane = new JPanel();
+		JLabel label1 = new JLabel("Date/Time");
+		m_startDateTimeButton = new DateTimeButton();
+		m_startDateTimeButton.addPropertyChangeListener("date", this);
+
+		m_dirField = new JTextField(20);
+		m_dirField.addActionListener(this);
+		m_btnDir = new JButton("Directory");
+		m_btnDir.addActionListener(this);
+
+		topPane.add(label1);
+		topPane.add(m_startDateTimeButton);
+		topPane.add(m_btnDir);
+		topPane.add(m_dirField);
+
+		JPanel midPane = new JPanel();
+		m_messagesArea = new JTextArea(40,90);
+		m_messagesArea.setEditable(false);
+//		m_messagesArea.setDragEnabled(true);
+		midPane.add(new JScrollPane(m_messagesArea));
+
+		JPanel lowPane = new JPanel();
+		m_btnApp = new JButton("Search");
+		m_btnApp.addActionListener(this);
+		lowPane.add(m_btnApp);
+
+		m_txtStatus = new JLabel();
+		lowPane.add (m_txtStatus);
+		m_progress = new JProgressBar();
+		lowPane.add(m_progress);
+
+		m_editField = new JTextField(35);
+		m_editField.addActionListener(this);
+		m_btnEdit = new JButton("Edit");
+		m_btnEdit.addActionListener(this);
+		m_btnClear = new JButton("Clear");
+		m_btnClear.addActionListener(this);
+		lowPane.add(m_editField);
+		lowPane.add(m_btnEdit);
+		lowPane.add(m_btnClear);
+
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);
+		return pane;
+	}
+	public void setButtonText (boolean bBtn) {
+		final String msg;
+		if (bBtn) msg = "Search";
+		else msg = "Stop";
+		SwingUtilities.invokeLater (
+				new Runnable() {
+					public void run() {
+						m_btnApp.setText(msg);
+					}
+				}
+		);
+	}
+	public void setEditButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnEdit.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+	public void setDirButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+				new Runnable() {
+					public void run() {
+						m_btnDir.setEnabled(bBtn);
+					}
+				}
+		);
+	}
+	public void setClearButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+				new Runnable() {
+					public void run() {
+						m_btnClear.setEnabled(bBtn);
+					}
+				}
+		);
+	}
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_messagesArea.append(msg);
+					m_messagesArea.append("\n");
+					m_messagesArea.setCaretPosition(
+					m_messagesArea.getText().length());
+				}
+			}
+		);
+	}
+	public void setStatusMessage (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_txtStatus.setText(msg);
+					validate();
+				}
+			}
+		);
+	}
+	public void initProgressBar (final int iMin, final int iMax) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setMinimum(iMin);
+					m_progress.setMaximum(iMax);
+					m_progress.setValue(iMin);
+					m_progress.setStringPainted(false);	// true for %age
+					m_progress.setIndeterminate(true);		// jdk 1.4
+				}
+			}
+		);
+	}
+	public void setProgressBar (final int value) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setValue(value);
+				}
+			}
+		);
+	}
+	private void setDirField (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_dirField.setText(msg);
+					validate();
+				}
+			}
+		);
+	}
+	private void setEditField (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_editField.setText(msg);
+					validate();
+				}
+			}
+		);
+	}
+	private void searchSelected() {
+		LogHelper.info(">>> searchSelected");
+		boolean bError = false;
+		if (! isDateFieldValid()) bError = true;
+		if (! isDirFieldValid()) bError = true;
+		if (bError) {
+			setStatusMessage("Enter all the fields and press Search");
+			setProgressBar(0);
+		}
+		else {
+			m_appThread.setStart();
+			setStarted();
+		}
+		LogHelper.info("<<< searchSelected");
+	}
+	public void setStarted() {
+		setButtonText(false);
+		setEditButtonActive(false);
+		setDirButtonActive(false);
+		setClearButtonActive(false);
+	}
+	public void setStopped() {
+		setButtonText(true);
+		setEditButtonActive(true);
+		setDirButtonActive(true);
+		setClearButtonActive(true);
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JTextField) {
+			LogHelper.info("textfield");
+		}
+		else if (source instanceof JButton) {
+			LogHelper.info("jbutton");
+			if (source == m_btnApp) {
+				LogHelper.info("btnApp");
+				JButton jb = (JButton) e.getSource();
+				String strBtn = jb.getText();
+				if (strBtn.equals("Search"))
+					searchSelected();
+				else if (strBtn.equals("Stop")) {
+					m_appThread.setStop();
+					setStopped();
+				}
+			}
+			else if (source == m_btnDir) {
+				LogHelper.info("btnDir");
+				int retval = m_fileChooser.showOpenDialog(FilesSinceGui.this);
+				if (retval == JFileChooser.APPROVE_OPTION) {
+					File file = m_fileChooser.getSelectedFile();
+					setDirField (file.getPath());
+				}
+			}
+			else if (source == m_btnEdit) {
+				LogHelper.info("btnEdit");
+				String strFile = m_editField.getText().trim();
+				if (strFile.length() > 0) {
+					File file = new File(strFile);
+					if (file.isFile())
+					doEditor(strFile);
+				}
+			}
+			else if (source == m_btnClear) {
+				LogHelper.info("btnClear");
+				setEditField("");
+			}
+		}
+		else
+			LogHelper.info("else type");
+	}
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getSource() instanceof DateTimeButton) {
+			DateTimeButton db = (DateTimeButton)e.getSource();
+			if (db == m_startDateTimeButton)
+				LogHelper.info("Date time changed: ");
+			else
+				LogHelper.info("something is wrong....");
+			LogHelper.info(db.getDateTime().toString());
+		}
+	}
+	private String getDateField() {return m_startDateTimeButton.getText();}
+	private String getDirField() {return m_dirField.getText();}
+	private boolean isDirFieldValid() {
+		String strDir = getDirField();
+		if (strDir == null || strDir.length() < 1) return false;
+		File file = new File (strDir);
+		if (! file.isDirectory()) return false;
+		return true;
+	}
+	private boolean isDateFieldValid() {
+		LogHelper.info(">>> isDateFieldValid");
+		LogHelper.info("date field :"+getDateField()+":");
+		if (getDateFieldValue() < 1) return false;
+		return true;
+	}
+	private long getDateFieldValue() {
+		long lSince = 0;
+		if (getDateField() == null || getDateField().length() < 1)
+		return lSince;
+
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy kk:mm:ss");
+		try {
+			Date myDate = format.parse(getDateField());
+			lSince = myDate.getTime();
+		}
+		catch (ParseException e) {
+			LogHelper.error("Unable to parse "+getDateField());
+			return 0L;
+		}
+		return lSince;
+	}
+	public void addWord(String word) {setMessagesArea(word);}
+	public void setSize (int width, int height) {
+		super.setSize (width, height);
+		validate();
+		repaint();
+	}
+	public void doEditor(String strFile) {
+		String strCmd = "\"" + m_strEditor + "\" \"" + strFile + "\"";
+		LogHelper.info("strCmd :"+strCmd+":");
+		try {
+			Runtime.getRuntime().exec(strCmd);
+		}
+		catch (IOException e) {
+			LogHelper.info("cannot run command "+strCmd);
+		}
+	}
+	public void doFilesSince() {
+		LogHelper.info(">>> doFilesSince");
+		String strDir = getDirField();
+		String strDate = getDateField();
+
+		setStatusMessage("searching...");
+		initProgressBar(0,MAX_CNTR);
+		addWord("");
+		addWord("Searching from "+strDir);
+		addWord("	for files dated later than "+strDate);
+		addWord("");
+
+		long lNumber = getDateFieldValue();
+		m_filesSince.doFilesSince(strDir, lNumber);
+
+		if (m_filesSince.isSearchStopped()) {
+			addWord("---------------------------------------");
+			addWord("Search stopped by user");
+			addWord("---------------------------------------");
+			setStatusMessage("Stopped...");
+		}
+		else {
+			addWord("---------------------------------------");
+			addWord("Search is complete");
+			addWord("---------------------------------------");
+			setProgressBar(MAX_CNTR);
+			setStatusMessage("Finished...");
+		}
+		LogHelper.info("<<< doFilesSince");
+	}
+	public void handleProgressIndicator() {
+		m_cntr++;
+		if (m_cntr > MAX_CNTR) m_cntr = 1;
+		setProgressBar(m_cntr);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.filesgui;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import com.idc.trace.LogHelper;
+
+public class FilesSince {
+	private PrintWriter m_out;
+	private FilesSinceGui m_app;
+	public FilesSince (FilesSinceGui app) {m_app = app;}
+//	private void handleProgressIndicator() {m_app.handleProgressIndicator();}
+	private void addMessage (String msg) {m_app.setMessagesArea(msg);}
+	public boolean isSearchStopped() {
+		return m_app.getAppThread().getStopStatus();
+	}
+	public void doFilesSince (String strDir, long lSince) {
+		LogHelper.info("Dir :"+strDir+" since "+lSince);
+		makeFile();
+		doDirectory (new File(strDir), lSince);
+		closeFile();
+	}
+	private void makeFile() {
+		try {
+			m_out = new PrintWriter (new BufferedWriter(
+			new FileWriter("c:\\tmp\\since.txt")));
+		}
+		catch (IOException ex) {
+			LogHelper.info("Unable to create output file: "+ex.getMessage());
+			System.exit(1);
+		}
+	}
+	private void closeFile() {m_out.close();}
+	private void doDirectory (final File dir, long lSince) {
+		if (isSearchStopped()) return;	// user stopped the search
+		LogHelper.info(">>> doDirectory "+dir.getPath());
+		if (! dir.isDirectory()) return;
+		if (! isDirectoryOK(dir, "/home/jv")) return;
+		if (! isDirectoryOK(dir, "/boot")) return;
+		if (! isDirectoryOK(dir, "/dev")) return;
+		if (! isDirectoryOK(dir, "/lost+found")) return;
+		if (! isDirectoryOK(dir, "/proc")) return;
+		if (! isDirectoryOK(dir, "/root/.gconfd")) return;
+		if (! isDirectoryOK(dir, "/root/.gconf")) return;
+		if (! isDirectoryOK(dir, "/root/.gnome")) return;
+		if (! isDirectoryOK(dir, "/root/.gnome2")) return;
+		if (! isDirectoryOK(dir, "/root/.mozilla")) return;
+		if (! isDirectoryOK(dir, "/root/.nautilus")) return;
+		if (! isDirectoryOK(dir, "/root/.openoffice")) return;
+		if (! isDirectoryOK(dir, "/root/.thumbnails")) return;
+		if (! isDirectoryOK(dir, "/root/evolution")) return;
+		if (! isDirectoryOK(dir, "/tmp")) return;
+		if (! isDirectoryOK(dir, "/usr/share")) return;
+		if (! isDirectoryOK(dir, "/usr/X11R6")) return;
+		if (! isDirectoryOK(dir, "/usr/include")) return;
+		if (! isDirectoryOK(dir, "/usr/bin")) return;
+		if (! isDirectoryOK(dir, "/usr/lib")) return;
+		if (! isDirectoryOK(dir, "/var")) return;
+		if (! isDirectoryOK(dir, "/opt/CodeBank")) return;
+		if (! isDirectoryOK(dir, "/opt")) return;
+		if (! isDirectoryOK(dir, "/etc/IBM")) return;
+		if (! isDirectoryOK(dir, "/home/db2inst1")) return;
+		if (! isDirectoryOK(dir, "/home/db2fenc1")) return;
+		if (! isDirectoryOK(dir, "/home/dasusr1")) return;
+		if (! isDirectoryOK(dir, "/home/downloads")) return;
+		if (! isDirectoryOK(dir, "/home/jvdownloads")) return;
+		if (! isDirectoryOK(dir, "/home/mqm")) return;
+		if (! isDirectoryOK(dir, "/home/mqbrkrs")) return;
+		if (! isDirectoryOK(dir, "/home/oracle")) return;
+		if (! isDirectoryOK(dir, "/usr/src")) return;
+		if (! isDirectoryOK(dir, "/usr/tmp")) return;
+		if (! isDirectoryOK(dir, "/lib/modules")) return;
+
+		File file;
+		File[] allFiles = dir.listFiles();
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (! file.isFile()) continue;
+			if (lSince < file.lastModified()) {
+				LogHelper.info("File "+file.getPath()+" modified "+
+				file.lastModified());
+				addMessage(file.getPath());
+			}
+		}
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isDirectory()) doDirectory(file,lSince);
+		}
+//		LogHelper.info("<<< doDirectory");
+	}
+	private boolean isDirectoryOK(final File dir, String mask) {
+		String strDir = dir.getPath();
+		int len = mask.length();
+		if (strDir.length() != len) return true;
+		if (strDir.substring(0,len).equals(mask)) return false;
+		return true;
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.filesgui;
+
+import com.idc.trace.LogHelper;
+
+public class AppThread extends Thread {
+	private FilesSinceGui m_app;
+	private boolean m_bPleaseSuspendThisThread = true;
+	private boolean m_bStop = false;
+
+	public AppThread (FilesSinceGui app) {
+		LogHelper.info(">>> AppThread::constructor");
+		m_app = app;
+		m_bPleaseSuspendThisThread = true;
+		LogHelper.info("<<< AppThread::constructor");
+	}
+	public void setSuspend() {m_bPleaseSuspendThisThread = true;}
+	public boolean getStopStatus() {return m_bStop;}
+	private synchronized void setResume() {
+		m_bPleaseSuspendThisThread = false;
+		notify();
+	}
+	public void setStart () {
+		m_bStop = false;
+		setResume();
+	}
+	public void setStop() {
+		setResume();
+		m_bStop = true;
+	}
+	public void run() {
+		LogHelper.info(">>> AppThread::run");
+		while (! m_app.isAppOver()) {
+			try {
+				synchronized (this) {
+					while (m_bPleaseSuspendThisThread) {
+						LogHelper.info("suspending thread");
+						wait();
+					}
+				}
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			m_app.doFilesSince();
+			m_app.setStopped();
+			setSuspend();
+		}
+		LogHelper.info("<<< AppThread::run");
+	}
+}

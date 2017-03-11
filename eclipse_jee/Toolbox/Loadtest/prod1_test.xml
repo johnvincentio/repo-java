@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+Please note:
+	& must be converted to &amp;
+	C:\irac7\wrkspc\Toolbox\Loadtest\prod1_test.xml
+ -->
+ 
+<loadtest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<stages server="www.hertzequip.com" port="80" contextroot="herc" protocol="https">
+		<stage url="/home/index.jsp?targetPage=homeView.jsp" description="Home page"/>
+		<stage url="/login/index.jsp?targetPage=loginView.jsp" description="Login page"/>
+		<stage url="/handlers/LoginHandler" description="Home page">
+			<form name="password" value="hertz99"/>
+			<form name="user" value="valentine"/>
+		</stage>		
+		<stage url="/home/index.jsp?targetPage=homeView.jsp" description="Home Page" output="browser"/>
+	</stages>
+</loadtest>

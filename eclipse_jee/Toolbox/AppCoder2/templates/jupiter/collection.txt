@@ -1,0 +1,35 @@
+-- collection; jupiter; use Set
+`makePackage()`
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Iterator;
+
+`makeStartClass()`
+
+	private Set<`getCollectionItemClassName()`> m_collection;
+
+`makeMembers()`
+
+	public `getCollectionClassName()` () {m_collection = new HashSet<`getCollectionItemClassName()`>();}
+	public `getCollectionClassName()` (int capacity) {m_collection = new HashSet<`getCollectionItemClassName()`> (capacity);}
+`makeConstructorArgs(getBaseClassName())`
+
+	public Iterator getItems() {return m_collection.iterator();}
+	public void add (`getCollectionItemClassName()` item) {if (item != null) m_collection.add (item);}
+	public void add (`getCollectionClassName()` info) {if (info != null) m_collection.addAll (info.getCollection());}
+	public int getSize() {return m_collection.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+`makeGetters()`
+
+`makeSetters()`
+
+// TODO; define public DddKeyItemInfo getKeyItemInfo
+
+--	protected Set<`getCollectionItemClassName()`> getCollection() {return m_collection;}
+	public boolean isExists (`getCollectionItemClassName()` item) {return m_collection.contains (item);}
+
+`makeSetToString()`
+}

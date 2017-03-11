@@ -1,0 +1,1780 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * @author John Vincent
+ */
+
+public class Sender {
+	private AppURL m_senderURL = null;
+	private boolean m_bPostMethod = false;
+	private Form m_form = new Form();
+
+	public Sender (String s) throws AppException {
+		setSenderURL(s);
+	}
+	public AppURL getSenderURL() {return m_senderURL;}
+	public void setSenderURL (String s) throws AppException {
+		m_senderURL = new AppURL (s);		
+	}
+	public boolean isUrlSSL() {
+		if (m_senderURL == null) return false;
+		String str = m_senderURL.getProtocol();
+		if (str.equalsIgnoreCase("https")) return true;
+		return false;
+	}
+	
+	public void setPostMethod() {m_bPostMethod = true;}
+	public void setGetMethod() {m_bPostMethod = false;}
+	public boolean isPostMethod() {return m_bPostMethod;}
+
+	public void addFormItem (FormItem pairInfo) {m_form.add (pairInfo);}
+	public void addFormItem (String key, String value) {m_form.add (new FormItem (key,value));}
+	public void addFormItem (Map map) {
+		Iterator iterator = map.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Map.Entry entry = (Map.Entry) iterator.next();
+			String [] values = (String []) entry.getValue();
+			String key = (String) entry.getKey();
+			for(int i = 0; i < values.length; i++) {
+				addFormItem(key, values[i]);
+			}
+		}
+	}
+
+	public String getEncodedBody() {return m_form.getFormItemsEncoded();}
+	public String getBody() {return m_form.getFormItems();}
+	public int getEncodedBodyLength() {return getEncodedBody().length();}
+
+	public String toString() {
+		return "(AppURL :"+m_senderURL.toString()+": AppURL.getURL() :"+m_senderURL.getURL().getPath()+": "+
+			"isPost "+isPostMethod()+" isSSL "+isUrlSSL()+" body :"+getBody()+": length "+getEncodedBodyLength()+
+			" Form :"+m_form.toString()+":)";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.net.HttpURLConnection;
+//import java.util.HashMap;
+//import java.util.Map;
+
+/**
+ * @author John Vincent
+ */
+
+public class Receiver {
+	private StringBuffer m_body = null;
+	private int m_responseCode;
+//	private Map m_map = new HashMap();
+	private String m_location = "";
+	
+	public StringBuffer getBody() {return m_body;}
+	public boolean isBody (String strCompare) {
+		if (strCompare == null || strCompare.length() < 1) return false;
+		if (m_body == null || m_body.length() < 1) return false;
+		if (m_body.indexOf(strCompare) > -1) return true;
+		return false;
+	}
+
+	public int getResponseCode() {return m_responseCode;}
+	public void setBody(String s) {m_body = new StringBuffer(s);}
+	public void setBody(StringBuffer sb) { m_body = sb; }
+	public void setResponseCode (int n) {m_responseCode = n;}
+	
+	public String getLocation() {return m_location;}
+	public void setLocation (HttpURLConnection httpConnection) {
+		m_location = httpConnection.getHeaderField ("Location");
+	}
+	public void setLocation(Sender sender) {
+		m_location = sender.getSenderURL().getPath();
+	}
+
+	public String toString() {
+		return "("+getResponseCode()+","+getLocation()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.io.*;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class JVFile {
+
+	public static void writeFile (String strText, String strFile)  throws AppException {
+		writeFile (strText, new File (strFile));
+	}
+	public static void writeFile (String strText, File file) throws AppException {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter (new BufferedWriter (new FileWriter(file)));
+			pw.print(strText);
+			pw.flush();
+			pw.close();
+		}
+		catch (IOException ex) {
+			throw new AppException ("Unable to write to the file "+ex.getMessage());
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.util.zip.GZIPInputStream;
+
+import com.idc.trace.LogHelper;
+
+//import java.net.JarURLConnection;
+//import java.util.jar.JarFile;
+//import java.util.jar.JarEntry;
+
+/**
+ * @author John Vincent
+ */
+
+public class HttpMessage {
+	private HttpMessage() {}
+	private static String m_newline = "\n";
+
+	public static String getContents (String strURL) throws AppException {
+		Sender sender = new Sender(strURL);
+		sender.setGetMethod();
+		Receiver receiver = getReceiver (sender);
+//		LogHelper.info("receiver: "+receiver.toString());
+		return receiver.getBody().toString();
+	}
+
+	public static Receiver getReceiverWithRedirects (Sender sender, AppCookies appCookies) throws AppException {
+		LogHelper.info(">>> HttpMessage::getReceiverWithRedirects; cookies :"+appCookies.toString()+":");
+		Receiver receiver;
+		while (true) {
+			receiver = getReceiver (sender, appCookies);
+			LogHelper.info("HttpMessage::getReceiverWithRedirects; cookies after receiver :"+appCookies.toString()+":");
+			if (receiver.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {		// code = 302
+				LogHelper.info("getReceiverWithRedirects; redirect to "+receiver.getLocation());
+				sender.setSenderURL(receiver.getLocation());
+			}
+			else {
+				LogHelper.info("<<< HttpMessage::getReceiverWithRedirects");
+				return receiver;
+			}
+		}
+	}
+	public static Receiver getReceiver (Sender sender) throws AppException {
+		return getReceiver (sender, null, null);
+	}
+	public static Receiver getReceiver (Sender sender, AppCookies appCookies) throws AppException {
+		return getReceiver (sender, appCookies, null);
+	}
+	public static Receiver getReceiver (Sender sender, AppCookies appCookies, String strXML) throws AppException {
+		LogHelper.info(">>> HttpMessage::getReceiver");
+		Receiver receiver = new Receiver();
+		HttpURLConnection httpConnection = null;
+		
+		if (sender.isUrlSSL()) 
+			LogHelper.info("Using https protocol");
+
+		try {
+			httpConnection = (HttpURLConnection) sender.getSenderURL().getURL().openConnection();
+/*
+ * masquerade as a browser
+*/ 
+			httpConnection.setRequestProperty ("Accept", "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
+			httpConnection.setRequestProperty ("Accept-Language", "en-us");
+			httpConnection.setRequestProperty ("Accept-Encoding", "gzip");
+			httpConnection.setRequestProperty ("User-Agent", "compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)");
+/*
+ * handle POST and GET properties
+ */
+			if (sender.isPostMethod()) {
+				httpConnection.setRequestMethod("POST");
+				httpConnection.setDoOutput(true);				// will be sending a body
+				httpConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+				httpConnection.setRequestProperty("Content-length", Integer.toString(sender.getEncodedBodyLength()));
+			}
+			else {
+				httpConnection.setRequestMethod("GET");
+				httpConnection.setDoOutput(false);				// will not be sending body
+			}
+			httpConnection.setUseCaches (false);
+			httpConnection.setAllowUserInteraction(false);		// you may not ask the user
+
+/*
+ * this is important; these must be false else nonsense information is returned
+ * in the case of a redirect. The redirect must be handled programatically.
+ */
+			HttpURLConnection.setFollowRedirects(false);
+			httpConnection.setInstanceFollowRedirects(false);
+
+/*
+ * send cookies
+ */
+			if (appCookies != null) appCookies.sendCookies(httpConnection);
+
+/*
+ * send the body for a Post
+ */
+			if (sender.isPostMethod()) {
+				OutputStream rawOutStream = httpConnection.getOutputStream();
+				PrintWriter pw = new PrintWriter(rawOutStream);
+				if (sender.getEncodedBodyLength() > 0) {
+					String myBody = sender.getEncodedBody();
+					pw.print(myBody);
+				}
+				if (strXML != null && strXML.length() > 0) pw.print(strXML);
+				pw.flush();
+				pw.close();
+			}
+
+/*
+ * Get information from the server.
+ * 
+ * Start with cookies and the response code
+ */
+			if (appCookies != null) appCookies.receiveCookies (httpConnection);
+			receiver.setResponseCode (httpConnection.getResponseCode());
+/*
+ * if server sends a redirect, save the url and return
+ */
+			if (receiver.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+				receiver.setLocation(httpConnection);
+			}
+/*
+ * if server sends OK, get the headers and body
+ */
+			else if (receiver.getResponseCode() == HttpURLConnection.HTTP_OK) {		
+				receiver.setLocation(sender);			
+				InputStream  rawInStream = httpConnection.getInputStream();		// complete writing to output before this
+				String compression = httpConnection.getHeaderField("Content-Encoding");
+				BufferedReader rdr = null;
+				if (compression == null)
+					rdr = new BufferedReader (new InputStreamReader(rawInStream));
+				else {
+					if ("gzip".equals(compression))
+						rdr = new BufferedReader (new InputStreamReader(new GZIPInputStream(rawInStream)));
+					else 
+					throw new AppException(compression +" not supported");
+				}
+					
+				StringBuffer sb = new StringBuffer();
+				//LogHelper.info("m_newline :"+m_newline+":");
+				String line;
+				while ((line = rdr.readLine()) != null) {
+					sb.append(line).append(m_newline);
+				}
+				rdr.close();
+				//LogHelper.info("body follows:");
+				//LogHelper.info(sb.toString());
+				//LogHelper.info("body done");
+				receiver.setBody(sb);
+			}
+			else {
+				throw new AppException ("Unexpected response code "+receiver.getResponseCode());
+			}
+			LogHelper.info("<<< HttpMessage::getReceiver");
+			return receiver;
+		}
+		catch (java.net.ConnectException ce) {
+			throw new AppException ("HTTP Connect error; "+ce.getMessage());			
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());			
+		}
+		finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+				httpConnection = null;
+			}
+		}
+	}
+
+	public static InputStream getURLInputStream (String url) throws AppException {
+		AppURL appURL = new AppURL (url);
+		try {
+			HttpURLConnection httpConnection = (HttpURLConnection) appURL.getURL().openConnection();
+			int responseCode = httpConnection.getResponseCode();
+			LogHelper.info("responseCode "+responseCode);
+			return httpConnection.getInputStream();
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());			
+		}
+	}
+
+	public static StringBuffer getURLStringBuffer (String url) throws AppException {
+		InputStream input = getURLInputStream (url);
+		try {
+			StringBuffer buffer = new StringBuffer();
+			String line;
+			BufferedReader dataInput = new BufferedReader (new InputStreamReader(input));
+			while ((line = dataInput.readLine()) != null) {
+				buffer.append(line);
+				buffer.append(m_newline);
+			}
+			return buffer;
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());
+		}
+	}
+
+	public static java.awt.Image getURLImage (String url) throws AppException {
+		AppURL appURL = new AppURL (url);
+		return java.awt.Toolkit.getDefaultToolkit().createImage(appURL.getURL());
+	}
+
+// usage getURLJar("jar:http://host/file.jar!/", "jar:file:/c:/tmp/my.jar!/");
+/*	
+	public static void getURLJar (String fromUrl, String toUrl) throws AppException {
+		AppURL fromAppURL = new AppURL (fromUrl);
+		AppURL toAppURL = new AppURL (toUrl);
+		try {
+			JarURLConnection conn = (JarURLConnection)fromAppURL.getURL().openConnection();
+			JarFile jarfile = conn.getJarFile();
+//			 When no entry is specified on the URL, the entry name is null
+		String entryName = conn.getEntryName();  // null
+// not sure how much of this is useful
+		conn = (JarURLConnection)toAppURL.getURL().openConnection();		// Get the jar file
+		jarfile = conn.getJarFile();
+		entryName = conn.getEntryName();					// Get the entry name; it should be the same as specified on URL
+		JarEntry jarEntry = conn.getJarEntry();				// Get the jar entry
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());
+		}
+	}
+*/
+	public static void sendObject (String url, Serializable obj)  throws AppException {
+		if (obj == null) return;
+		HttpURLConnection httpConnection = null;
+		AppURL appURL = new AppURL (url);
+		try {
+			httpConnection = (HttpURLConnection) appURL.getURL().openConnection();
+			httpConnection.setDoInput(true);
+			httpConnection.setDoOutput(true);
+			httpConnection.setUseCaches (false);
+
+			httpConnection.setRequestProperty("Content-Type","application/x-java-serialized-object");
+
+			ObjectOutputStream out = new ObjectOutputStream (httpConnection.getOutputStream());
+			LogHelper.info("sending the obj, in sendObject(): "+obj.toString());
+			out.writeObject (obj);
+			out.flush();
+			out.close();
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());			
+		}
+		finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+				httpConnection = null;
+			}
+		}
+	}
+
+	public static Object receiveObject (String url)  throws AppException {
+		Object obj = null;
+		HttpURLConnection httpConnection = null;
+		AppURL appURL = new AppURL (url);
+		try {
+			httpConnection = (HttpURLConnection) appURL.getURL().openConnection();
+			ObjectInputStream in = new ObjectInputStream (httpConnection.getInputStream());
+			LogHelper.info("receiving the obj, in receiveObject()");
+			obj = in.readObject();
+			in.close();
+			return obj;
+		}
+		catch (ClassNotFoundException cnfex) {
+			throw new AppException ("ClassNotFoundException error; "+cnfex.getMessage());			
+		}
+		catch (IOException ioex) {
+			throw new AppException ("IO error; "+ioex.getMessage());			
+		}
+		finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+				httpConnection = null;
+			}
+		}
+	}
+
+
+
+}
+
+/*
+You can access SSL sites (URLs starting with https://...) just like normal HTTP URLs after downloading the JSSE (Java Secure Sockets Extension) from Sun, installing it in your classpath, and adding the following two lines in your program before using SSL URLs:
+
+// Dynamically register the JSSE provider.
+java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+
+// Set this property to use Sun's reference implementation of the HTTPS protocol.
+System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
+
+*/
+
+
+/*
+If you are behind a firewall that allows access using HTTP only via a proxy server, you can tell Java about this fact and the address and port of your proxy by calling
+
+System.getProperties().put("proxySet", "true");
+System.getProperties().put("proxyHost", "MyProxy");
+System.getProperties().put("proxyPort", "80");
+*/
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.io.Serializable;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class AppCookieItem implements Serializable {
+	private static final long serialVersionUID = 1;
+	private String cookie;
+	public AppCookieItem (String cookie) {
+		this.cookie = cookie;
+	}
+	public String getCookie() {return cookie;}
+	public void setCookie (String cookie) {this.cookie = cookie;}
+	public String toString() {
+		return "("+getCookie()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.io.Serializable;
+
+/**
+ * @author John Vincent
+ */
+
+public class FormItem implements Serializable {
+	private static final long serialVersionUID = 1;
+	private String key;
+	private String value;
+	public FormItem(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
+	public String getKey() {return key;}
+	public String getValue() {return value;}
+	public void setKey (String key) {this.key = key;}
+	public void setValue (String value) {this.value = value;}
+	public String toString() {
+		return "("+getKey()+","+getValue()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+/**
+ * @author John Vincent
+ */
+
+public class Form implements Serializable {
+	private static final long serialVersionUID = 1;
+	private static final String ENCODER = "UTF-8";
+
+	private ArrayList<FormItem> m_list = new ArrayList<FormItem>();
+
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (FormItem item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public String getFormItemsEncoded() {
+		try {
+			StringBuffer buf = new StringBuffer();
+			FormItem formItem;
+			for (int i=0; i<m_list.size(); i++) {
+				formItem = (FormItem) m_list.get(i);
+				if (i > 0) buf.append ("&");
+				buf.append (URLEncoder.encode(formItem.getKey(), ENCODER));
+				buf.append ("=");
+				buf.append (URLEncoder.encode(formItem.getValue(), ENCODER));
+			}
+			return buf.toString();
+		}
+		catch (UnsupportedEncodingException ueex) {
+//			LogBroker.debug(this,"getEncoded error; "+ueex.getMessage());
+			return "";
+		}
+	}
+
+	public String getFormItems() {
+		StringBuffer buf = new StringBuffer();
+		FormItem formItem;
+		for (int i=0; i<m_list.size(); i++) {
+			formItem = (FormItem) m_list.get(i);
+			if (i > 0) buf.append ("&");
+			buf.append (formItem.getKey());
+			buf.append ("=");
+			buf.append (formItem.getValue());
+		}
+		return buf.toString();
+	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((FormItem) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+//field1=value1&field2=value2&field3=value3
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.io.IOException;
+
+/**
+ * @author John Vincent
+ *
+ */
+
+public class Browser {
+
+	public static void start (String[] cmd) throws AppException {
+		try {
+//			Process process = Runtime.getRuntime().exec(cmd);
+			Runtime.getRuntime().exec(cmd);
+		}
+		catch (IOException ioex) {
+			throw new AppException ("Cannot start process "+ioex.getMessage());
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+import java.net.URL;
+import java.net.MalformedURLException;
+
+/**
+ * @author John Vincent
+ */
+
+public class AppURL {
+	private String m_strURL;
+	private URL m_url;
+	public AppURL (String s) throws AppException {
+		m_strURL = s;
+		try {
+			m_url = new URL (m_strURL);
+		}
+		catch (MalformedURLException mfex) {
+			throw new AppException ("URL "+m_strURL+" error; "+mfex.getMessage());
+		}
+	}
+	public URL getURL() {return m_url;}
+	public String getProtocol() {return m_url.getProtocol();}
+	public String getFile() {return m_url.getFile();}
+	public String getHost() {return m_url.getHost();}
+	public String getPath() {return m_url.getPath();}
+
+	public int getPort() {return m_url.getPort();}
+	public int getDefaultPort() {return m_url.getDefaultPort();}
+	public String getQuery() {return m_url.getQuery();}
+	public String getRef() {return m_url.getRef();}
+	public String getAuthority() {return m_url.getAuthority();}
+	public String getUserInfo() {return m_url.getUserInfo();}
+	
+	public String toString() {
+		return "("+getProtocol()+","+getFile()+","+getHost()+","+getPath()+","+
+				getPort()+","+getDefaultPort()+","+getQuery()+","+getRef()+","+
+				getAuthority()+","+getUserInfo()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+/**
+ * @author John Vincent
+ */
+
+public class AppException extends Exception {
+	private static final long serialVersionUID = 1;
+	public AppException (String msg) {
+		super (msg);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+/********************************************************************
+*			Copyright (c) 2006 The Hertz Corporation				*
+*			  All Rights Reserved.  (Unpublished.)					*
+*																	*
+*		The information contained herein is confidential and		*
+*		proprietary to The Hertz Corporation and may not be			*
+*		duplicated, disclosed to third parties, or used for any		*
+*		purpose not expressly authorized by it.  Any unauthorized	*
+*		use, duplication, or disclosure is prohibited by law.		*
+*																	*
+*********************************************************************/
+
+package com.idc.loadtest.http;
+
+/**
+* @author John Vincent
+*
+*/
+
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.idc.trace.LogHelper;
+
+public class AppCookies implements Serializable {
+	private static final long serialVersionUID = 1;
+	private ArrayList<AppCookieItem> m_list = new ArrayList<AppCookieItem>();
+
+	public void receiveCookies (HttpURLConnection httpConnection) {
+		addCookie (httpConnection.getHeaderFields());
+	}
+	private void addCookie (Map map) {
+		LogHelper.info(">>> AppCookies::addCookie");
+		Iterator iter = map.keySet().iterator();
+		while (iter.hasNext()) {
+			String key = (String) iter.next();
+			if (key == null) continue;
+			if (! key.equals("Set-Cookie")) continue;
+			List keyList = (List) map.get(key);
+			Iterator listIter = keyList.iterator();
+			while (listIter.hasNext()) {
+				String listValue = (String) listIter.next();
+				LogHelper.info("Key = " + key + " value = " + listValue);
+				m_list.add (new AppCookieItem (listValue));
+			}
+		}
+	}
+	public Iterator getItems() {return m_list.iterator();}
+	public int getSize() {return m_list.size();}
+	public boolean isCookied() {return getSize() > 0;}
+
+	public void sendCookies (HttpURLConnection httpConnection) {
+		if (isCookied()) {
+			AppCookieItem appCookieItem;
+			Iterator iter = getItems();
+			while (iter.hasNext()) {
+				appCookieItem = (AppCookieItem) iter.next();
+				LogHelper.info("AppCookies::sendCookies; sending cookie; "+appCookieItem.getCookie());
+				httpConnection.addRequestProperty("Cookie", appCookieItem.getCookie());
+			}
+		}
+	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((AppCookieItem) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Stages implements Serializable {
+	private static final long serialVersionUID = 1;
+	private String server;
+	private String port;
+	private String contextRoot;
+	private String protocol = "http";
+
+	public String getServer() {return server;}
+	public String getPort() {
+		if (port == null || port.trim().length() < 1) port = "80";
+		return port;
+	}
+	public String getContextRoot() {return contextRoot;}
+	public String getProtocol() {return protocol;}
+
+	public void setServer (String server) {this.server = server;}
+	public void setPort (String port) {this.port = port;}
+	public void setContextRoot (String contextRoot) {this.contextRoot = contextRoot;}
+	public void setProtocol (String ssl) {
+		if (ssl.equalsIgnoreCase("https")) protocol = "https";
+	}
+	public String getUrl() {
+		return getProtocol() + "://"+getServer() + ":" + getPort() + "/" + getContextRoot();
+	}
+	private ArrayList<Stage> m_list = new ArrayList<Stage>();
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (Stage item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((Stage) m_list.get(i)).toString());
+		return "("+getProtocol()+","+getServer()+","+getPort()+","+getContextRoot()+"),"+"("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.io.Serializable;
+
+import com.idc.loadtest.http.Form;
+import com.idc.loadtest.http.FormItem;
+
+public class Stage implements Serializable {
+	private static final long serialVersionUID = 1;
+	private String url;
+	private Form form = new Form();
+	private boolean post = true;
+	private boolean browser = false;
+	private String description;
+
+	public String getUrl() {return url;}
+	public Form getForm() {return form;}
+	public boolean isPost() {return post;}
+	public boolean isBrowser() {return browser;}
+	public String getDescription() {return description;}
+	public String getMessage() {
+		if (description != null && description.length() > 0)
+			return description;
+		return url;
+	}
+
+	public void setUrl (String url) {this.url = url;}
+	public void setForm (Form form) {this.form = form;}
+	public void addFormItem (FormItem formItem) {form.add (formItem);}
+	public void setPost (String str) {
+		if (str == null) return;
+		if (str.trim().equalsIgnoreCase("get")) post = false;
+	}
+	public void setOutput (String str) {
+		if (str == null) return;
+		if (str.trim().equalsIgnoreCase("browser")) browser = true;
+	}
+	public void setDescription (String description) {this.description = description;}
+
+	public String toString() {
+		return "("+getUrl()+","+isPost()+","+isBrowser()+","+getForm().toString()+","+getDescription()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.io.IOException;
+import java.io.File;
+import java.util.Iterator;
+
+import com.idc.loadtest.http.AppCookies;
+import com.idc.loadtest.http.AppException;
+import com.idc.loadtest.http.Browser;
+import com.idc.loadtest.http.HttpMessage;
+import com.idc.loadtest.http.JVFile;
+import com.idc.loadtest.http.Receiver;
+import com.idc.loadtest.http.Sender;
+import com.idc.loadtest.http.Form;
+import com.idc.loadtest.http.FormItem;
+import com.idc.trace.LogHelper;
+
+public class RunTests {
+	private AppThreadItem m_appThreadItem;
+	private AppThreads m_appThreads;
+	private Stages m_stages;
+	public RunTests (AppThreadItem appThreadItem, AppThreads appThreads, Stages stages) {
+		m_appThreadItem = appThreadItem;
+		m_appThreads = appThreads;
+		m_stages = stages;
+	}
+	public boolean isThreadHasBeenInstructedToStop() {
+		LogHelper.info("if (isThreadHasBeenInstructedToStop()) "+m_appThreadItem.isThreadHasBeenInstructedToStop());
+		return m_appThreadItem.isThreadHasBeenInstructedToStop();
+	}
+	private void handleProgressIndicator() {m_appThreads.handleProgressIndicator();}
+	private void addMessage (String msg) {m_appThreads.addMessage(msg);}
+	public void runTests (int threadId) {
+		AppCookies appCookies = new AppCookies();
+		Stage stage;
+		Iterator iter = m_stages.getItems();
+		while (iter.hasNext()) {
+			stage = (Stage) iter.next();
+			LogHelper.info("---runTests::runTests; stage "+stage);
+			if (isThreadHasBeenInstructedToStop()) return;
+			addMessage ("("+threadId+") Running test case "+stage.getMessage());
+			handleProgressIndicator();
+			runTest (appCookies, m_stages.getUrl(), stage);
+		}
+		addMessage ("("+threadId+") Test cases complete");
+	}
+	private void runTest(AppCookies appCookies, String url, Stage stage) {
+		Sender sender;
+		Receiver receiver;
+//		String strURL = url + "/" + stage.getUrl();
+		String strURL = url + stage.getUrl();
+		try {
+			sender = new Sender(strURL);
+			if (stage.isPost())
+				sender.setPostMethod();
+			else
+				sender.setGetMethod();
+			Form form = stage.getForm();
+			FormItem formItem;
+			Iterator iter = form.getItems();
+			while (iter.hasNext()) {
+				formItem = (FormItem) iter.next();
+				sender.addFormItem (formItem.getKey(), formItem.getValue());
+			}
+	
+			LogHelper.info("sender: "+sender.toString());
+			receiver = HttpMessage.getReceiverWithRedirects (sender, appCookies);
+			LogHelper.info("receiver: "+receiver.toString());
+
+			if (isThreadHasBeenInstructedToStop()) return;
+			if (stage.isBrowser()) runBrowser (receiver);
+		}
+		catch (AppException appex) {
+			LogHelper.info("App exception "+appex.getMessage());
+		}
+	}
+
+	private void runBrowser (Receiver receiver) {
+		String strFile = "";
+		try {
+			File file = File.createTempFile ("Load_Testing_", ".html", new File("c:\\tmp"));
+			strFile = file.getAbsolutePath();
+		}
+		catch (IOException ioex) {
+			LogHelper.info("runBrowser::IOException");
+		}
+
+		addMessage ("Running browser with file "+strFile);
+		handleProgressIndicator();
+		try {
+			JVFile.writeFile(receiver.getBody().toString(), strFile);
+			String strCmd = "C:\\Program Files\\Internet Explorer\\iexplore.exe";
+			strCmd = "C:\\Program Files\\Mozilla Firefox 1.06\\firefox.exe";
+			String[] cmd = {strCmd, strFile};
+			Browser.start(cmd);
+		}
+		catch (AppException appex) {
+			LogHelper.info("runBrowser::AppException "+appex.getMessage());
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
+
+import com.idc.loadtest.http.FormItem;
+
+public class JVxml {
+	public Stages parse (File file) {
+		InputSource source = null;
+		try {
+			source = new InputSource(new FileInputStream(file));
+		}
+		catch (FileNotFoundException ex) {
+			System.out.println("--- FileNotFoundException ---:");
+			System.out.println(ex.getMessage());
+		}
+		return handle (source);
+	}
+	private Stages handle(InputSource source) {
+		DocumentBuilderFactory docBuilderFactory;
+		DocumentBuilder docBuilder;
+		Document doc;
+		NodeList nodeList1, nodeList2, nodeList3;
+		Node node1, node2, node3;
+		Stage stage;
+		Stages stages = new Stages();
+		try {
+			docBuilderFactory = DocumentBuilderFactory.newInstance();
+			docBuilderFactory.setNamespaceAware(false);
+			docBuilderFactory.setIgnoringElementContentWhitespace(true);
+			docBuilder = docBuilderFactory.newDocumentBuilder();
+			doc = docBuilder.parse(source);
+			doc.getDocumentElement().normalize();
+
+			Element elem1 = doc.getDocumentElement();
+//			System.out.println ("(1) nodeName "+elem1.getNodeName());
+			if (! elem1.getNodeName().equals("loadtest")) {
+				throw new Exception ("Not a loadtest");
+			}
+			nodeList1 = elem1.getChildNodes();
+
+			for (int i1=0; i1<getNodeSize(nodeList1); i1++) {
+				node1 = nodeList1.item(i1);
+//				System.out.println("has child (1) node "+node1.getNodeName());
+				if (node1.getNodeName().equals("stages")) {
+					stages.setServer(getAttrValue ("server", node1));
+					stages.setPort(getAttrValue ("port", node1));
+					stages.setContextRoot(getAttrValue ("contextroot", node1));
+					stages.setProtocol(getAttrValue ("protocol", node1));
+
+					nodeList2 = node1.getChildNodes();
+					for (int i2=0; i2<getNodeSize(nodeList2); i2++) {
+						node2 = nodeList2.item(i2);
+//						System.out.println("has child (2) node "+node2.getNodeName());
+						if (node2.getNodeName().equals("stage")) {
+							stage = new Stage();
+							stage.setUrl(getAttrValue ("url", node2));
+							stage.setPost(getAttrValue ("method", node2));
+							stage.setOutput(getAttrValue ("output", node2));
+							stage.setDescription(getAttrValue ("description", node2));
+
+							nodeList3 = node2.getChildNodes();
+							for (int i3=0; i3<getNodeSize(nodeList3); i3++) {
+								node3 = nodeList3.item(i3);
+//								System.out.println("has child (3) node "+node3.getNodeName());
+								if (node3.getNodeName().equals("form")) {
+									String name = getAttrValue ("name", node3);
+									String value = getAttrValue ("value", node3);
+									stage.addFormItem (new FormItem (name, value));
+								}
+							}
+							stages.add(stage);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception ex) {
+			System.out.println("Exception "+ex.getMessage());
+		}
+//		System.out.println("stages "+stages.toString());
+		return stages;
+	}
+
+	private int getNodeSize(NodeList nodeList) {
+		return (nodeList != null) ? nodeList.getLength() : 0;
+	}
+
+	protected String getNodeValue (Node node) {
+		 String strNodeValue = node.getFirstChild().getNodeValue();
+//		 System.out.println("node value :"+strNodeValue+":");
+		 return strNodeValue;
+	}
+
+	private String getAttrValue (String name, Node node) {
+		String strReturn = null;
+		NamedNodeMap attrs = node.getAttributes();
+		int attrCount = (attrs != null) ? attrs.getLength() : 0;
+		for (int i=0; i<attrCount; i++) {
+			Node attr = attrs.item(i);
+//			System.out.println("Name "+attr.getNodeName()+"value"+attr.getNodeValue());
+			if (name.equals(attr.getNodeName())) {
+				strReturn = attr.getNodeValue();
+				break;
+			}
+		}
+		return strReturn;
+	}
+
+	protected void listAttributes (Node node) {
+		NamedNodeMap attrs = node.getAttributes();
+		int attrCount = (attrs != null) ? attrs.getLength() : 0;
+		System.out.println("attrCount "+attrCount);
+		for (int i=0; i<attrCount; i++) {
+			Node attr = attrs.item(i);
+			System.out.println("Name :"+attr.getNodeName()+": value :"+
+					attr.getNodeValue()+":");
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.File;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import com.idc.trace.LogHelper;
+
+public class AppThreads extends Thread {
+	private static final long SLEEP_TIME = 5000L;
+	private AppGui m_appGui;
+	private int m_threads;
+	private int m_repeat;
+	private int m_delay;
+	private String m_testFile;
+
+	private ThreadGroup m_threadGroup = new ThreadGroup("Load Test Threads");
+	private ArrayList<AppThreadItem> m_list = new ArrayList<AppThreadItem>();
+	private Stages m_stages;
+
+	private boolean m_bPleaseSuspendThisThread = true;
+	private boolean m_bStop = false;
+
+	public AppThreads (AppGui appGui, int threads, int repeat, int delay, String testFile) {
+		LogHelper.info(">>> AppThreads (constructor); thread count "+getMyThreadGroup().activeCount());
+		m_appGui = appGui;
+		m_threads = threads;
+		m_repeat = repeat;
+		m_delay = delay;
+		m_testFile = testFile;
+		LogHelper.info("<<< AppThreads (constructor)");
+	}
+	public void setSuspend() {m_bPleaseSuspendThisThread = true;}
+	public boolean isThreadHasBeenInstructedToStop() {return m_bStop;}
+	private synchronized void setResume() {
+		m_bPleaseSuspendThisThread = false;
+		notify();
+	}
+	public void setStart () {
+		m_bStop = false;
+		setResume();
+	}
+	public void setStop() {
+		addMessage ("Terminating");
+		m_bStop = true;
+	}
+	public void run() {
+		LogHelper.info(">>> AppThreads::run");
+
+		startProgressIndicator();
+		addMessage ("Working...");
+
+		addMessage ("Parsing test cases from "+m_testFile);
+		handleProgressIndicator();
+		m_stages = (new JVxml()).parse (new File(m_testFile));
+		LogHelper.info("stages :"+m_stages.toString());
+
+		for (int threadId=1; threadId<=m_threads; threadId++) {
+			AppThreadItem appThreadItem = new AppThreadItem (this, m_threadGroup, threadId, m_stages, m_repeat, m_delay);
+			add (appThreadItem);
+			appThreadItem.start();
+		}
+
+		addMessage ("Setting browser security");
+		handleProgressIndicator();
+		doSetupHttps();
+
+		try {
+			synchronized (this) {
+				while (m_bPleaseSuspendThisThread) {
+					LogHelper.info("AppThreads - suspending thread");
+					wait();
+				}
+			}
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}	
+
+		addMessage("Creating test threads");
+		handleProgressIndicator();
+		AppThreadItem appThreadItem;
+		Iterator iter = getItems();
+		while (iter.hasNext()) {
+			appThreadItem = (AppThreadItem) iter.next();
+			appThreadItem.setStart();
+		}
+
+		addMessage("Starting test threads");
+		handleProgressIndicator();
+		int threadCount;
+		while (true) {
+			threadCount = getMyThreadGroup().activeCount();
+			LogHelper.info("startThreads; thread count "+threadCount);
+			if (threadCount < 1) break;
+			if (isThreadHasBeenInstructedToStop()) {
+				iter = getItems();
+				while (iter.hasNext()) {
+					appThreadItem = (AppThreadItem) iter.next();
+					appThreadItem.setStop();
+				}
+			}
+			try {
+				LogHelper.info("waiting");
+				Thread.sleep(SLEEP_TIME);
+				LogHelper.info("woke up");
+			}
+			catch (InterruptedException iex) {
+				LogHelper.info("InterruptedException "+iex.getMessage());
+			}
+		}
+
+		addMessage("Test threads completed");
+		endProgressIndicator();
+		m_appGui.setStopped();
+		LogHelper.info("<<< AppThreads::run");
+	}
+	
+	public ThreadGroup getMyThreadGroup() {return m_threadGroup;}
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (AppThreadItem item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	private AppGui getAppGui() {return m_appGui;}
+	public void startProgressIndicator() {getAppGui().startProgressBar();}
+	public void handleProgressIndicator() {getAppGui().handleProgressIndicator();}
+	public void endProgressIndicator() {getAppGui().endProgressBar();}
+	public void addMessage (String msg) {getAppGui().setMessagesArea(msg);}
+
+	private void doSetupHttps() {
+		LogHelper.info(">>> doSetupHttps");
+		try {
+		// disable SSL Certificate Authentication
+		HostnameVerifier hv = new HostnameVerifier() {
+			public boolean verify(String urlHostName, SSLSession session) {
+				LogHelper.info("Warning: URL Host: "+urlHostName+" vs. "+session.getPeerHost());
+				return true;
+			}
+		};
+		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+		
+		// create a trust manager that does not validate certificate chains
+		TrustManager[] trustAllCerts = new TrustManager[]{
+				new X509TrustManager() {
+					public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+					public void checkClientTrusted(
+							java.security.cert.X509Certificate[] certs, String authType) {
+					}
+					public void checkServerTrusted(
+							java.security.cert.X509Certificate[] certs, String authType) {
+					}
+				}
+		};
+		
+		// install the all-trusting trust manager
+		SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		}
+		catch (Exception ex) {
+			LogHelper.error("exception "+ex.getMessage());
+		}
+		LogHelper.info("<<< doSetupHttps");
+	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((AppThreadItem) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import com.idc.trace.LogHelper;
+
+public class AppThreadItem extends Thread {
+	private AppThreads m_appThreads;
+	private int m_threadId;
+	private int m_repeat;
+	private int m_delay;
+	private RunTests m_runTests;
+	private boolean m_bPleaseSuspendThisThread = true;
+	private boolean m_bStop = false;
+	
+	public AppThreadItem (AppThreads appThreads, ThreadGroup threadGroup, int threadId, Stages stages, int repeat, int delay) {
+		super (threadGroup, "Load Test Thread "+threadId);
+		LogHelper.info(">>> AppThreadItem::constructor "+threadId);
+		m_appThreads = appThreads;
+		m_threadId = threadId;
+		m_repeat = repeat;
+		m_delay = delay;
+		m_runTests = new RunTests (this, m_appThreads, stages);
+		LogHelper.info("<<< AppThreadItem::constructor "+m_threadId);		
+	}
+	public void setSuspend() {m_bPleaseSuspendThisThread = true;}
+	public boolean isThreadHasBeenInstructedToStop() {return m_bStop;}
+	private synchronized void setResume() {
+		m_bPleaseSuspendThisThread = false;
+		notify();
+	}
+	public void setStart () {
+		m_bStop = false;
+		setResume();
+	}
+	public void setStop() {
+		LogHelper.info("AppThreadItem - setStop "+m_threadId);
+		m_bStop = true;
+	}
+	public void run() {
+		LogHelper.info(">>> AppThreadItem::run "+m_threadId);
+		try {
+			synchronized (this) {
+				while (m_bPleaseSuspendThisThread) {
+					LogHelper.info("AppThreadItem - suspending thread "+m_threadId);
+					wait();
+				}
+			}
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		LogHelper.info("thread id "+m_threadId);
+		for (int loop=1; loop<=m_repeat; loop++) {
+			if (loop > 1) {
+				try {
+					LogHelper.info("delay, waiting; thread id "+m_threadId);
+					Thread.sleep(m_delay * 1000L);
+					LogHelper.info("delay, woke up; thread id "+m_threadId);
+				}
+				catch (InterruptedException iex) {
+					LogHelper.info("InterruptedException "+iex.getMessage());
+				}
+			}
+			m_runTests.runTests(m_threadId);
+		}
+		LogHelper.info("<<< AppThreadItem::run "+m_threadId);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.loadtest;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import com.idc.trace.LogHelper;
+
+public class AppGui extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private static final String RUNAPP = "Run...";
+	private static final String STOPAPP = "Stop";
+	private static final int MAX_CNTR=1000;
+	private int m_cntr = 0;
+	private JTextArea m_messagesArea;	
+	private JTextField m_stringThreads;
+	private JTextField m_stringRepeat;
+	private JTextField m_stringDelay;
+	private JTextField m_stringTestfile;
+	private JButton m_btnApp;
+	private JButton m_btnClear;
+	private JLabel m_txtStatus;
+	private JProgressBar m_progress;
+	private AppThreads m_appThreads;
+
+	public AppGui (String msg, String[] args) {
+		super(msg);
+
+		setContentPane(makeContentPane());
+		this.addWindowListener (new WindowAdapter() {
+			public void windowClosing (WindowEvent e) {
+				doStopClient();
+			}
+		});
+		setSize(700,900);
+		pack();
+		setVisible(true);
+	}
+	public static void main(String[] args) {
+		new AppGui("AppGUI", args);
+	}
+
+	private Container makeContentPane() {
+		m_stringThreads = new JTextField(4);
+		m_stringRepeat = new JTextField(2);
+		m_stringDelay = new JTextField(2);
+		m_stringTestfile = new JTextField(30);
+		m_stringThreads.setText("1");
+		m_stringRepeat.setText("1");
+		m_stringDelay.setText("3");
+		m_stringTestfile.setText("C:\\irac\\src\\feb\\Hcm_Herc\\Herc\\MakeData\\test3.xml");
+
+		JPanel paneA = new JPanel();
+		paneA.add(new JLabel("Threads #"));				
+		paneA.add(m_stringThreads);
+		paneA.add(new JLabel("Repeat #"));
+		paneA.add(m_stringRepeat);
+		paneA.add(new JLabel("Delay"));
+		paneA.add(m_stringDelay);
+		paneA.add(new JLabel("Test.xml"));
+		paneA.add(m_stringTestfile);
+
+		JPanel topPane = new JPanel();
+		topPane.setLayout(new BorderLayout());
+		topPane.add(paneA, BorderLayout.NORTH);
+		
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_messagesArea = new JTextArea(40,60);
+		m_messagesArea.setEditable(false);		
+		m_messagesArea.setDragEnabled(true);	
+		midPane.add(new JScrollPane(m_messagesArea),BorderLayout.CENTER);
+
+		JPanel lowPane = new JPanel();
+		m_btnApp = new JButton(RUNAPP);
+		m_btnApp.setDefaultCapable(true);
+		m_btnApp.addActionListener(this);
+		lowPane.add(m_btnApp);
+		m_btnClear = new JButton("Clear");
+		m_btnClear.setDefaultCapable(true);
+		m_btnClear.addActionListener(this);
+		lowPane.add(m_btnClear);
+						
+		m_txtStatus = new JLabel();
+		lowPane.add (m_txtStatus);
+		m_progress = new JProgressBar();
+		lowPane.add(m_progress);
+	
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);			
+		return pane;
+	}	
+	public void setButtonText (boolean bBtn) {
+		final String msg;
+		if (bBtn) msg = RUNAPP;
+		else msg = STOPAPP;
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnApp.setText(msg);
+				}
+			}
+		);
+	}
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_messagesArea.append(msg);
+					m_messagesArea.append("\n");
+					m_messagesArea.setCaretPosition(
+						m_messagesArea.getText().length());
+					validate();
+				}
+			}
+		);
+	}
+	public void clearMessagesArea () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_messagesArea.setText("");
+					m_messagesArea.setCaretPosition(
+						m_messagesArea.getText().length());
+					validate();
+				}
+			}
+		);
+	}
+	public void setStatusMessage (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_txtStatus.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+	public void addWord(String word) {setMessagesArea(word);}
+
+	public void startProgressBar() {initProgressBar(0,MAX_CNTR);}
+	public void endProgressBar() {setProgressBar(MAX_CNTR);}
+	public void initProgressBar (final int iMin, final int iMax) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setMinimum(iMin);
+					m_progress.setMaximum(iMax);
+					m_progress.setValue(iMin);
+					m_progress.setStringPainted(false);	// true for %age
+//					m_progress.setIndeterminate(true);		// jdk 1.4
+				}
+			}
+		);		
+	}
+	public void setProgressBar (final int value) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setValue(value);
+				}
+			}
+		);
+	}
+	public void handleProgressIndicator() {
+		m_cntr+=10;
+		if (m_cntr > MAX_CNTR) m_cntr = 1;
+		setProgressBar(m_cntr);		
+	}
+
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JTextField) {
+			LogHelper.info("textfield");
+		}
+		else if (source instanceof JButton) {
+			if (source == m_btnApp) {
+				JButton jb = (JButton) e.getSource();
+				String strBtn = jb.getText();
+				if (strBtn.equals(RUNAPP)) {
+					boolean bError = false;
+					if (! isStringThreadsValid()) bError = true;
+					if (! isStringRepeatValid()) bError = true;
+					if (! isStringDelayValid()) bError = true;
+					if (! isStringTestfileValid()) bError = true;
+					if (bError) {
+						setStatusMessage("Enter all the fields and press "+RUNAPP);
+						setProgressBar(0);			
+					}
+					else {
+						m_appThreads = null;
+						m_appThreads = new AppThreads(this, getIntThreads(), getIntRepeat(), getIntDelay(), getTestfile());
+						m_appThreads.start();
+						m_appThreads.setStart();
+						setStarted();
+					}
+				}
+				else if (strBtn.equals(STOPAPP)) {
+					m_appThreads.setStop();
+					m_appThreads = null;
+				}							
+			}
+			else if (source == m_btnClear) {
+				clearMessagesArea();
+			}
+		}
+		else
+			LogHelper.info("else type");
+	}
+	public void doStopClient() {
+		setMessagesArea("Exiting...");
+		if (m_appThreads != null) {
+			m_appThreads.setStop();
+			try {
+				while (m_appThreads.isAlive()) {
+					LogHelper.info("AppGui thread is alive");
+					Thread.sleep(1000);
+					LogHelper.info("AppGui is Sleeping");
+				}
+				LogHelper.info("AppGui thread is not alive");
+			}
+			catch (InterruptedException e) {
+				LogHelper.info("AppGui ; no sleep");
+			}
+		}
+		m_appThreads = null;
+		LogHelper.info("exiting app...");
+		System.exit(0);
+	}
+	public void setStarted() {setButtonText(false);}
+	public void setStopped() {setButtonText(true);}
+
+	private String getThreads() {return m_stringThreads.getText();}
+	private String getRepeat() {return m_stringRepeat.getText();}
+	private String getDelay() {return m_stringDelay.getText();}
+	private String getTestfile() {return m_stringTestfile.getText();}
+	private int getIntThreads() {return getInt(getThreads());}
+	private int getIntRepeat() {return getInt(getRepeat());}
+	private int getIntDelay() {return getInt(getDelay());}
+
+	private boolean isStringThreadsValid() {return isIntValid (getInt(getThreads()));}
+	private boolean isStringRepeatValid() {return isIntValid (getInt(getRepeat()));}
+	private boolean isStringDelayValid() {return isIntValid (getInt(getDelay()));}
+	private boolean isStringTestfileValid() {
+		if (getTestfile() == null || getTestfile().length() < 1)
+			return false;
+		return true;
+	}
+	private int getInt (String str) {
+		if (str == null) return 0;
+		try {
+			return Integer.parseInt(str);
+		}
+		catch (Exception ex) {
+			return 0;
+		}
+	}
+	private boolean isIntValid (int num) {
+		if (num < 0) return false;
+		return true;
+	}
+	public void setSize (int width, int height) {
+		super.setSize (width, height);
+		validate();
+		repaint();
+	}
+}

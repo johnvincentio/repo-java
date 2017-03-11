@@ -1,0 +1,40 @@
+
+
+-Xms<size> - Set initial Java heap size
+-Xmx<size> - Set maximum Java heap size
+
+Run --> Run Configurations --> select the "JRE" tab
+
+-Xmx1024m 
+iGB of memory
+-Xmx2048m
+2GB of memory
+
+MIGRATIONLOGS
+ITEMDETAILS
+HES_VEHICLE_CATEGORY_ITEMS
+HES_LIGHTING_CATEGORY_PACKAGES
+HES_EQUIPMENT_CATEGORY_ITEMS
+HES_CATEGORY_ITEMS
+
+
+delete from hercdb.MIGRATIONLOGS;
+delete from hercdb.ITEMDETAILS;
+delete from hercdb.HES_VEHICLE_CATEGORY_ITEMS;
+delete from hercdb.HES_LIGHTING_CATEGORY_PACKAGES;
+delete from hercdb.HES_EQUIPMENT_CATEGORY_ITEMS;
+delete from hercdb.HES_CATEGORY_ITEMS;
+
+loadfile c:/tmp/data/demodata2/inserts/MIGRATIONLOGS.sql;
+loadfile c:/tmp/data/demodata2/inserts/ITEMDETAILS.sql;
+loadfile c:/tmp/data/demodata2/inserts/HES_VEHICLE_CATEGORY_ITEMS.sql;
+loadfile c:/tmp/data/demodata2/inserts/HES_LIGHTING_CATEGORY_PACKAGES.sql;
+loadfile c:/tmp/data/demodata2/inserts/HES_EQUIPMENT_CATEGORY_ITEMS.sql;
+loadfile c:/tmp/data/demodata2/inserts/HES_CATEGORY_ITEMS.sql;
+
+select count(*) from hercdb.MIGRATIONLOGS;
+select count(*) from hercdb.ITEMDETAILS;
+select count(*) from hercdb.HES_VEHICLE_CATEGORY_ITEMS;
+select count(*) from hercdb.HES_LIGHTING_CATEGORY_PACKAGES;
+select count(*) from hercdb.HES_EQUIPMENT_CATEGORY_ITEMS;
+select count(*) from hercdb.HES_CATEGORY_ITEMS;

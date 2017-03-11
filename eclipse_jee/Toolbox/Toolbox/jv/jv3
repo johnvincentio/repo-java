@@ -1,0 +1,11 @@
+select account, accountid, companyid, active, approved, accountType, narpAccountId, countryCode 
+from hercdb.CompanyAccounts 
+where account='511600' 
+order by accountid, companyid, countrycode;
+
+select account, accountid, companyid, active, approved, accountType, narpAccountId, countryCode 
+from hercdb.CompanyAccounts 
+where accountid = 300915700073868363 
+order by accountid, companyid, countrycode;
+
+

@@ -1,0 +1,21 @@
+
+
+
+Robert Iacobucci/W...	john...ignore my last e-mail
+Robert Iacobucci/...	SELECT DISTINCT         rditem FROM hercdb.racdetfl  
+WHERE rdtype <> 'RI'                                  
+UNION                                                 
+SELECT DISTINCT         rditem FROM hercdb.raodetfl  
+WHERE rdtype   <> 'RI'                                
+
+
+SELECT DISTINCT rditem FROM hercdb.racdetfl_1 WHERE rdtype <> 'RI' 
+UNION SELECT DISTINCT rditem FROM hercdb.racdetfl_2 WHERE rdtype   
+<> 'RI' UNION SELECT DISTINCT rditem FROM hercdb.racdetfl_3 WHERE   
+rdtype <> 'RI' UNION SELECT DISTINCT rditem FROM hercdb.racdetfl_4 
+WHERE rdtype <> 'RI' UNION SELECT DISTINCT rditem FROM               
+hercdb.raodetfl_1 WHERE rdtype <> 'RI' UNION SELECT DISTINCT       
+rditem FROM hercdb.raodetfl_2 WHERE rdtype <> 'RI' UNION SELECT     
+DISTINCT rditem FROM hercdb.raodetfl_3 WHERE rdtype <> 'RI' UNION   
+SELECT DISTINCT rditem FROM hercdb.raodetfl_4 WHERE rdtype <> 'RI' 
+

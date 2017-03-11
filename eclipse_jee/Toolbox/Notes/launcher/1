@@ -1,0 +1,221 @@
+
+<launcher>
+<!--
+
+Path=C:\Program Files\IBM\SDP70\jdk\bin;C:\Program Files\Fortify Software\Fortify 360 v2.0\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\Rational\ClearCase\bin;C:\Program Files\Rational\common;C:\PROGRA~1\IBM\SQLLIB_01\BIN;C:\PROGRA~1\IBM\SQLLIB_01\FUNCTION;C:\PROGRA~1\IBM\SQLLIB_01\SAMPLES\REPL;C:\Program Files\Executive Software\Diskeeper\;C:\Program Files\Microsoft SQL Server\80\Tools\BINN;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\9.0\DLLShared\;C:\Program Files\IBM\Installation Manager\eclipse\lib;C:\Program Files\Common Files\Aladdin Shared\eToken\PKIClient\x32;c:\jv\utils
+
+
+
+C:\Program Files\Fortify Software\Fortify 360 v2.0\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\Rational\ClearCase\bin;C:\Program Files\Rational\common;C:\PROGRA~1\IBM\SQLLIB_01\BIN;C:\PROGRA~1\IBM\SQLLIB_01\FUNCTION;C:\PROGRA~1\IBM\SQLLIB_01\SAMPLES\REPL;C:\Program Files\Executive Software\Diskeeper\;C:\Program Files\Microsoft SQL Server\80\Tools\BINN;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\9.0\DLLShared\;C:\Program Files\IBM\Installation Manager\eclipse\lib;C:\Program Files\Common Files\Aladdin Shared\eToken\PKIClient\x32
+-->
+
+	<scenario name="radtool7" application="java" main="com.idc.rad.gui.App" cwd="c:\tmp" >
+		<classpath>
+			<param name="C:\development\herc_09_06\RadTool2"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib" />
+		</classpath>
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\Program Files\Fortify Software\Fortify 360 v2.0\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="C:\WINDOWS\System32\Wbem"/>
+			<param name="C:\Program Files\Rational\ClearCase\bin"/>
+			<param name="C:\Program Files\Rational\common"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\BIN"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\FUNCTION"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\SAMPLES\REPL"/>
+			<param name="C:\Program Files\Executive Software\Diskeeper\"/>
+			<param name="C:\Program Files\Microsoft SQL Server\80\Tools\BINN"/>
+			<param name="C:\Program Files\Common Files\Roxio Shared\DLLShared\"/>
+			<param name="C:\Program Files\Common Files\Roxio Shared\9.0\DLLShared\"/>
+			<param name="C:\Program Files\IBM\Installation Manager\eclipse\lib"/>
+			<param name="C:\Program Files\Common Files\Aladdin Shared\eToken\PKIClient\x32"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<params>
+			<param name="7"/>
+			<param name="c:\jv\utils\rad7.properties"/>
+		</params>
+		<envs>
+			<env name="jv" value="something"/>
+		</envs>
+	</scenario>
+
+	<scenario name="radtool6" application="java" main="com.idc.rad.gui.App" cwd="c:\jv\utils" >
+		<classpath>
+			<param name="C:\development\herc_09_06\RadTool2"/>
+			<param name="C:\Program Files\IBM\Rational\SDP\6.0\runtimes\base_v6\java\lib" />
+		</classpath>
+		<path>
+			<param name="C:\Program Files\IBM\Rational\SDP\6.0\runtimes\base_v6\java\bin"/>
+			<param name="C:\Program Files\Fortify Software\Fortify 360 v2.0\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="C:\WINDOWS\System32\Wbem"/>
+			<param name="C:\Program Files\Rational\ClearCase\bin"/>
+			<param name="C:\Program Files\Rational\common"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\BIN"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\FUNCTION"/>
+			<param name="C:\PROGRA~1\IBM\SQLLIB_01\SAMPLES\REPL"/>
+			<param name="C:\Program Files\Executive Software\Diskeeper\"/>
+			<param name="C:\Program Files\Microsoft SQL Server\80\Tools\BINN"/>
+			<param name="C:\Program Files\Common Files\Roxio Shared\DLLShared\"/>
+			<param name="C:\Program Files\Common Files\Roxio Shared\DLLShared\"/>
+			<param name="C:\Program Files\Common Files\Roxio Shared\9.0\DLLShared\"/>
+			<param name="C:\Program Files\IBM\Installation Manager\eclipse\lib"/>
+			<param name="C:\Program Files\Common Files\Aladdin Shared\eToken\PKIClient\x32"/>
+			<param name="c:\jv\utils" />
+		</path>
+		<envs>
+			<env name="JAVA_HOME" value="C:\Program Files\IBM\Rational\SDP\6.0\runtimes\base_v6\java"/>
+		</envs>
+		<params>
+			<param name="C:\jv\utils\rad6_irac.properties"/>
+		</params>
+	</scenario>
+
+	<scenario name="appcleaner" application="java" main="com.idc.appender.AppCleaner" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="appcoder" application="java" main="com.idc.appcoder.App" cwd="C:\irac7\wrkspc\Toolbox\AppCoder2" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\AppCoder2"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="appender" application="java" main="com.idc.appender.App" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="dbtool" application="java" main="com.idc.dbtool.DBToolGui" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Jars\db2java.zip"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Jars\jt400.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Jars\commons-lang-2.3.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="diffallgui" application="java" main="com.idc.diff.all.gui.DiffallGui" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+		<params>
+			<param name="-Xms1g"/>
+			<param name="-Xmx1g"/>
+			<param name="c:\jv\utils\diffallgui.properties"/>
+		</params>
+	</scenario>
+
+	<scenario name="FilesSinceGui" application="java" main="com.idc.filesgui.FilesSinceGui" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="grepdirgui" application="java" main="com.idc.grepgui.GrepdirGui" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="Jarlist" application="java" main="com.idc.file.jar.Jarlist" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+	<scenario name="Freecell" application="java" main="freecell.UIFreeSell" cwd="c:/jv/utils" >
+		<path>
+			<param name="C:\Program Files\IBM\SDP70\jdk\bin"/>
+			<param name="C:\WINDOWS\system32"/>
+			<param name="C:\WINDOWS"/>
+			<param name="c:\jv\utils"/>
+		</path>
+		<classpath>
+			<param name="C:\irac7\wrkspc\Animate\A4a"/>
+			<param name="c:\jv\utils\toolbox.jar"/>
+			<param name="C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar"/>
+			<param name="C:\Program Files\IBM\SDP70\jdk\lib"/>
+		</classpath>
+	</scenario>
+
+</launcher>

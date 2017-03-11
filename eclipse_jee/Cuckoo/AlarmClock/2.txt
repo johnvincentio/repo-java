@@ -1,0 +1,660 @@
+package com.idc.alarmclock;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Calendar;
+import java.util.StringTokenizer;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+import com.idc.trace.LogHelper;
+
+public class AlarmClock extends JFrame implements MouseListener {
+	private static final long serialVersionUID = 1;
+
+	private static final String IMAGES = "c:/jv/utils/AlarmClock/images";
+
+	private final int VERSION = 10;
+//	private ImageIcon ref;
+	private final Color BLACK = Color.BLACK;
+	private JPanel readout;
+//	private int trigger;
+	private int fileVersion;
+	private int hour, minute;
+	private boolean alarmam, enabled, killSnooze, mousePressed, dontLetMeSleep, agree, am /*true = am; false = pm*/;
+	private JLabel hour0, hour1, minute0, minute1, snooze;
+	private String operatingSystem, audioFilename;
+	private int offsetHours, homeTimeZone;
+	private Counter clock;
+	
+	public AlarmClock() {
+		LogHelper.info (">>> AlarmClock");
+		loadConfiguration();
+
+		LogHelper.info ("AlarmClock - 1");
+		operatingSystem = System.getProperty("os.name");
+		StringTokenizer st = new StringTokenizer(operatingSystem, " ");
+		operatingSystem = st.nextToken();
+
+		LogHelper.info ("AlarmClock - 2");
+		WindowDestroyer wd = new WindowDestroyer();
+		this.addWindowListener(wd);
+		
+		killSnooze = false;
+		enabled = true;
+
+		LogHelper.info ("AlarmClock - 3");
+		//setup clock
+		if(Calendar.getInstance().get(Calendar.AM_PM)==0) {
+			am = true;
+		}
+		else {
+			am = false;
+		}
+		//ref = new ImageIcon(getClass().getResource(IMAGES+"/alarm/1.PNG"));
+		readout = new JPanel();
+		readout.setBackground(BLACK);
+		//readout.setBounds(50,50,ref.getIconHeight(),ref.getIconWidth()*6);
+
+		LogHelper.info ("AlarmClock - 4");
+		//setup alarm variables
+		readAlarmTime();
+
+		LogHelper.info ("AlarmClock - 5");
+		//setup alarm readout
+		JPanel alarm = new JPanel();
+		alarm.setBackground(BLACK);
+		LogHelper.info ("AlarmClock - 5-4a");
+		//	private static final String IMAGES = "c:/jv/utils/AlarmClock/images";
+		//		JLabel spacer = new JLabel(new ImageIcon(getClass().getResource("/images/spacer.PNG")));
+//		JLabel spacer = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/spacer.PNG")));
+		JLabel spacer = new JLabel(new ImageIcon(getClass().getResource("/images/help.PNG")));
+		LogHelper.info ("AlarmClock - 5a");
+		JLabel bell = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/enabled.PNG")));
+		LogHelper.info ("AlarmClock - 5b");
+		bell.addMouseListener(this);
+		bell.setName("Bell");
+		hour0 = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+hour/10+".PNG")));
+		LogHelper.info ("AlarmClock - 5c");
+		hour0.addMouseListener(this);
+		hour0.setName("Hour");
+		hour1 = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+hour%10+".PNG")));
+		LogHelper.info ("AlarmClock - 5d");
+		hour1.addMouseListener(this);
+		hour1.setName("Hour");
+		minute0 = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+minute/10+".PNG")));
+		LogHelper.info ("AlarmClock - 5e");
+		minute0.addMouseListener(this);
+		minute0.setName("Minute");
+		minute1 = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+minute%10+".PNG")));
+		LogHelper.info ("AlarmClock - 5f");
+		minute1.addMouseListener(this);
+		minute1.setName("Minute");
+
+		LogHelper.info ("AlarmClock - 6");
+		//start clock
+		clock = new Counter();
+		clock.setPriority(4);
+		clock.start();
+		
+		String aam = "am";
+		if(!alarmam) {
+			aam = "pm";
+		}
+		LogHelper.info ("AlarmClock - 7");
+		JLabel am = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+aam+".PNG")));
+		am.addMouseListener(this);
+		am.setName("AM");
+		
+		alarm.add(spacer);
+		alarm.add(bell);
+		alarm.add(hour0);
+		alarm.add(hour1);
+		alarm.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/alarm/separator.PNG"))));
+		alarm.add(minute0);
+		alarm.add(minute1);
+		alarm.add(am);
+		
+		//set up JPanel for snooze, controlpanel, and help
+		JPanel controls = new JPanel();
+		controls.setBackground(BLACK);
+		snooze = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/snooze.PNG")));
+		snooze.setDisabledIcon(new ImageIcon(getClass().getResource(IMAGES+"/snooze.PNG")));
+		snooze.setEnabled(false);
+		snooze.setName("Snooze");
+		
+		JLabel controlpanel = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/controlpanel.PNG")));
+		controlpanel.setName("Control Panel");
+		controlpanel.addMouseListener(this);
+		
+		JLabel help = new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/help.PNG")));
+		help.setName("Help");
+		help.addMouseListener(this);
+		
+		controls.add(controlpanel, "East");
+		controls.add(snooze, "Center");
+		controls.add(help, "West");
+		
+		getContentPane().setLayout(new GridLayout(3,1));
+		getContentPane().add(readout);
+		getContentPane().add(alarm);
+		getContentPane().add(controls);
+		getContentPane().setBackground(BLACK);
+		
+		setResizable(false);
+		setTitle("Free Digital Alarm Clock");
+		setSize(300, 200);
+		setLocation(200,200);
+		setVisible(true);
+		repaint();
+		
+		AgreementFrame af = null;
+		if(!agree || fileVersion != VERSION) {
+			af = new AgreementFrame(this);
+			af.transferFocus();
+		}
+		LogHelper.info ("<<< AlarmClock");
+	}
+	
+	public void mouseExited(MouseEvent e) {
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		
+		JLabel source = ((JLabel)e.getSource());
+		if(source.getName().equals("Control Panel")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/controlpanel.PNG")));
+		}
+		else if(source.getName().equals("Help")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/help.PNG")));
+		}
+	}
+	
+	public void mouseEntered(MouseEvent e) {
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
+		JLabel source = ((JLabel)e.getSource());
+		if(source.getName().equals("Control Panel")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/controlpanelmouseover.PNG")));
+		}
+		else if(source.getName().equals("Help")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/helpmouseover.PNG")));
+		}
+	}
+	
+	public void mouseReleased(MouseEvent e) {
+		mousePressed = false;
+		
+		JLabel source = ((JLabel)e.getSource());
+		if(source.getName().equals("Control Panel")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/controlpanel.PNG")));
+			openControlPanel();
+		}
+		else if(source.getName().equals("Help")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/help.PNG")));
+		}
+	}
+	
+	public void mousePressed(MouseEvent e) {
+		JLabel source = ((JLabel)e.getSource());
+		if(source.getName().equals("Minute")) {
+			
+			mousePressed = true;
+			MousePressed mpl = new MousePressed();
+			mpl.setPriority(2);
+			mpl.start();
+		}
+		else if(source.getName().equals("Control Panel")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/controlpanelmousepressed.PNG")));
+		}
+		else if(source.getName().equals("Help")) {
+			source.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/helpmousepressed.PNG")));
+		}
+	}
+	
+	private class MousePressed extends Thread {
+		public void run() {
+			oneClick();
+			try {
+				sleep(500);
+			}
+			catch(InterruptedException e) {
+			}
+			
+			while(mousePressed) {
+				oneClick();
+				try {
+					sleep(130);
+				}
+				catch(InterruptedException e) {
+				}
+			}
+			saveAlarmTime();
+		}
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		String name = ((JLabel)e.getSource()).getName();
+		
+		//update alarm readout
+		if(name.equals("Hour")) {
+			if(hour < 12) {
+				hour++;
+			}
+			else {
+				hour = 1;
+			}
+			hour0.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+hour/10+".PNG")));
+			hour1.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+hour%10+".PNG")));
+			saveAlarmTime();
+		}
+		else if(name.equals("AM")) {
+			if(alarmam) {
+				alarmam = false;
+				((JLabel)e.getSource()).setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/pm.PNG")));
+			}
+			else {
+				alarmam = true;
+				((JLabel)e.getSource()).setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/am.PNG")));
+			}
+			saveAlarmTime();
+		}
+		else if(name.equals("Bell")) {
+			if(enabled) {
+				killSnooze = true;
+				enabled = false;
+				((JLabel)e.getSource()).setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/disabled.PNG")));
+				snooze.setDisabledIcon(new ImageIcon(getClass().getResource(IMAGES+"/snooze.PNG")));
+				snooze.setEnabled(false);
+				snooze.removeMouseListener(this);
+			}
+			else {
+				enabled = true;
+				((JLabel)e.getSource()).setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/enabled.PNG")));
+			}
+		}
+		
+		//snooze and other controls
+		else if(name.equals("Snooze")) {
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			((JLabel)e.getSource()).setEnabled(false);
+			this.snooze.removeMouseListener(this);
+			Snooze snooze = new Snooze();
+			snooze.setPriority(3);
+			snooze.start();
+		}
+		
+		else if(name.equals("Help")) {
+			new HelpFrame(this);
+		}
+	}
+	
+	public class Counter extends Thread {
+		public int hour;
+		public void run() {
+			hour = 0;
+			int minute = 0, second = 0;
+			Calendar time = null;
+			time = Calendar.getInstance();
+			int i=15;//set up for first read gets set back to zero every 15 sec
+					 //i is used for synchonizing the readout to the System Clock
+					 //using the Calendar class
+			
+			//If the time get synchonized at approx. 59,0,or 1 seconds it skip the
+			//0 second mark when the alarm clock should go off. If it skips the 0
+			//second mark the alarm clock will not go off. To be safe, the initial
+			//synch time is offset by 3 seconds.
+			if(time.get(Calendar.SECOND) == 0) {
+				i = 12;
+				hour = time.get(Calendar.HOUR) - offsetHours;
+				minute = time.get(Calendar.MINUTE);
+				second = time.get(Calendar.SECOND);
+			}
+			
+			//update clock readout
+			while(true) {
+				if(i == 15) {
+					//synchronization
+					time = Calendar.getInstance();
+					hour = time.get(Calendar.HOUR) - offsetHours;
+					
+					if(time.get(Calendar.AM_PM)==0) {
+						am = true;
+					}
+					else {
+						am = false;
+					}
+					
+					if(hour==0) {
+						hour = 12;
+					}
+					else if(hour > 12) {
+						hour -= 12;
+						am = !am;
+					}
+					else if(clock.hour < 0) {
+						clock.hour = 12 + clock.hour;
+						am = !am;
+					}
+					minute = time.get(Calendar.MINUTE);
+					second = time.get(Calendar.SECOND);
+					i=0;
+				}
+				readout.invalidate();
+				readout.removeAll();
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (hour/10) + ".PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (hour%10) + ".PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/separator.PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (minute/10) + ".PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (minute%10) + ".PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/separator.PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (second/10) + ".PNG"))));
+				readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/" + (second%10) + ".PNG"))));
+				if(am) {
+					readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/am.PNG"))));
+				}
+				else if(!am) {
+					readout.add(new JLabel(new ImageIcon(getClass().getResource(IMAGES+"/clock/pm.PNG"))));
+				}
+				
+				readout.validate();
+				
+				repaint();
+				second++;
+				if(second == 60) {
+					second = 0;
+					minute++;
+					if(minute == 60) {
+						minute = 0;
+						hour++;
+						if(hour == 13) {
+							hour = 1;
+						}
+					}
+				}
+				
+				if(second==1) {
+					beepIfMatch(hour,minute,second,am);
+				}
+				i++;
+				try {
+					sleep(990);
+				}
+				catch(InterruptedException e) {
+				}
+			}
+		}
+	}
+	
+	private void beepIfMatch(int hour, int minute, int second, boolean am) {
+		if(this.hour == 0) {
+			this.hour = 12;
+		}
+		if(this.hour==hour && this.minute==minute && second==1 && am==alarmam && enabled) {
+			snooze.setEnabled(true);
+			snooze.addMouseListener(this);
+			snooze.setDisabledIcon(new ImageIcon(getClass().getResource(IMAGES+"/snoozing.PNG")));
+			
+			Beep alarm = new Beep(this);
+			alarm.setPriority(6);
+			alarm.start();
+		}
+	}
+	
+	public class Beep extends Thread {
+		MouseListener l;
+		
+		public Beep(MouseListener l) {
+			this.l = l;
+		}
+		public void run() {
+			int beeps = 0;
+			if(dontLetMeSleep) {
+				setEnabled(false);
+			}
+			while(snooze.isEnabled() && !killSnooze) {
+				if(beeps == 121) {
+					break;
+				}
+				
+				AudioPlayer p = AudioPlayer.player;
+				try{
+					AudioStream as = new AudioStream(getClass().getResourceAsStream(IMAGES+"/"+audioFilename+".au"));
+					p.start(as);
+				}
+				catch(IOException e){
+					e.printStackTrace();
+				}
+				
+				try {
+					if(operatingSystem.equals("Windows")) {
+						sleep(950);
+					}
+					else {
+						sleep(50);
+					}
+					
+					
+					if(beeps == 120) {
+						setEnabled(true);
+					}
+				}
+				catch(InterruptedException e) {
+				}
+				beeps++;
+			}
+			if(beeps == 300) {
+				snooze.setEnabled(false);
+				snooze.setDisabledIcon(new ImageIcon(getClass().getResource(IMAGES+"/snooze.PNG")));
+				snooze.removeMouseListener(l);
+				
+				Snooze persist = new Snooze();
+				persist.setPriority(2);
+				persist.start();
+			}
+			if(killSnooze) {
+				killSnooze = false;
+			}
+		}
+	}
+	
+	public class Snooze extends Thread {
+		public void run() {
+			snooze.setDisabledIcon(new ImageIcon(getClass().getResource(IMAGES+"/snoozing.PNG")));
+			try {
+				sleep(480*1000);
+			}
+			catch(InterruptedException e) {
+			}
+			beepIfMatch(hour,minute,1,alarmam);
+		}
+	}
+	
+	private void saveAlarmTime() {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saveAlarmTime.at", false));
+			out.writeInt(hour);
+			out.writeInt(minute);
+			out.writeBoolean(alarmam);
+			out.close();
+		}
+		catch(FileNotFoundException e) {
+		}
+		catch(IOException e) {
+		}
+	}
+	
+	private void readAlarmTime() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("saveAlarmTime.at"));
+			hour = in.readInt();
+			minute = in.readInt();
+			alarmam = in.readBoolean();
+			in.close();
+		}
+		catch(FileNotFoundException e) {
+			hour = 12;
+			minute = 00;
+			alarmam = true;
+		}
+		catch(IOException e) {
+			hour = 12;
+			minute = 00;
+			alarmam = true;
+		}
+	}
+	
+	private void openControlPanel() {
+		//open control panel and pass it this JFrame - for thisJFrame.setEnabled(true); when finished
+		new ControlPanel(this);
+	}
+	
+	public class WindowDestroyer extends WindowAdapter {
+		public void windowClosing(WindowEvent e) {
+			saveAlarmTime();
+			System.exit(0);
+		}
+	}
+	
+	//setAudioFilename sets the audio filename without the extension
+	public void setAudioFilename(String audioFilename) {
+		this.audioFilename = audioFilename;
+	}
+	
+	public void setDontLetMeSleep(boolean dontLetMeSleep) {
+		this.dontLetMeSleep = dontLetMeSleep;
+	}
+	
+	public void setOffsetHours(int offsetHours) {
+		this.offsetHours = offsetHours;
+		clock.hour = Calendar.getInstance().get(Calendar.HOUR) - offsetHours;
+		if(clock.hour > 12) {
+			clock.hour -= 12;
+			am = !am;
+		}
+		else if(clock.hour < 0) {
+			clock.hour = 12 + clock.hour;
+			am = !am;
+		}
+		else if(Calendar.getInstance().get(Calendar.AM_PM) == 0) {
+			am = true;
+		}
+		else {
+			am = false;
+		}
+	}
+	
+	public void setHomeTimeZone(int homeTimeZone) {
+		this.homeTimeZone = homeTimeZone;
+	}
+	
+	public int getHomeTimeZone() {
+		return homeTimeZone;
+	}
+	
+	public int getOffsetHours() {
+		return offsetHours;
+	}
+	
+	public boolean getDontLetMeSleep() {
+		return dontLetMeSleep;
+	}
+	
+	public String getAudioFilename() {
+		return audioFilename;
+	}
+	
+	public void saveConfiguration() {
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("config.config", false));
+			out.writeInt(VERSION);
+			out.writeInt(homeTimeZone);
+			out.writeInt(offsetHours);
+			out.writeBoolean(dontLetMeSleep);
+			out.writeUTF(audioFilename);
+			out.writeBoolean(agree);
+			out.close();
+		}
+		catch(FileNotFoundException e) {
+		}
+		catch(IOException e) {
+		}	
+	}
+	
+	public void loadConfiguration() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("config.config"));
+			fileVersion = in.readInt();
+			homeTimeZone = in.readInt();
+			offsetHours = in.readInt();
+			dontLetMeSleep = in.readBoolean();
+			audioFilename = in.readUTF();
+			agree = in.readBoolean();
+			in.close();
+		}
+		catch(FileNotFoundException e) {
+			fileVersion = 0;
+			dontLetMeSleep = false;
+			audioFilename = "tone1";
+			offsetHours = 0;
+			homeTimeZone = -8;
+			agree = false;
+		}
+		catch(IOException e) {
+			fileVersion = 0;
+			dontLetMeSleep = false;
+			audioFilename = "tone1";
+			offsetHours = 0;
+			homeTimeZone = -8;
+			agree = false;
+		}
+	}
+	
+	private void oneClick() {
+		if(minute < 59) {
+			minute++;
+		}
+		else {
+			minute = 0;
+		}
+		minute0.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+minute/10+".PNG")));
+		minute1.setIcon(new ImageIcon(getClass().getResource(IMAGES+"/alarm/"+minute%10+".PNG")));
+		repaint();
+	}
+	
+	public void setAgree(boolean agree) {
+		this.agree = agree;
+		saveConfiguration();
+	}
+	
+	public String getOperatingSystem() {
+		return operatingSystem;
+	}
+	
+	public void exit(int exitStatus) {
+		System.exit(exitStatus);
+	}
+	
+	public int getVersion() {
+		return VERSION;
+	}
+	
+	public static void main(String[] args) {
+		new AlarmClock();
+	}
+}

@@ -1,0 +1,5 @@
+"Dallas",47,"Janet Fuller","445 Upland Pl.","Trial"
+"Lyon",38,"Andrew Heiniger","347 College Av.","Active"
+"Dallas",43,"Susanne Smith","2 Upland Pl.","Active"
+"Berne",22,"Bill Ott","250 - 20th Ave.","Active"
+

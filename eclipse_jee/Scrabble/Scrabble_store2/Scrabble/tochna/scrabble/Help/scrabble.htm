@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Lior Shadhan">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.03 [en] (WinNT; I) [Netscape]">
+   <TITLE>Scrabble Help</TITLE>
+</HEAD>
+<BODY BACKGROUND="java.JPG">
+<IMG SRC="options.gif" BORDER=0 USEMAP="#options" ><MAP NAME="options"><AREA SHAPE=RECT COORDS="0,0,166,17" HREF="contents.htm" OnMouseOver="window.status='contents'; return true"><AREA SHAPE=RECT COORDS="177,0,280,18" HREF="index.htm" OnMouseOver="window.status='index'; return true"><AREA SHAPE=RECT COORDS="292,0,393,17" HREF="help.htm" OnMouseOver="window.status='about'; return true"></MAP>
+<BR>
+<HR WIDTH="100%">
+
+<P><A NAME="Overview"></A>
+
+<P><B><FONT FACE="Courier New (Hebrew)"><FONT COLOR="#3333FF"><FONT SIZE=+1>Overview</FONT></FONT></FONT></B>
+
+<P><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1><FONT COLOR="#3333FF">Scrabble</FONT>
+is the widely known desk-based game, which is played on a 15x15 grid board.</FONT></FONT>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The game pieces are letter
+tiles, with a different scoring for each letter.</FONT></FONT>
+<BR><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The purpose of the
+game is to achieve as many points as possible by creating and placing words
+on the <FONT COLOR="#3333FF">Scrabble</FONT> playboard from a limited set
+of letters, using some of the already-placed letters on the board.</FONT></FONT>
+
+<P><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Our game can be played
+by 1 to 4 players at once playing against each other.&nbsp; In case of
+a single player, he or she plays against the speller only -&nbsp; there
+is no computer player.&nbsp; The Players start the <FONT COLOR="#3333FF">Scrabble</FONT>
+game each on his/her&nbsp; local computer, and are connected via a network.</FONT></FONT>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>One of the players is connected
+as a server, and all other are connected to her/him as clients. The players
+can also chat with each other.</FONT></FONT>
+
+<P><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>When the server starts
+the game, each player is given 7 letters (tiles), which should be placed
+on the playboard to form words. The words should be&nbsp; recognized by
+an internal speller or be approved by all other players if the speller
+is off. Each word (except the first word of the game) should include at
+least one letter of a previous word which is already on the board. In each
+move a player can form several words by adding letters. The speller checks
+the words from top to bottom and from left to right, and so should do the
+players in case the speller is off. The same word can be created as many
+times a player wishes.</FONT></FONT> <FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>If
+a word is recognized by the speller or other players, the player gets the
+total points of the words created.</FONT></FONT> <FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>A
+word score depends on the score of the letters, and on their placement
+on the playboard. There are cells which increase the score of letters (*2
+or *3),&nbsp; or the score of the whole word (*2 or *3). When the player
+presses the 'Done' button or the player's turn time is up, the new tiles
+on the playboard are submitted to the Server, which checks the new board,
+compute the score, and send the new board to all other players. In case
+of illegal move, the player will get the appropriate message, and will
+have to compose other words. The player can also click&nbsp; the 'Pass'
+button, and the turn will be given to the next player. The 'Undo' button
+is used to return all tiles, which are currently placed on the board.</FONT></FONT>
+
+<P>
+<HR WIDTH="100%">
+<BR><A NAME="Requirements"></A>
+
+<P><B><FONT FACE="Courier New (Hebrew)"><FONT COLOR="#3333FF"><FONT SIZE=+1>System
+Requirements</FONT></FONT></FONT></B>
+<BR>&nbsp;
+<BR><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The program was written
+using the JDK1.0.2 as a stand alone application, and thus needs a Java
+compiler in order to run.</FONT></FONT>
+<BR><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The game needs a network
+for communication, even if there is only one player. Therefor,&nbsp; Socket
+Support (TCP/IP stack) must be installed.</FONT></FONT>
+<BR><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The game currently
+runs only on the Windows NT/95 platform, supporting the JDK1.0.2.</FONT></FONT>
+
+<P>
+<HR WIDTH="100%">
+<BR><A NAME="Game Rules"></A>
+
+<P><B><FONT FACE="Courier New (Hebrew)"><FONT COLOR="#3333FF"><FONT SIZE=+1>Game
+Rules</FONT></FONT></FONT></B>
+<UL>
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The first word on the board
+must cover the red tile in the center of the board.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>When the speller is active,
+each submitted word must pass spell check. If one of the words don't pass
+the check, the entire move is considered illegal.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Each word must have at
+least one common letter with the previously placed words.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The same word may be placed
+many times, even in the same move.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The words are read from
+left to right, and from top to bottom.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Score is depended on the
+weight of the letters, and placement. There are cells which multiply the
+weight of the letter by 2 or 3, or the score of the whole word by 2 or
+3.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The winner is the player
+with the best score by the end of game. Game is ended when players decided
+to give up !</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>If timeout is enabled,
+the player has to complete his/her move before the time limit expires,
+or press the 'Pass' button. When the time limit expires, the player will
+remain with his/hers current letters, and the turn will be passed to the
+next player.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Only the Server can start/end
+a game.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>New players can't connect
+when there is a game in progress.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The maximum number of players
+is 4.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>When a player leaves the
+game, his/hers score is removed, and he/she can't reenter the game.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Game can be restored only
+if currently the '<FONT COLOR="#3333FF">Scrabble</FONT>'&nbsp; Server is
+connected to a port, and exactly the same players are connected.</FONT></FONT></LI>
+
+<BR><FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The players are identified
+by nicknames, and no duplicate nicknames are allowed. The '<FONT COLOR="#3333FF">Scrabble'</FONT>
+Server will deny connection if a nick collision is detected.</FONT></FONT></UL>
+
+<HR WIDTH="100%"><A NAME="Typical Scenario"></A>
+
+<P><B><FONT FACE="Courier New (Hebrew)"><FONT COLOR="#3333FF"><FONT SIZE=+1>Typical
+Scenario</FONT></FONT></FONT></B>
+<BR>&nbsp;
+<UL>
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Several players want to
+play <FONT COLOR="#3366FF">Scrabble</FONT>.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>All start the application.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>All choose their nick name
+in the Settings - Properties menu.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>All change the Host name
+and Port number in the Settings - Properties menu <U>to be the same as
+of the Server</U>.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The player who wants to
+be the Server selects: Connect as Server. All other select: Connect as
+Client.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Now all players are connected
+together and can chat between themselves. The messages can be public or
+private.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The Server player starts
+a new game. The order of the players in the game is random</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>Each player receive 7 letters
+(tiles).</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>In his turn, each player
+can compose words on the playboard using the 7 tiles. When he finished,
+he can press Done. The words are submitted to the Server, who performs
+the spell check. If the move is legal, the Server sends it to all other
+players (with scoring). If the move is illegal, an appropriate message
+is sent to the player.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>If the player can't compose
+any word, he can Pass his turn. The Server will then send him 7 new letters,
+and will pass the turn to the next player.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The game ends when the
+Server player decide to stop the Game.</FONT></FONT></LI>
+
+<LI>
+<FONT FACE="Courier New (Hebrew)"><FONT SIZE=-1>The winner is the one with
+the higher score.</FONT></FONT></LI>
+</UL>
+
+</BODY>
+</HTML>

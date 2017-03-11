@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>EtrieveItServerProject</name>
+	<comment></comment>
+	<projects>
+		<project>EtrieveItEnterpriseApplication</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.ibm.etools.server.core.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.ibm.etools.server.core.nature</nature>
+	</natures>
+</projectDescription>

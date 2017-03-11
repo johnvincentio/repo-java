@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.ibm.ws.ast.st.runtime.runtimeTarget.v61/was.base.v61"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Toolbox"/>
+	<classpathentry kind="lib" path="/Jars/ant.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: 2.3 (IBM Corporation)
+Built-By: PRC4031
+Main-Class: com.idc.launcher.Launcher
+Class-Path: toolbox.jar log4j.jar
+
+Name: com/idc/launcher
+Specification-Title: Java Launcher Jar
+Specification-Version: 1.0.0
+Specification-Vendor: Jars idc
+Implementation-Title: launcher
+Implementation-Version: 1.0.0 19-June-2009 10:18:13
+Implementation-Vendor: idc
+
+Name: com/idc/launcher/
+Sealed: true
+

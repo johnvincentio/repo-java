@@ -1,0 +1,25 @@
+-- HttpPageInfo
+`makePackage()`
+
+import java.io.Serializable;
+
+import com.hertz.herc.presentation.util.PageInfo;
+
+/**
+ *	Describe a `getHttpPageInfoClassName()`
+ *
+ * @author John Vincent
+ */
+ 
+public class `getHttpPageInfoClassName()` extends PageInfo implements Serializable {
+
+	public void copyFormInfo (`getFormInfoClassName()` formInfo) {formInfo.copyTo (this);}
+
+`makeMembers()`
+
+`makeGetters()`
+
+`makeSetters()`
+
+`makeToString()`
+`makeEndClass()`

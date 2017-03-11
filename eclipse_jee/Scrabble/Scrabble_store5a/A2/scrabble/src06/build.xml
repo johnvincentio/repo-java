@@ -1,0 +1,55 @@
+<!-- Comment -->
+
+<project name="simpleCompile" default="compile" basedir=".">
+	<target name="init">
+		<echo message="init"/>
+		<property name="java.dir" value="java"/>
+		<property name="jar.name" value="scrabble"/>
+		<property name="build.dir" value="build"/>
+		<property name="image.dir" value="images"/>
+		<path id="javac.classpath">
+			<pathelement location="${build.dir}/classes"/>
+		</path>
+		<path id="java.classpath">
+			<pathelement location="${build.dir}/${jar.name}.jar"/>
+		</path>
+   </target>
+
+	<target name="clean" depends="init">
+		<echo message="clean"/>
+		<delete>
+			<fileset dir="${build.dir}/classes" includes="**/*.class"/>
+			<fileset dir="${build.dir}" includes="**/*.jar"/>
+		</delete>
+	</target>
+
+	<target name="compile" depends="clean">
+		<echo message="Compiling java..."/>
+		<javac srcdir="${java.dir}" 
+				destdir="${build.dir}/classes">
+			<include name="**/*.java" />
+			<classpath refid="javac.classpath"/>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${build.dir}/${jar.name}.jar" compress="true">
+			<fileset dir="${build.dir}/classes" includes="**/*.class"/>
+			<fileset dir="${image.dir}" includes="**/*.gif"/>
+		</jar>
+	</target>
+
+	<target name="runclient" depends="init">
+		<echo message="run the Client"/>
+		<java classname="com/idc/scrabble/client/ScrabbleClient" fork="yes">
+			<classpath refid="java.classpath"/>
+		</java>
+	</target>
+	<target name="runserver" depends="init">
+		<echo message="run the Server"/>
+		<java classname="com/idc/scrabble/server/ScrabbleServer" fork="yes">
+			<classpath refid="java.classpath"/>
+		</java>
+	</target>
+</project>
+

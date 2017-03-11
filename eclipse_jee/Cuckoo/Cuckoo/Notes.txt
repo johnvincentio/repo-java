@@ -1,0 +1,76 @@
+
+http://gallery.hd.org/_c/music/cuckoo-clock-one-chime-ANON.au.html
+
+http://www.nch.com.au/acm/formats.html
+http://ptolemy.berkeley.edu/java/audio/index.html
+http://java.ittoolbox.com/documents/popular-q-and-a/sound-in-a-java-application-1749
+http://www.cs.cornell.edu/courses/cs100j/2006sp/assignments/a5/skeleton/StdAudio.java
+http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
+http://www.daniweb.com/forums/thread17484.html
+http://www.daniweb.com/forums/post728231.html
+http://www.javazoom.net/index.shtml
+http://www.tech-archive.net/Archive/PocketPC/microsoft.public.pocketpc.multimedia/2006-08/msg00031.html
+
+
+http://www.jsresources.org/examples/audio_files.html
+
+http://personalwebs.coloradocollege.edu/~jbredin/java/examples/playwav.html
+
+http://www.onjava.com/pub/a/onjava/excerpt/jenut3_ch17/index.html
+
+http://www.velocityreviews.com/forums/t303171-play-wav-music-file.html
+
+http://java.sun.com/docs/books/tutorial/sound/playing.html
+
+http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
+
+http://www.daniweb.com/forums/thread17484.html
+
+http://www.iam.ubc.ca/guides/javatut99/sound/playing.html
+
+http://www.roseindia.net/java/example/java/util/CertainAndRepeatTime.shtml
+
+
+
+
+import java.util.*;
+import java.io.*;
+
+public class CertainAndRepeatTime{
+  public static void main(String[] args) throws IOException{
+    int delay = 1000;
+    Timer timer = new Timer();
+    System.out.println("What do you want (Certain time or Repeat time)?");
+    System.out.print("Please enter \'C\' or \'R\' for that: ");
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    String ans = in.readLine();
+    if (ans.equals("C") || ans.equals("c")){
+      timer.schedule(new TimerTask(){
+        public void run(){
+          System.out.println("This line is printed only once.");
+        }
+      },delay);
+    }
+    else if(ans.equals("r") || ans.equals("R")){
+      timer.schedule(new TimerTask(){
+        public void run(){
+          System.out.println("This line is printed repeatedly.");
+        }
+      },delay, 1000);
+    }
+    else{
+      System.out.println("Invalid Entry.");
+      System.exit(0);
+    }
+    System.exit(0);
+  }
+} 
+http://www.javapractices.com/topic/TopicAction.do?Id=54
+
+http://www.exampledepot.com/egs/java.util/ScheduleRepeat.html
+
+http://www.cs.rpi.edu/~hollingd/javanetprog/JavaExamples2/com/davidflanagan/examples/thread/Timer.java
+
+http://www.java-tips.org/java-me-tips/midp/simple-animation-using-a-timer-and-timertask.html
+
+

@@ -1,0 +1,76 @@
+describe table db2inst1.location_state
+
+
+
+Column                         Type      Type
+
+name                           schema    name               Length   Scale Nulls
+
+------------------------------ --------- ------------------ -------- ----- ------
+
+LOCATION_STATE_ID              SYSIBM    BIGINT                    8     0 No    
+
+STATE_PROVINCE_CODE            SYSIBM    VARCHAR                   2     0 No    
+
+HZ_STATE_PROVINCE_CODE         SYSIBM    VARCHAR                   2     0 No    
+
+DISPLAY_DL                     SYSIBM    SMALLINT                  2     0 No    
+
+DISPLAY_ADDR                   SYSIBM    SMALLINT                  2     0 No    
+
+DISPLAY_DEST                   SYSIBM    SMALLINT                  2     0 No    
+
+COUNTRY                        SYSIBM    BIGINT                    8     0 No    
+
+
+
+  7 record(s) selected.
+
+
+
+
+
+describe table hercdb.members
+
+
+
+Column                         Type      Type
+
+name                           schema    name               Length   Scale Nulls
+
+------------------------------ --------- ------------------ -------- ----- ------
+
+MEMBERID                       SYSIBM    BIGINT                    8     0 No    
+
+USERNAME                       SYSIBM    VARCHAR                 128     0 No    
+
+COMPANYID                      SYSIBM    BIGINT                    8     0 No    
+
+DEFAULTLOCATION                SYSIBM    VARCHAR                  50     0 Yes   
+
+LOCKED_BY_MEMBERID             SYSIBM    BIGINT                    8     0 Yes   
+
+LOCK_EXPIRY_TIME               SYSIBM    BIGINT                    8     0 Yes   
+
+
+
+  6 record(s) selected.
+
+
+
+cols 6
+queryColumnInfo (HERCDB.MEMBERS,6),
+((1,MEMBERID,-5,20,MEMBERID,BIGINT,true,19,0)
+(2,USERNAME,12,128,USERNAME,VARCHAR,true,128,0)
+(3,COMPANYID,-5,20,COMPANYID,BIGINT,true,19,0)
+(4,DEFAULTLOCATION,12,50,DEFAULTLOCATION,VARCHAR,false,50,0)
+(5,LOCKED_BY_MEMBERID,-5,20,LOCKED_BY_MEMBERID,BIGINT,false,19,0)
+(6,LOCK_EXPIRY_TIME,-5,20,LOCK_EXPIRY_TIME,BIGINT,false,19,0))
+
+
+
+
+
+
+
+

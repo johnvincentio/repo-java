@@ -1,0 +1,760 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.appender;
+
+import java.util.regex.*;
+
+public class SplitString {
+	private String[] m_splitStrings;
+	private int m_nPos = 0;
+
+	public void splitBuffer(String str, String div) {
+		Pattern pattern = Pattern.compile(div);
+		m_splitStrings = pattern.split(str);
+	}
+	public String getNext() {return m_splitStrings[m_nPos++];}
+	public int getNextInt() {
+		String strMsg = m_splitStrings[m_nPos++];
+		Integer intNumber = new Integer(strMsg);
+		return intNumber.intValue();
+	}
+	public int length() {return m_splitStrings.length;}
+	public boolean hasNext() {return m_nPos < m_splitStrings.length;}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.appender;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Rows {
+	private ArrayList<Row> m_list = new ArrayList<Row>();
+	public Iterator getItems() {return m_list.iterator();}
+	public void add(Row item) {m_list.add(item);}
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++) {
+			buf.append(((Row) m_list.get(i)).toString());
+		}
+		return "("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.appender;
+
+public class Row {
+	private String row;
+	public Row (String s) {row = s;}
+	public void setRow(String s) {row = s;}
+	public String getRow() {return row;}
+	public String toString() {return "("+row+")";}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.appender;
+
+import java.util.Iterator;
+
+public class Data {
+	public Rows makeData (String line) {
+//		System.out.println("line :"+line+":");
+		SplitString splitString = new SplitString();
+		splitString.splitBuffer(line,"\n");
+//		System.out.println("length "+splitString.length());
+		Rows rows = new Rows();
+		while (splitString.hasNext()) {
+			rows.add (new Row(splitString.getNext().trim()));
+		}
+		rows = formatRows (rows);
+		return rows;
+	}
+	private Rows formatRows (Rows pRows) {
+		Rows rows = new Rows();
+		boolean bComment = false;
+		boolean bTemporaryIndent = false;
+		int indent = 0;
+		Iterator iter = pRows.getItems();
+		while (iter.hasNext()) {
+			Row row = (Row) iter.next();
+			String line = row.getRow();
+			System.out.println("\nNext Line :"+line+":");
+			if (isComment(line)) {
+				rows.add (new Row("//"+makeTabs(indent)+line.substring(2).trim()));
+				continue;
+			}
+//			if (isStartCommentAndEndComment(line)) {
+//				newline = line;
+//			}
+			if (isStartComment(line)) {
+				System.out.println("Start Comment");
+				bComment = true;
+				rows.add (new Row(line));
+				continue;
+			}
+			if (isEndComment(line)) {
+				System.out.println("End Comment");
+				if (startEmbeddedComment(line) < 0) {
+					System.out.println("Embedded Comment");
+					bComment = false;
+					rows.add (new Row(line));
+					continue;
+				}
+			}
+			if (bComment) {
+				System.out.println("Still a Comment");
+				rows.add (new Row(line));
+				continue;
+			}
+			if (isEmptyLine(line)) {
+				System.out.println("empty line");
+				rows.add (new Row(line));
+				continue;
+			}
+			if (isOpenParam(line) && isCloseParam(line)) {
+				System.out.println("Open and Close Param; indent "+indent);
+				rows.add (new Row(makeTabs(indent) + line));
+				continue;
+			}
+			if (isOpenParam(line)) {
+				System.out.println("Open Param; indent "+indent);
+				if (bTemporaryIndent) {
+					int tmp = indent - 1;
+					if (tmp < 0) tmp = 0;
+					String newline = makeTabs(tmp) + line;
+					rows.add (new Row(newline));
+					bTemporaryIndent = false;
+				}
+				else {
+					String newline = makeTabs(indent) + line;
+					indent++;
+					rows.add (new Row(newline));
+				}
+				continue;
+			}
+			if (isCloseParam(line)) {
+				System.out.println("Close Param; indent "+indent);
+				indent--;
+				String newline = makeTabs(indent) + line;
+				rows.add (new Row(newline));
+				continue;
+			}
+			if (bTemporaryIndent) {
+				System.out.println("Temporary Indent; indent "+indent);
+				rows.add (new Row(makeTabs(indent) + line));
+				if (isEndLine(line)) {
+					System.out.println("Temporary Indent - End of line");
+					indent--;
+					bTemporaryIndent = false;
+				}
+			}
+			else {
+				System.out.println("Not Temporary Indent; indent "+indent);
+				if (isEndLine(line)) {
+					rows.add (new Row(makeTabs(indent) + line));
+				}
+				else {
+					System.out.println("Not Temporary Indent - Not end of line");
+					rows.add (new Row(makeTabs(indent) + line));
+					indent++;
+					bTemporaryIndent = true;
+				}
+			}
+		}
+		return rows;
+	}
+	private String makeTabs (int tabs) {
+		String str = "";
+		for (int i=0; i<tabs; i++) str += "\t";
+		return str;
+	}
+	private boolean isComment(String str) {
+		if (str.startsWith("//")) return true;
+		return false;
+	}
+	private int startEmbeddedComment(String str) {
+		int pos1a = str.indexOf("/*");
+		int pos1b = str.indexOf("//");
+		if (pos1a < 0 && pos1b < 0) return -1;
+		if (pos1b > -1) return pos1b;
+
+		int pos2 = str.indexOf("*/");
+		if (pos2 < 0) return -1;
+		if (pos1a < pos2) return pos1a;
+		return -1;
+	}
+	private boolean isStartComment(String str) {
+		if (str.startsWith("/*")) return true;
+		return false;
+	}
+	private boolean isEndComment (String str) {
+		if (str.indexOf("*/") > -1) return true;
+		return false;	
+	}
+	private boolean isEndLine (String str) {
+		String line = str.trim();
+		int pos = startEmbeddedComment(line);
+		String line2 = line;
+		if (pos > -1) line2 = line.substring(0, pos-1);
+		String line3 = line2.trim();
+		return line3.trim().endsWith(";");
+	}
+	private boolean isEmptyLine (String str) {return str.length() < 1;}
+	private boolean isOpenParam (String str) {
+		int qpos = str.indexOf("{");
+		if (qpos < 0) return false;
+		int bpos = str.indexOf('"');
+		int epos = str.lastIndexOf('"');
+		if (bpos < qpos && qpos < epos) return false;
+		return true;
+	}
+	private boolean isCloseParam (String str) {
+		return str.endsWith("}");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.appender;
+
+import com.idc.trace.LogHelper;
+import com.idc.utils.JVString;
+import com.idc.file.copy.JVFile;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import javax.swing.*;
+
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.io.*;
+import java.util.Iterator;
+
+public class Appfile extends JPanel implements ActionListener, DropTargetListener {
+	private static final long serialVersionUID = 1;
+	private App m_app;
+	private Clipboard m_clipboard;
+	private JTextField m_filenameField;
+	private JTextArea m_textArea;
+	private JButton m_btnClearFileField;
+	private JButton m_btnClearMessages;
+	private JButton m_btnSaveFile;
+	private JButton m_btnPasteText;
+	private JFileChooser m_fileChooser;
+
+	public Appfile(App app) {
+		m_app = app;
+		m_clipboard = m_app.getToolkit().getSystemClipboard();
+		makeFileChooser();
+	}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel topPane = new JPanel();
+		m_filenameField = new JTextField(20);
+		new DropTarget(m_filenameField, 
+				DnDConstants.ACTION_COPY_OR_MOVE,
+				this);
+		topPane.add(m_filenameField);
+	m_btnClearFileField = new JButton("Clear");
+	m_btnClearFileField.addActionListener(this);
+	topPane.add(m_btnClearFileField);
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(40,60);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(false);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+		LogHelper.info("tabsize "+m_textArea.getTabSize());
+		m_textArea.setTabSize(4);
+		LogHelper.info("tabsize "+m_textArea.getTabSize());
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+			JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll, BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));	//t,l,b,r
+
+		JPanel lowPane = new JPanel();
+	m_btnSaveFile = new JButton("Save to File");
+	m_btnSaveFile.addActionListener(this);
+	lowPane.add(m_btnSaveFile);
+	m_btnPasteText = new JButton("Paste");
+	m_btnPasteText.addActionListener(this);
+	lowPane.add(m_btnPasteText);
+	m_btnClearMessages = new JButton("Clear");
+	m_btnClearMessages.addActionListener(this);
+	lowPane.add(m_btnClearMessages);
+
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+	private void writeHeaderMessage (String msg) {
+		writeToTextArea("");
+		writeToTextArea("***********************************************************************************");
+		writeToTextArea(msg);
+		writeToTextArea("***********************************************************************************");
+		writeToTextArea(""); 		
+	}
+	private void readFile(final String filename) {
+		LogHelper.info("Read file :"+filename+":");
+		writeHeaderMessage (filename);
+		BufferedReader buf = null;
+		String line;
+		try{
+			buf = new BufferedReader(new FileReader(filename));
+			while((line = buf.readLine()) != null) {
+				writeToTextArea(line);			
+			}
+			setCaretToEnd();
+			setFilenameMessage(filename);
+		}
+		catch(Exception exception) {
+			LogHelper.info("Exception; "+exception.getMessage());
+//			exception.printStackTrace();
+		}
+		finally {
+			try {
+				if (buf != null) buf.close();
+			}
+			catch(IOException exception2) {
+				LogHelper.info("Exception; "+exception2.getMessage());
+//				exception2.printStackTrace();
+			}
+		}
+		LogHelper.info("Finished reading the file");
+	}
+	private void writeFile (File file) {
+		String strFile = file.getPath().trim();
+		System.out.println("strFile :"+strFile+":");
+		String strText = m_textArea.getText();
+		JVFile jvFile = new JVFile();
+		if (jvFile.writeFile(strText, file))
+			LogHelper.info("Wrote the file");
+		else
+			LogHelper.info("Could not write to the file");
+	}
+	public synchronized void drop(DropTargetDropEvent e) {
+		System.out.println(">>> Abc:drop");
+		try {
+			Transferable tr = e.getTransferable();
+			if (tr.isDataFlavorSupported (DataFlavor.javaFileListFlavor)) {
+				e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+				java.util.List fileList = (java.util.List)
+					tr.getTransferData(DataFlavor.javaFileListFlavor);
+				Iterator iterator = fileList.iterator();
+				while (iterator.hasNext()) {
+					File file = (File)iterator.next();
+					readFile (file.getAbsolutePath());
+				}
+				e.getDropTargetContext().dropComplete(true);
+			}
+			else if (tr.isDataFlavorSupported (DataFlavor.stringFlavor)) {
+				e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+				String str = ((String) tr.getTransferData(DataFlavor.stringFlavor)).trim();
+				if (str.startsWith("file:/")) str = str.substring(7);
+				LogHelper.info("File is :"+str+":");
+				File file = new File(str);
+				if (file.isFile()) {
+					readFile (file.getAbsolutePath());
+				}
+				e.getDropTargetContext().dropComplete(true);
+			}
+			else {
+				System.err.println ("Rejected");
+				e.rejectDrop();
+			}
+		}
+		catch (IOException io) {
+			io.printStackTrace();
+			e.rejectDrop();
+		}
+		catch (UnsupportedFlavorException ufe) {
+			ufe.printStackTrace();
+			e.rejectDrop();
+		}
+		System.out.println ("<<< Abc:drop");
+	}
+	public void dragEnter(DropTargetDragEvent e) {
+//		System.out.println("--- Abc:dragEnter");
+	}
+	public void dragExit(DropTargetEvent e) {
+//		System.out.println("--- Abc:dragExit");
+	}
+	public void dragOver(DropTargetDragEvent e) {
+//	System.out.println("--- Abc:dragOver");
+	}
+	public void dropActionChanged(DropTargetDragEvent e) {
+//	System.out.println("--- Abc:dropActionChanged");
+	}
+	private void clearFileNameField () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_filenameField.setText("");
+					validate();
+				}
+			}
+		);		
+	}
+	public void setFilenameMessage (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_filenameField.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+	private void setCaretToEnd() {
+		m_textArea.setCaretPosition(m_textArea.getText().length());		
+	}
+	private void clearMessages () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.setText("");
+					validate();
+				}
+			}
+		);		
+	}
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.append(msg);
+					m_textArea.append("\n");
+				}
+			}
+		);
+	}
+	private void writeToTextArea(final String line) {
+		JVString jvstr = new JVString(line);
+	jvstr.replace("	","	");
+		jvstr.replace("	","\t");
+		setMessagesArea (jvstr.getString());
+	}
+	private void makeFileChooser() {
+		m_fileChooser = new JFileChooser();
+		m_fileChooser.setApproveButtonText("Save");
+		m_fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//		m_fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		String strCwd = System.getProperty("user.dir");
+		m_fileChooser.setCurrentDirectory(new File(strCwd));
+	}
+	private void pasteText() {
+		Transferable clipData = m_clipboard.getContents(m_clipboard);
+		if (clipData != null) {
+			try {
+				if (clipData.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+					String s = (String)(clipData.getTransferData(
+							DataFlavor.stringFlavor));
+					writeHeaderMessage("PASTED TEXT");
+					writeToTextArea(s);			
+					setCaretToEnd();				
+				}
+			}
+			catch (UnsupportedFlavorException ufe) {
+				System.err.println("Unsupported flavor: " + ufe);
+			} catch (IOException ufe) {
+				System.err.println("Unable to get data: " + ufe);
+			}
+		}
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JButton) {
+			LogHelper.info("jbutton");
+			if (source == m_btnClearFileField) {
+				LogHelper.info("btnClearFileField");
+				clearFileNameField();
+			}
+			else if (source == m_btnClearMessages) {
+				LogHelper.info("btnClearMessages");
+				clearMessages();
+			}
+			else if (source == m_btnPasteText) {
+				LogHelper.info("btnPasteText");
+				pasteText();
+			}
+			else if (source == m_btnSaveFile) {
+				LogHelper.info("btnSaveFile");
+				int retval = m_fileChooser.showOpenDialog(Appfile.this);
+				if (retval == JFileChooser.APPROVE_OPTION) {
+					File file = m_fileChooser.getSelectedFile();
+					writeFile(file);
+				}
+			}
+	}
+	else
+		LogHelper.info("else type");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.appender;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+import com.idc.trace.LogHelper;
+
+public class AppCleanerPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private AppCleaner m_app;
+	private Clipboard m_clipboard;
+	private JTextArea m_textArea;
+	private JButton m_btnCopyText;
+	private JButton m_btnClearMessages;
+	private JButton m_btnPasteText;
+
+	public AppCleanerPanel(AppCleaner app) {
+		m_app = app;
+		m_clipboard = m_app.getToolkit().getSystemClipboard();
+	}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(40,60);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(false);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+			JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll,	BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));	//t,l,b,r
+
+		JPanel lowPane = new JPanel();
+	m_btnPasteText = new JButton("Paste");
+	m_btnPasteText.addActionListener(this);
+	lowPane.add(m_btnPasteText);
+	m_btnCopyText = new JButton("Copy Text");
+	m_btnCopyText.addActionListener(this);
+	lowPane.add(m_btnCopyText);
+	m_btnClearMessages = new JButton("Clear");
+	m_btnClearMessages.addActionListener(this);
+	lowPane.add(m_btnClearMessages);
+
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+	private void setCaretToEnd() {
+		m_textArea.setCaretPosition(m_textArea.getText().length());		
+	}
+	private void clearMessages () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.setText("");
+					validate();
+				}
+			}
+		);		
+	}
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.append(msg);
+					m_textArea.append("\n");
+					validate();
+				}
+			}
+		);
+	}
+	public void copyMessagesArea () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.selectAll();
+					m_textArea.copy();
+					validate();
+				}
+			}
+		);
+	}
+	private void writeToTextArea(final String line) {
+		Data data = new Data();
+		Rows rows = data.makeData(line);
+		Iterator iter = rows.getItems();
+		while (iter.hasNext()) {
+			Row row = (Row) iter.next();
+//			row.show();
+			setMessagesArea (row.getRow());
+		}
+	}
+
+/*
+	private void writeToTextArea(final String line) {
+		System.out.println("line :"+line+":");
+		JVString jvstr = new JVString(line);
+//		jvstr.dump("before replacing stuff");
+	jvstr.replace("	","	");
+		jvstr.replace("	","\t");
+		jvstr.removeNull();
+//		jvstr.dump("before replacing stuff");
+		setMessagesArea (jvstr.getString());
+	}
+*/
+	private void pasteText() {
+		Transferable clipData = m_clipboard.getContents(m_clipboard);
+		if (clipData != null) {
+			try {
+				if (clipData.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+					String s = (String)(clipData.getTransferData(
+							DataFlavor.stringFlavor));
+					writeToTextArea(s);			
+					setCaretToEnd();				
+				}
+			}
+			catch (UnsupportedFlavorException ufe) {
+				System.err.println("Unsupported flavor: " + ufe);
+			} catch (IOException ufe) {
+				System.err.println("Unable to get data: " + ufe);
+			}
+		}
+	}
+	/*
+	private void copyText() {
+//		String strText = m_textArea.getText();
+//		System.out.println("text :"+strText+":");
+//		StringSelection data = new StringSelection(strText);
+//		m_clipboard.setContents(data, data);
+		m_textArea.selectAll();
+		m_textArea.copy();
+	}
+	*/
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JButton) {
+			LogHelper.info("jbutton");
+			if (source == m_btnClearMessages) {
+				LogHelper.info("btnClearMessages");
+				clearMessages();
+			}
+			else if (source == m_btnPasteText) {
+				LogHelper.info("btnPasteText");
+				pasteText();
+			}
+			else if (source == m_btnCopyText) {
+				LogHelper.info("btnCopyText");
+//				copyText();
+				copyMessagesArea();
+			}			
+	}
+	else
+		LogHelper.info("else type");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.appender;
+
+import javax.swing.*;
+
+public class AppCleaner extends JFrame {
+	private static final long serialVersionUID = 1;
+	public AppCleaner(String msg) {
+		super(msg);
+		setContentPane((new AppCleanerPanel(this)).makeContentPane());
+		setSize(700,730);		// width, height
+		setVisible(true);
+	}
+	public static void main (String args[]) {
+		JFrame frame = new AppCleaner ("Text Cleaner Application");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.appender;
+
+import javax.swing.*;
+
+public class App extends JFrame {
+	private static final long serialVersionUID = 1;
+	public App(String msg) {
+		super(msg);
+		setContentPane((new Appfile(this)).makeContentPane());
+		setSize(700,730);		// width, height
+		setVisible(true);
+	}
+	public static void main (String args[]) {
+		JFrame frame = new App ("Appender Application");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}
+

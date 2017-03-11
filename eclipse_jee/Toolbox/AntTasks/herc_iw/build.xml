@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<project name="Copy IW files" default="usage" basedir=".">
+
+	<tstamp>
+		<format property="my.datetime" pattern="dd-MMM-yyyy_HH-mm-ss"/>
+	</tstamp>
+	<property name="deploy.dir" value="c:/herc_interwoven"/>
+	<property name="deploy.base.dir" value="${deploy.dir}/${my.datetime}"/>
+	
+	<target name="usage">
+		<echo message="Usage; Be careful!" />
+	</target>
+
+	<target name="init">
+		<taskdef name="copyFromHttp" classname="com.idc.ant.task.CopyFromHttp" >
+			<classpath>
+				<pathelement location="../" />
+				<pathelement location="../../Toolbox" />
+			</classpath>
+		</taskdef>
+
+		<taskdef name="compareDirectory" classname="com.idc.ant.task.CompareDirectory" >
+			<classpath>
+				<pathelement location="../" />
+				<pathelement location="../../Toolbox" />
+			</classpath>
+		</taskdef>
+	</target>
+
+	<target name="copyFiles">
+		<echo message="Copy content files from ${from.dir} to ${to.dir}" />
+		<copy todir="${to.dir}" failonerror="true">
+			<fileset dir="${from.dir}"/>
+		</copy>
+	</target>
+
+	<target name="irac.dev.dc" depends="init" 
+			description="Compare Dev and DC Irac Content files">
+		<property name="output.file.name" value="${deploy.base.dir}/irac_dev_dc.txt"/>
+		<property name="irac.content.dev.dir" value="\\hertz602/iracDevContent/xml/IracContent"/>
+		<property name="irac.content.dc.dir" value="http://end01.dc.irac.ecom.ad.hertz.com:1400/content/xml/IracContent"/>
+
+		<antcall target="copyFiles">
+			<param name="from.dir" value="${irac.content.dev.dir}"/>
+			<param name="to.dir" value="${deploy.base.dir}/baseline"/>
+		</antcall>
+
+		<copyFromHttp baseDir="${deploy.base.dir}/baseline" 
+						fromUrl="${irac.content.dc.dir}" 
+						toDir="${deploy.base.dir}/working"/>
+
+		<compareDirectory fromDir="${deploy.base.dir}/baseline"
+							toDir="${deploy.base.dir}/working"
+							outputFile="${output.file.name}"/>
+	</target>
+
+</project>

@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Hertz Equipment Rental Online Reporting</title>
+<meta http-equiv="Page-Enter" content="blendtrans(duration=1.0)">
+</HEAD>
+
+<BODY BGCOLOR="#ffffff">
+
+<br>
+
+<center>
+
+	<form name="login" action="servlet/EtrieveWebValidationServlet" method=POST>
+	
+	<table border="0" cellspacing="5" cellpadding="5" bgcolor="#FED70C">
+
+		<caption><b><big>Herc Gold Service Login</big></b></caption>
+
+			<tr>
+				<td><b>Account_Number</b></td>
+				<td><input type="text" name="corpacct" size="10" maxsize="25"></td>
+			</tr>
+			<tr>
+				<td><b>Corppin</b></td>
+                <td><input type="text" name="corppin" size="10" maxsize="25" ></td>
+            </tr>
+			<tr>
+				<td><b>User_Name</b></td>
+                <td><input type="text" name="usernam" size="10" maxsize="25"></td>
+            </tr>
+			<tr>
+				<td><b>PIN_Code</b></td>
+                <td><input type="text" name="userpin" size="10" maxsize="25" ></td>
+			</tr>
+			<tr>
+				<td><b>US_Account_Number</b></td>	
+                <td><input type="text" name="us_acc_num" size="10" maxsize="25"></td>
+			</tr>
+			<tr>
+				<td><b>Canadian_Account_Number</b></td>        
+                <td><input type="text" name="ca_acc_num" size="10" maxsize="25"></td>
+			</tr>
+			<tr> 
+				<td><b>US or CA</b></td>                   
+                <td><input type="text" name="country_code"  size="2" maxsize="2"></td>
+			</tr>
+			<tr>
+				<td><b>C or P</b></td>            
+                <td><input type="text" name="accttype" size="1" maxsize="1"></td>
+			</tr>
+			<tr>   
+				<td colspan="2" align="center"><input type="submit" value="Log In" name="loginbutton"></td>
+            </tr> 
+
+
+	</table>
+
+	</form>
+
+</center>
+
+</BODY>
+</HTML>

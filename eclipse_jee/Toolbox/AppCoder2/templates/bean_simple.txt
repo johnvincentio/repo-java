@@ -1,0 +1,26 @@
+-- bean; simple bean
+
+package `getPackageName()`;
+
+import java.io.Serializable;
+
+/**
+ *	Describe a `getBeanClassName()`
+ *
+ * @author John Vincent
+ */
+ 
+`makeStartClass(getBeanClassName())`
+
+`makeMembers()`
+
+`makeConstructorArgs (getBeanClassName())`
+
+`makeGetters()`
+
+`makeSetters()`
+
+`makeIsSame()`
+
+`makeToString()`
+}

@@ -1,0 +1,59 @@
+<?xml  version="1.0"?>
+
+<project name="AlarmClockTool" default="make_jar" basedir=".">
+
+	<property name="my.jar.file" value="c:/jv/utils/Jars/alarmClock.jar" />
+	<property name="my.manifest.file" value="mymanifest.txt" />
+	<property name="my.version" value="l.0.0" />
+	<target name="clean">
+		<echo message="Deleting My JAR file - ${my.jar.file}" />
+		<delete file="${my.jar.file}" />
+	</target>
+
+	<target name="timestamp">
+		<tstamp>
+			<format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+		</tstamp>
+	</target>
+
+	<target name="make_manifest" depends="timestamp">
+		<echo message="Creating manifest file - ${my.manifest.file}" />
+		<delete file="${my.manifest.file}" />
+		<manifest file="${my.manifest.file}">
+			<attribute name="Built-By"  value="${user.name}"/>
+            <attribute name="Class-Path" value="toolbox.jar"/>
+            <attribute name="Main-Class" value="com.idc.alarmclock.AlarmClock" />
+			<section name="com.idc.alarmclock">
+				<attribute name="Specification-Title" value="Java AlarmClock Jar"/>
+                <attribute name="Specification-Version" value="${my.version}"/>
+                <attribute name="Specification-Vendor" value="Jars idc"/>
+                <attribute name="Implementation-Title" value="alarm clock"/>
+                <attribute name="Implementation-Version" value="${my.version} ${my.datestamp}"/>
+                <attribute name="Implementation-Vendor" value="idc" />
+			</section>
+			<section name="com/idc/alarmclock/">
+				<attribute name="Sealed" value="true" />
+			</section>
+		</manifest>
+	</target>
+
+	<target name="make_jar" depends="clean, make_manifest">
+		<echo message="Creating My JAR  file - ${my.jar.file}" />
+		<echo message="base directory ${basedir}" />
+		<jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+			<fileset dir="${basedir}">
+				<include name="**/**.class" />
+				<include name="images/**/**.*" />
+			</fileset>
+        	<fileset file="agreement.txt" />
+			<fileset file="config.config" />
+			<fileset file="help.txt" />
+			<fileset file="Read Me.txt" />
+			<fileset file="saveAlarmTime.at" />
+			<fileset file="tone1.au" />
+			<fileset file="tone2.au" />
+			<fileset file="tone3.au" />
+		</jar>
+	</target>
+
+</project>

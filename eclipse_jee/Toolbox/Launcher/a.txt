@@ -1,0 +1,330 @@
+
+
+	private void doTest2b() {		// works
+		System.out.println(">>> App::doTest2b");
+		String[] envp = getEnvp_1b();
+		File cwd = new File ("C:\\irac7\\wrkspc\\Toolbox\\Launcher");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2b");
+	}
+
+	private void doTest2c() {		// cwd causes failure
+		System.out.println(">>> App::doTest2c");
+		String[] envp = getEnvp_1c();
+		File cwd = new File ("C:\\temp");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2c");
+	}
+
+	private void doTest2d() {
+		System.out.println(">>> App::doTest2d");
+		String[] envp = getEnvp_1c();
+		File cwd = new File ("C:\\irac7\\wrkspc\\Toolbox\\Launcher");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2d");
+	}
+
+	private void doTest2e() {		// somehow, this works! ah, the cwd...
+		System.out.println(">>> App::doTest2e");
+		String[] envp = getEnvp_1c();
+		File cwd = new File ("C:\\irac7\\wrkspc\\Toolbox\\Launcher");
+		String[] strCmd = {"java", "com.idc.launcher.SubApp"};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2e");
+	}
+
+	private void doTest2f() {		// fails....quietly...does not run the subapp
+		System.out.println(">>> App::doTest2f");
+		String[] envp = getEnvp_1c();
+		File cwd = new File ("C:\\tmp");
+		String[] strCmd = {"java", "com.idc.launcher.SubApp"};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2f");
+	}
+
+	private void doTest2f1() {		// works
+		System.out.println(">>> App::doTest2f1");
+		String[] envp = getEnvp_1c();		// remove classpath
+		File cwd = new File ("C:\\tmp");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2f1");
+	}
+
+	private void doTest2f2() {		// works
+		System.out.println(">>> App::doTest2f2");	// replace classpath
+		String[] envp = getEnvp_1d ("C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib");
+		File cwd = new File ("C:\\tmp");		// cwd must exist
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2f2");
+	}
+	
+		private void doTest99() {
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		Iterator keyValuePairs1 = jvmap.entrySet().iterator();
+		System.out.println("***********************************");
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs1.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			System.out.println("key :" + key + ": value :" + value + ":");
+		}
+		jvmap.remove("CLASSPATH");
+		// jvmap.put("CLASSPATH",
+		// "C:\\jv\\development\\apps\\Tools\\AlarmClockTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib");
+		jvmap.put("CLASSPATH","C:\\jv\\development\\apps\\Tools\\CalendarTool; C:\\Program Files\\IBM\\SDP70\\jdk\\lib");
+		jvmap.put("CLASSPATH","C:\\jv\\development\\apps\\Tools\\LauncherTool; C:\\Program Files\\IBM\\SDP70\\jdk\\lib");
+		keyValuePairs1 = jvmap.entrySet().iterator();
+		System.out.println("***********************************");
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs1.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			System.out.println("key :" + key + ": value :" + value + ":");
+		}
+		System.out.println("***********************************");
+		String[] envp = new String[jvmap.size() * 2];
+		keyValuePairs1 = jvmap.entrySet().iterator();
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs1.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			envp[count++] = key;
+			envp[count++] = value;
+		}
+		System.out.println("***********************************");
+		// String[] strCmd = {"java", "com.idc.alarmclock.AlarmClock", "-cp",
+		// "C:\\jv\\development\\apps\\Tools\\AlarmClockTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// String[] strCmd = {"javaw", "-version"};
+		// String[] strCmd = {"java", "com.idc.alarmclock.AlarmClock", "-cp",
+		// "C:/jv/development/apps/Tools/AlarmClockTool; C:/Program
+		// Files/IBM/SDP70/jdk/lib"};
+		// String[] strCmd = {"java", "com.idc.alarmclock.JVAlarmClock"};
+		// String[] strCmd = {"explorer", "c:\\jv\\utils"};
+		// String[] strCmd = {"java", "-verbose", "com.idc.calendar.App", "-cp",
+		// "C:\\jv\\development\\apps\\Tools\\CalendarTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// String[] strCmd = {"javaw", "com.idc.calendar.App", "-classpath",
+		// "C:\\jv\\development\\apps\\Tools\\CalendarTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// C:\jv\development\apps\Tools\CalendarTool\com\idc\calendar\App.java
+		// com.idc.launcher
+		// String[] strCmd = {"javaw", "com.idc.launcher.AppTest", "-classpath",
+		// ".;C:\\jv\\development\\apps\\Tools\\LauncherTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// String[] strCmd = {"cmd.exe", "-classpath",
+		// "C:\\jv\\development\\apps\\Tools\\LauncherTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// String[] strCmd = {"c:\\jv\\utils\\jvrad.bat", "-classpath",
+		// "C:\\jv\\development\\apps\\Tools\\LauncherTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// String[] strCmd = {"cmd.exe", "/c", "set"}; // works
+		// works
+		// String[] strCmd = {"java", "com.idc.rad.gui.App", "-classpath",
+		// "C:\\jv\\development\\apps\\Tools\\RadTool; C:\\Program
+		// Files\\IBM\\SDP70\\jdk\\lib"};
+		// works
+		String[] strCmd = { "java", "com.idc.rad.gui.App" };
+		LogHelper.info("strCmd :" + strCmd[0] + "," + strCmd[1] + ":");
+		File cwd = new File("c:\\tmp");
+		// ExecuteCommandThread executeCommandThread = new ExecuteCommandThread
+		// (strCmd, envp, cwd, new PrintLine());
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread(
+				strCmd, new PrintLine());
+		executeCommandThread.start();
+		/*
+		 * try { Thread.sleep(5000); } catch (Exception ex) {
+		 * System.out.println("Exception "+ex.getMessage()); }
+		 */
+	}
+	private void doTest1() {
+		System.out.println(">>> App::doTest1");
+		ExecuteCommand process = new ExecuteCommand();		// waits for process to finish
+		String[] cmd1 = { "cmd.exe" };
+//		String[] cmd2 = { "set" };
+		PrintLine out = new PrintLine();
+		process.executeCommand(cmd1, out);
+//		process.executeCommand(cmd2, out);
+		System.out.println("<<< App::doTest1");
+	}
+
+	private void doTest1a() {
+		System.out.println(">>> App::doTest1a");
+		String[] strCmd = { "cmd.exe" };
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest1a");
+	}
+
+	private void doTest1b() {
+		System.out.println(">>> App::doTest1b");
+		String[] strCmd = {"cmd.exe", "/c", "set"};		// works
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest1b");
+	}
+
+	private void doTest1c() {		// fails
+		System.out.println(">>> App::doTest1c");
+		String[] strCmd = {"java", "com.idc.launcher.SubApp",
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest1c");
+	}
+
+	private void doTest1d() {		// works
+		System.out.println(">>> App::doTest1d");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest1d");
+	}
+
+	private void doTest2a() {		// failed
+		System.out.println(">>> App::doTest2a");
+		String[] envp = getEnvp_1a();
+		File cwd = new File ("c:\\temp");
+		String[] strCmd = {"java", 
+				"-classpath",
+				"C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib",
+				"com.idc.launcher.SubApp"
+		};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2a");
+	}
+	private String[] getEnvp_1a() {		// oops
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		Iterator keyValuePairs1 = jvmap.entrySet().iterator();
+		String[] envp = new String[jvmap.size() * 2];
+		keyValuePairs1 = jvmap.entrySet().iterator();
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs1.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			envp[count++] = key;
+			envp[count++] = value;
+		}
+		return envp;
+	}
+	
+		private void doTest2f3() {		// works
+		System.out.println(">>> App::doTest2f3");	// replace classpath
+		String[] envp = getEnvp_1d ("C:\\irac7\\wrkspc\\Toolbox\\Launcher; C:\\Program Files\\IBM\\SDP70\\jdk\\lib");
+		File cwd = new File ("C:\\tmp");		// cwd must exist
+		String[] strCmd = {"java", "com.idc.launcher.SubApp"};
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+		System.out.println("<<< App::doTest2f3");
+	}
+
+	private String[] getEnvp_1b() {		// works
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		Iterator keyValuePairs = jvmap.entrySet().iterator();
+		String[] envp = new String[jvmap.size()];
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			envp[count++] = key + "=" + value;
+		}
+		return envp;
+	}
+
+	private String[] getEnvp_1c() {
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		jvmap.remove("CLASSPATH");		// works provided use -cp
+		Iterator keyValuePairs = jvmap.entrySet().iterator();
+		String[] envp = new String [jvmap.size()];
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			envp[count++] = key + "=" + value;
+		}
+		return envp;
+	}
+
+	private String[] getEnvp_1d (String classpath) {		// works
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		jvmap.remove("CLASSPATH");		// works provided use -cp
+		Iterator keyValuePairs = jvmap.entrySet().iterator();
+		String[] envp = new String [jvmap.size() + 1];
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			envp[count++] = key + "=" + value;
+		}
+		envp[count] = "CLASSPATH="+classpath;
+		return envp;
+	}
+	
+	
+	private String[] getEnvp (String name, String value) {
+		Map map = System.getenv();
+		Map jvmap = new HashMap(map);
+		jvmap.remove (name);
+		Iterator keyValuePairs = jvmap.entrySet().iterator();
+		String[] envp = new String [jvmap.size() + 1];
+		int count = 0;
+		for (int i = 0; i < jvmap.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value1 = (String) entry.getValue();
+			envp[count++] = key + "=" + value1;
+		}
+		envp[count] = name + value;
+		return envp;
+	}
+	

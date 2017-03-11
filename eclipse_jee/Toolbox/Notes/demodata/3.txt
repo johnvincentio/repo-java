@@ -1,0 +1,215 @@
+select distinct RDCON#, RDITEM, RDQTY, RDLOC, RHJOBL, RHDATO, RHPO#, ECDESC, 
+RHORDB, RDSEQ#, RHLRDT ,CJNAME  
+from hercdb.RACHDRH4, hercdb.RACDETH3, hercdb.EQPCCMFL   
+Left outer join hercdb.CUSJOBFL 
+On RHCMP=CJCMP and RHCUS#=CJCUS#  and RHJOB#=CJJOB#  
+where RHCMP='HG'  and RHCUS# in ((140276)) and RHSYSD > 0  
+and RHTYPE in ('O','F')  and RHOTYP ='F'  and RHLRDT >= 20081209 and RHLRDT <= 99999999 
+and RHCMP = RDCMP  and RDTYPE='RI'  and RDCUS# in ((140276)) and RHCON# = RDCON#   
+and RHISEQ = RDISEQ   and RDSTTS <> 'EX'   
+and RDCMP = ECCMP  and RDCATG = ECCATG  and RDCLAS = ECCLAS   
+order by RHLRDT DESC, RDCON# DESC;
+
+
+select distinct RDCON#, RDITEM, RDQTY, RDLOC, RHJOBL, RHDATO, RHPO#, ECDESC, 
+RHORDB, RDSEQ#, RHLRDT ,CJNAME  
+from hercdb.RACHDRFL, hercdb.RACDETFL, hercdb.EQPCCMFL   
+Left outer join hercdb.CUSJOBFL 
+On RHCMP=CJCMP and RHCUS#=CJCUS#  and RHJOB#=CJJOB#  
+where RHCMP='HG'  and RHCUS# in ((140276)) and RHSYSD > 0  
+and RHTYPE in ('O','F')  and RHOTYP ='F'  and RHLRDT >= 20081209 and RHLRDT <= 99999999 
+and RHCMP = RDCMP  and RDTYPE='RI'  and RDCUS# in ((140276)) and RHCON# = RDCON#   
+and RHISEQ = RDISEQ   and RDSTTS <> 'EX'   
+and RDCMP = ECCMP  and RDCATG = ECCATG  and RDCLAS = ECCLAS   
+order by RHLRDT DESC, RDCON# DESC
+
+
+
+select * from hercdb.RACDETFL;
+
+select * from hercdb.CUSJOBFL;
+
+
+select distinct a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT , d.CJNAME  
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+Left outer join hercdb.CUSJOBFL d 
+On b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS   
+order by b.RHLRDT DESC, a.RDCON# DESC;
+
+
+
+
+
+
+select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT , d.CJNAME  
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+Left outer join hercdb.CUSJOBFL d 
+ON b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  ; 
+
+
+select d.CJNAME, a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT   
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+Left outer join hercdb.CUSJOBFL d 
+ON b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  ;
+
+-- works
+select b.RHJOBL, b.RHDATO, b.RHPO#, b.RHORDB, b.RHLRDT , d.CJNAME  
+from hercdb.RACHDRH4 b  
+Left outer join hercdb.CUSJOBFL d 
+ON b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  ; 
+
+
+-- SQL0338N  An ON clause associated with a JOIN operator or in a MERGE statement is not valid.  SQLSTATE=42972
+
+select b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, b.RHORDB, b.RHLRDT , d.CJNAME  
+from hercdb.RACHDRH4 b, hercdb.EQPCCMFL c 
+Left outer join hercdb.CUSJOBFL d 
+On b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 ;
+
+
+
+select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, b.RHORDB, a.RDSEQ#, b.RHLRDT , d.CJNAME  
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.CUSJOBFL d 
+Left outer join hercdb.CUSJOBFL 
+On b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP = a.RDCMP  and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ;  
+
+
+
+
+
+
+
+
+
+
+
+select distinct a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT , d.CJNAME  
+from 
+(select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT 
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS )
+as t 
+Left outer join hercdb.CUSJOBFL d 
+On t.RHCMP = d.CJCMP and t.RHCUS# = d.CJCUS#  and t.RHJOB# = d.CJJOB# ;
+
+
+
+
+hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+Left outer join hercdb.CUSJOBFL d 
+On b.RHCMP = d.CJCMP and b.RHCUS# = d.CJCUS#  and b.RHJOB# = d.CJJOB#  
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS   
+order by b.RHLRDT DESC, a.RDCON# DESC;
+
+
+
+
+-- works
+select distinct t.RDCON#, t.RDITEM, t.RDQTY, t.RDLOC, t.RHJOBL, t.RHDATO, t.RHPO#, t.ECDESC, 
+t.RHORDB, t.RDSEQ#, t.RHLRDT 
+from 
+(select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT 
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS )
+as t ;
+
+
+
+select distinct t.RDCON#, t.RDITEM, t.RDQTY, t.RDLOC, t.RHJOBL, t.RHDATO, t.RHPO#, t.ECDESC, 
+t.RHORDB, t.RDSEQ#, t.RHLRDT, t.RHCMP, t.RHCUS#, t.RHJOB# 
+from 
+(select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT, b.RHCMP, b.RHCUS#, b.RHJOB# 
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS )
+as t 
+Left outer join hercdb.CUSJOBFL d 
+On t.RHCMP = d.CJCMP and t.RHCUS# = d.CJCUS#  and t.RHJOB# = d.CJJOB#  ;
+
+
+
+
+select distinct t.RDCON#, t.RDITEM, t.RDQTY, t.RDLOC, t.RHJOBL, t.RHDATO, t.RHPO#, t.ECDESC, 
+t.RHORDB, t.RDSEQ#, t.RHLRDT, t.RHCMP, t.RHCUS#, t.RHJOB#, d.CJNAME 
+from 
+(select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT, b.RHCMP, b.RHCUS#, b.RHJOB# 
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS )
+as t 
+Left outer join hercdb.CUSJOBFL d 
+On t.RHCMP = d.CJCMP and t.RHCUS# = d.CJCUS#  and t.RHJOB# = d.CJJOB#  ;
+
+
+-- original
+
+select distinct RDCON#, RDITEM, RDQTY, RDLOC, RHJOBL, RHDATO, RHPO#, ECDESC, 
+RHORDB, RDSEQ#, RHLRDT ,CJNAME  
+from hercdb.RACHDRH4, hercdb.RACDETH3, hercdb.EQPCCMFL   
+Left outer join hercdb.CUSJOBFL 
+On RHCMP=CJCMP and RHCUS#=CJCUS#  and RHJOB#=CJJOB#  
+where RHCMP='HG'  and RHCUS# in ((140276)) and RHSYSD > 0  
+and RHTYPE in ('O','F')  and RHOTYP ='F'  and RHLRDT >= 20081209 and RHLRDT <= 99999999 
+and RHCMP = RDCMP  and RDTYPE='RI'  and RDCUS# in ((140276)) and RHCON# = RDCON#   
+and RHISEQ = RDISEQ   and RDSTTS <> 'EX'   
+and RDCMP = ECCMP  and RDCATG = ECCATG  and RDCLAS = ECCLAS   
+order by RHLRDT DESC, RDCON# DESC
+
+-- final version, works fine
+
+select distinct t.RDCON#, t.RDITEM, t.RDQTY, t.RDLOC, t.RHJOBL, t.RHDATO, t.RHPO#, t.ECDESC, 
+t.RHORDB, t.RDSEQ#, t.RHLRDT, t.RHCMP, t.RHCUS#, t.RHJOB#, d.CJNAME 
+from 
+(select a.RDCON#, a.RDITEM, a.RDQTY, a.RDLOC, b.RHJOBL, b.RHDATO, b.RHPO#, c.ECDESC, 
+b.RHORDB, a.RDSEQ#, b.RHLRDT, b.RHCMP, b.RHCUS#, b.RHJOB# 
+from hercdb.RACHDRH4 b, hercdb.RACDETH3 a , hercdb.EQPCCMFL c 
+where b.RHCMP='HG'  and b.RHCUS# in ((140276)) and b.RHSYSD > 0  
+and b.RHTYPE in ('O','F')  and b.RHOTYP ='F'  and b.RHLRDT >= 20081209 and b.RHLRDT <= 99999999 
+and b.RHCMP = a.RDCMP  and a.RDTYPE='RI'  and a.RDCUS# in ((140276)) and b.RHCON# = a.RDCON#   
+and b.RHISEQ = a.RDISEQ   and a.RDSTTS <> 'EX'   
+and a.RDCMP = c.ECCMP  and a.RDCATG = c.ECCATG  and a.RDCLAS = c.ECCLAS)
+as t 
+Left outer join hercdb.CUSJOBFL d 
+On t.RHCMP = d.CJCMP and t.RHCUS# = d.CJCUS#  and t.RHJOB# = d.CJJOB#  
+order by t.RHLRDT DESC, t.RDCON# DESC;
+
+
+

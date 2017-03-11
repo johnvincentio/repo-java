@@ -1,0 +1,82 @@
+12345678901234567890123456789012345678901234567890
+         1         2         3         4         5
+12345678901234567890123456789012345678901234567890
+
+12345678901234567890123456789012345678901234567890
+         1         2         3         4         5
+12345678901234567890123456789012345678901234567890
+
+12345678901234567890123456789012345678901234567890
+         1         2         3         4         5
+12345678901234567890123456789012345678901234567890
+
+12345678901234567890123456789012345678901234567890
+         1         2         3         4         5
+12345678901234567890123456789012345678901234567890
+
+select varchar(username, 10) "User", varchar(password,10) "Password", varchar(active,1) "Act.", varchar(approval,1) "Approved", 
+	varchar(temporarypassword,1) "Temp", failurecounter "Fail#", varchar(question,15) "Question", 
+	varchar(answer,15) "answer" from hercmigrationdb.LDAPMembers order by username;
+
+select username, active, question 
+from hercmigrationdb.LDAPMembers order by username;
+
+m_queryColumnInfo (select username, active, question from hercmigrationdb.LDAPMembers order by username,3)
+(1,USERNAME,12,128,null,true,0,0)
+(2,ACTIVE,12,1,null,true,0,0)
+(3,QUESTION,12,254,null,true,0,0)
+
+create table Hercdb.LDAPMembers (
+	username varchar(128) not null Constraint pk_LDAPMembers primary key, 
+	active varchar(1) not null,
+	question varchar(254), 	
+	
+
+
+select varchar(username, 10) "User", varchar(password,10) "Password", varchar(active,1) "Act.", 
+varchar(approval,1) "Approved" 
+from hercmigrationdb.LDAPMembers 
+where username like '1%' 
+order by username;
+
+User        Password    Act.     Approved       
+12345678901234567890123456789012345678901234567890
+         1         2         3         4         5
+12345678901234567890123456789012345678901234567890
+User        Password    Act.     Approved         
+'1234'        ''            'A'  'D'  
+'12792950'    ''            'A'  'A'  
+'1550301'     ''            'A'  'A'  
+'1mcpaint@b'  ''            'A'  'A'  
+'1test'       ''            'D'  'A'  
+
+(1,User,12,10,null,true,0,0)
+(2,Password,12,10,null,true,0,0)
+(3,Act.,12,1,null,true,0,0)
+(4,Approved,12,1,null,true,0,0)
+
+>>> getDisplayName; getName() User getLength() 10 getName().length() 4 plen 8
+>>> getDisplayName; getName() Password getLength() 10 getName().length() 8 plen 4
+>>> getDisplayName; getName() Act. getLength() 1 getName().length() 4 plen 5
+>>> getDisplayName; getName() Approved getLength() 1 getName().length() 8 plen 9
+columnCount 4
+>>> getDisplayValue; value 1234 getLength() 10 value.length() 4 plen 8
+>>> getDisplayValue; value  getLength() 10 value.length() 0 plen 12
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value D getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value 12792950 getLength() 10 value.length() 8 plen 4
+>>> getDisplayValue; value  getLength() 10 value.length() 0 plen 12
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value 1550301 getLength() 10 value.length() 7 plen 5
+>>> getDisplayValue; value  getLength() 10 value.length() 0 plen 12
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value 1mcpaint@b getLength() 10 value.length() 10 plen 2
+>>> getDisplayValue; value  getLength() 10 value.length() 0 plen 12
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value 1test getLength() 10 value.length() 5 plen 7
+>>> getDisplayValue; value  getLength() 10 value.length() 0 plen 12
+>>> getDisplayValue; value D getLength() 1 value.length() 1 plen 2
+>>> getDisplayValue; value A getLength() 1 value.length() 1 plen 2

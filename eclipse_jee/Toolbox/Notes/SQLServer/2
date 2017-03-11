@@ -1,0 +1,172 @@
+log4j: Threshold ="null".
+log4j: Level value for root is  [all].
+log4j: root level set to ALL
+log4j: Class name: [org.apache.log4j.ConsoleAppender]
+log4j: Parsing layout of class: "org.apache.log4j.PatternLayout"
+log4j: Setting property [conversionPattern] to [%m%n].
+log4j: Adding appender named [consoleAppender] to category [root].
+log4j: Class name: [org.apache.log4j.FileAppender]
+log4j: Setting property [file] to [c:/tmp/toolbox.log].
+log4j: Setting property [append] to [true].
+log4j: Parsing layout of class: "org.apache.log4j.PatternLayout"
+log4j: Setting property [conversionPattern] to [[%d{ISO8601}] [%t] %p - %m%n].
+log4j: setFile called: c:/tmp/toolbox.log, true
+log4j: setFile ended
+log4j: Adding appender named [fileAppender] to category [root].
+Opening file
+Connecting to database using as400US
+dbdriver com.ibm.as400.access.AS400JDBCDriver
+url jdbc:as400://
+database AS4DEV
+username prc4031
+schema RMHCQDATA
+connectionUrl jdbc:as400://AS4DEV/RMHCQDATA;naming=sql;errors=full
+number of tables 22
+Getting Table info
+Database version: 05.04.0000 V5R4m0
+Getting Index info
+Getting Primary Key and Column info
+Rationalizing primary key info
+number of tables 22
+Writing the sql file
+Writing the drop table statements for table ARIHDRFL
+Writing the create table statements for table ARIHDRFL
+Writing the create index statements for table ARIHDRFL
+Writing the grant statements for table ARIHDRFL
+Writing the drop table statements for table ARIHD2FL
+Writing the create table statements for table ARIHD2FL
+Writing the create index statements for table ARIHD2FL
+Writing the grant statements for table ARIHD2FL
+Writing the drop table statements for table CRAHDRFL
+Writing the create table statements for table CRAHDRFL
+Writing the create index statements for table CRAHDRFL
+Writing the grant statements for table CRAHDRFL
+Writing the drop table statements for table CUSJBLFL
+Writing the create table statements for table CUSJBLFL
+Writing the create index statements for table CUSJBLFL
+Writing the grant statements for table CUSJBLFL
+Writing the drop table statements for table CUSJOBFL
+Writing the create table statements for table CUSJOBFL
+Writing the create index statements for table CUSJOBFL
+Writing the grant statements for table CUSJOBFL
+Writing the drop table statements for table CUSMASFL
+Writing the create table statements for table CUSMASFL
+Writing the create index statements for table CUSMASFL
+Writing the grant statements for table CUSMASFL
+Writing the drop table statements for table CUSMS2FL
+Writing the create table statements for table CUSMS2FL
+Writing the create index statements for table CUSMS2FL
+Writing the grant statements for table CUSMS2FL
+Writing the drop table statements for table EQPCCMFL
+Writing the create table statements for table EQPCCMFL
+Writing the create index statements for table EQPCCMFL
+Writing the grant statements for table EQPCCMFL
+Writing the drop table statements for table EQPMASFL
+Writing the create table statements for table EQPMASFL
+Writing the create index statements for table EQPMASFL
+Writing the grant statements for table EQPMASFL
+Writing the drop table statements for table ITMMASFL
+Writing the create table statements for table ITMMASFL
+Writing the create index statements for table ITMMASFL
+Writing the grant statements for table ITMMASFL
+Writing the drop table statements for table MARACDFL
+Writing the create table statements for table MARACDFL
+Writing the create index statements for table MARACDFL
+Writing the grant statements for table MARACDFL
+Writing the drop table statements for table RACDETFL
+Writing the create table statements for table RACDETFL
+Writing the create index statements for table RACDETFL
+Writing the grant statements for table RACDETFL
+Writing the drop table statements for table RACHDRFL
+Writing the create table statements for table RACHDRFL
+Writing the create index statements for table RACHDRFL
+Writing the grant statements for table RACHDRFL
+Writing the drop table statements for table RAOADTFL
+Writing the create table statements for table RAOADTFL
+Writing the create index statements for table RAOADTFL
+Writing the grant statements for table RAOADTFL
+Writing the drop table statements for table RAOAMTFL
+Writing the create table statements for table RAOAMTFL
+Writing the create index statements for table RAOAMTFL
+Writing the grant statements for table RAOAMTFL
+Writing the drop table statements for table RAODETFL
+Writing the create table statements for table RAODETFL
+Writing the create index statements for table RAODETFL
+Writing the grant statements for table RAODETFL
+Writing the drop table statements for table RAOHDRFL
+Writing the create table statements for table RAOHDRFL
+Writing the create index statements for table RAOHDRFL
+Writing the grant statements for table RAOHDRFL
+Writing the drop table statements for table RAPKUPFL
+Writing the create table statements for table RAPKUPFL
+Writing the create index statements for table RAPKUPFL
+Writing the grant statements for table RAPKUPFL
+Writing the drop table statements for table SYSCTLFL
+Writing the create table statements for table SYSCTLFL
+Writing the create index statements for table SYSCTLFL
+Writing the grant statements for table SYSCTLFL
+Writing the drop table statements for table SYSLOCFL
+Writing the create table statements for table SYSLOCFL
+Writing the create index statements for table SYSLOCFL
+Writing the grant statements for table SYSLOCFL
+Writing the drop table statements for table SYSPGMFL
+Writing the create table statements for table SYSPGMFL
+Writing the create index statements for table SYSPGMFL
+Writing the grant statements for table SYSPGMFL
+Writing the drop table statements for table WOHEADFL
+Writing the create table statements for table WOHEADFL
+Writing the create index statements for table WOHEADFL
+Writing the grant statements for table WOHEADFL
+Writing insert statements for table ARIHDRFL
+Finished writing insert statements for table ARIHDRFL
+Writing insert statements for table ARIHD2FL
+Finished writing insert statements for table ARIHD2FL
+Writing insert statements for table CRAHDRFL
+Finished writing insert statements for table CRAHDRFL
+Writing insert statements for table CUSJBLFL
+Finished writing insert statements for table CUSJBLFL
+Writing insert statements for table CUSJOBFL
+Finished writing insert statements for table CUSJOBFL
+Writing insert statements for table CUSMASFL
+Finished writing insert statements for table CUSMASFL
+Writing insert statements for table CUSMS2FL
+Finished writing insert statements for table CUSMS2FL
+Writing insert statements for table EQPCCMFL
+Finished writing insert statements for table EQPCCMFL
+Writing insert statements for table EQPMASFL
+Finished writing insert statements for table EQPMASFL
+Writing insert statements for table ITMMASFL
+Finished writing insert statements for table ITMMASFL
+Writing insert statements for table MARACDFL
+Finished writing insert statements for table MARACDFL
+Writing insert statements for table RACDETFL
+***** trouble in getRows; [SQL0104] Token 'HG' was not valid. Valid tokens: < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT. Cause . . . . . :   A syntax error was detected at token 'HG'.  Token 'HG' is not a valid token.  A partial list of valid tokens is < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT.  This list assumes that the statement is correct up to the token.  The error may be earlier in the statement, but the syntax of the statement appears to be valid up to this point. Recovery  . . . :   Do one or more of the following and try the request again: -- Verify the SQL statement in the area of the token 'HG'. Correct the statement.  The error could be a missing comma or quotation mark, it could be a misspelled word, or it could be related to the order of clauses. -- If the error token is <END-OF-STATEMENT>, correct the SQL statement because it does not end with a valid clause.
+Could not get rows for table RACDETFL
+Finished writing insert statements for table RACDETFL
+Writing insert statements for table RACHDRFL
+Finished writing insert statements for table RACHDRFL
+Writing insert statements for table RAOADTFL
+Finished writing insert statements for table RAOADTFL
+Writing insert statements for table RAOAMTFL
+Finished writing insert statements for table RAOAMTFL
+Writing insert statements for table RAODETFL
+***** trouble in getRows; [SQL0104] Token 'HG' was not valid. Valid tokens: < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT. Cause . . . . . :   A syntax error was detected at token 'HG'.  Token 'HG' is not a valid token.  A partial list of valid tokens is < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT.  This list assumes that the statement is correct up to the token.  The error may be earlier in the statement, but the syntax of the statement appears to be valid up to this point. Recovery  . . . :   Do one or more of the following and try the request again: -- Verify the SQL statement in the area of the token 'HG'. Correct the statement.  The error could be a missing comma or quotation mark, it could be a misspelled word, or it could be related to the order of clauses. -- If the error token is <END-OF-STATEMENT>, correct the SQL statement because it does not end with a valid clause.
+Could not get rows for table RAODETFL
+Finished writing insert statements for table RAODETFL
+Writing insert statements for table RAOHDRFL
+Finished writing insert statements for table RAOHDRFL
+Writing insert statements for table RAPKUPFL
+Finished writing insert statements for table RAPKUPFL
+Writing insert statements for table SYSCTLFL
+Finished writing insert statements for table SYSCTLFL
+Writing insert statements for table SYSLOCFL
+Finished writing insert statements for table SYSLOCFL
+Writing insert statements for table SYSPGMFL
+Finished writing insert statements for table SYSPGMFL
+Writing insert statements for table WOHEADFL
+***** trouble in getRows; [SQL0104] Token 'HG' was not valid. Valid tokens: < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT. Cause . . . . . :   A syntax error was detected at token 'HG'.  Token 'HG' is not a valid token.  A partial list of valid tokens is < > = <> <= !< !> != >= ¬< ¬> ¬= IN NOT.  This list assumes that the statement is correct up to the token.  The error may be earlier in the statement, but the syntax of the statement appears to be valid up to this point. Recovery  . . . :   Do one or more of the following and try the request again: -- Verify the SQL statement in the area of the token 'HG'. Correct the statement.  The error could be a missing comma or quotation mark, it could be a misspelled word, or it could be related to the order of clauses. -- If the error token is <END-OF-STATEMENT>, correct the SQL statement because it does not end with a valid clause.
+Could not get rows for table WOHEADFL
+Finished writing insert statements for table WOHEADFL
+Disconnecting from database
+exiting...
+

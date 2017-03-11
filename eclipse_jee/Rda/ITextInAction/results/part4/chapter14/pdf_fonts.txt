@@ -1,0 +1,354 @@
+Browallia New: c:\windows\fonts\BROWA.TTF
+Ligurino: c:\windows\fonts\ligurino.ttf
+Gautami: c:\windows\fonts\gautami.ttf
+Teen Bold Italic: c:\windows\fonts\TEENBDIT.TTF
+Byington Italic: c:\windows\fonts\byington_italic.ttf
+Teen Bold: c:\windows\fonts\TEENBOLD.TTF
+Rockwell Condensed Bold: c:\windows\fonts\ROCCB___.TTF
+JasmineUPC Bold: c:\windows\fonts\UPCJB.TTF
+Book Antiqua Italic: c:\windows\fonts\ANTQUAI.TTF
+Kredit: c:\windows\fonts\KREDIT1.TTF
+Cambria Math: c:\windows\fonts\CAMBRIA.TTC,1
+SimSun: c:\windows\fonts\simsun.ttc,0
+French Script MT: c:\windows\fonts\FRSCRIPT.TTF
+Gill Sans MT: c:\windows\fonts\GIL_____.TTF
+Velvenda Cooler: c:\windows\fonts\VELVENDC.TTF
+Trebuchet MS: c:\windows\fonts\trebuc.ttf
+Perpetua Bold Italic: c:\windows\fonts\PERBI___.TTF
+Carbon Block: c:\windows\fonts\CARBONBL.TTF
+Catriel Italic: c:\windows\fonts\catriel italic.ttf
+Verdana Italic: c:\windows\fonts\verdanai.ttf
+Credit Valley Bold: c:\windows\fonts\CREDITVB.TTF
+Elephant Italic: c:\windows\fonts\ELEPHNTI.TTF
+Teen Light Italic: c:\windows\fonts\TEENLITA.TTF
+Biondi Light: c:\windows\fonts\biondi light.ttf
+Trebuchet MS Bold Italic: c:\windows\fonts\trebucbi.ttf
+Lucida Sans Regular: c:\windows\fonts\LSANS.TTF
+Raavi: c:\windows\fonts\raavi.ttf
+Gill Sans Ultra Bold: c:\windows\fonts\GILSANUB.TTF
+Franklin Gothic Demi Italic: c:\windows\fonts\FRADMIT.TTF
+Mufferaw: c:\windows\fonts\mufferaw.ttf
+Boopee: c:\windows\fonts\boopee_regular.ttf
+Calisto MT Bold: c:\windows\fonts\CALISTB.TTF
+Felix Titling: c:\windows\fonts\FELIXTI.TTF
+Neuropol: c:\windows\fonts\NEUROPOL.TTF
+Bodoni MT Black: c:\windows\fonts\BOD_BLAR.TTF
+Palatino Linotype Italic: c:\windows\fonts\palai.ttf
+Teen Italic: c:\windows\fonts\TEENITAL.TTF
+Lucida Sans Typewriter Oblique: c:\windows\fonts\LTYPEO.TTF
+Comic Sans MS Bold: c:\windows\fonts\comicbd.ttf
+Tw Cen MT: c:\windows\fonts\TCM_____.TTF
+Rod Transparent: c:\windows\fonts\rodtr.ttf
+KodchiangUPC Bold Italic: c:\windows\fonts\UPCKBI.TTF
+Franklin Gothic Heavy: c:\windows\fonts\FRAHV.TTF
+Lucida Sans Typewriter Bold: c:\windows\fonts\LTYPEB.TTF
+Andalus: c:\windows\fonts\andlso.ttf
+Perpetua Titling MT Bold: c:\windows\fonts\PERTIBD.TTF
+Estrangelo Edessa: c:\windows\fonts\estre.ttf
+Sybil Green: c:\windows\fonts\SYBIG___.TTF
+Microsoft Sans Serif: c:\windows\fonts\micross.ttf
+Arial Bold: c:\windows\fonts\arialbd.ttf
+CordiaUPC  Italic: c:\windows\fonts\CORDIAUI.TTF
+Tw Cen MT Bold Italic: c:\windows\fonts\TCBI____.TTF
+Kartika: c:\windows\fonts\kartika.ttf
+BrowalliaUPC: c:\windows\fonts\BROWAU.TTF
+Blue Highway: c:\windows\fonts\BLUEHIGH.TTF
+Minya Nouvelle: c:\windows\fonts\MINYN___.TTF
+Edwardian Script ITC: c:\windows\fonts\ITCEDSCR.TTF
+Sylfaen: c:\windows\fonts\sylfaen.ttf
+Bodoni MT Condensed Bold: c:\windows\fonts\BOD_CB.TTF
+Times New Roman Italic: c:\windows\fonts\timesi.ttf
+Times New Roman Bold Italic: c:\windows\fonts\timesbi.ttf
+Bookshelf Symbol 7: c:\windows\fonts\BSSYM7.TTF
+Garamond Italic: c:\windows\fonts\GARAIT.TTF
+Teen Light: c:\windows\fonts\TEENLITE.TTF
+Miriam Fixed: c:\windows\fonts\mriamc.ttf
+David: c:\windows\fonts\david.ttf
+JasmineUPC: c:\windows\fonts\UPCJL.TTF
+Byington Bold: c:\windows\fonts\byington_bold.ttf
+Miriam: c:\windows\fonts\mriam.ttf
+Traditional Arabic Bold: c:\windows\fonts\tradbdo.ttf
+Imprint MT Shadow: c:\windows\fonts\IMPRISHA.TTF
+EucrosiaUPC Italic: c:\windows\fonts\UPCEI.TTF
+Rage Italic: c:\windows\fonts\RAGE.TTF
+Arial: c:\windows\fonts\arial.ttf
+Garamond Bold: c:\windows\fonts\GARABD.TTF
+Credit Valley: c:\windows\fonts\CREDITVA.TTF
+FreesiaUPC Italic: c:\windows\fonts\UPCFI.TTF
+Gill Sans MT Ext Condensed Bold: c:\windows\fonts\GLSNECB.TTF
+Levenim MT Bold: c:\windows\fonts\lvnmbd.ttf
+Constantia Bold: c:\windows\fonts\CONSTANB.TTF
+Stereofidelic: c:\windows\fonts\STEREOFI.TTF
+DilleniaUPC Bold Italic: c:\windows\fonts\UPCDBI.TTF
+Blue Highway Condensed: c:\windows\fonts\BLUECOND.TTF
+Eras Medium ITC: c:\windows\fonts\ERASMD.TTF
+Gill Sans MT Bold: c:\windows\fonts\GILB____.TTF
+Franklin Gothic Heavy Italic: c:\windows\fonts\FRAHVIT.TTF
+FreesiaUPC Bold Italic: c:\windows\fonts\UPCFBI.TTF
+Simplified Arabic: c:\windows\fonts\simpo.ttf
+Tw Cen MT Condensed Extra Bold: c:\windows\fonts\TCCEB.TTF
+Papyrus: c:\windows\fonts\PAPYRUS.TTF
+Perpetua Bold: c:\windows\fonts\PERB____.TTF
+FreesiaUPC Bold: c:\windows\fonts\UPCFB.TTF
+Bodoni MT Italic: c:\windows\fonts\BOD_I.TTF
+Levenim MT: c:\windows\fonts\lvnm.ttf
+Verdana Bold Italic: c:\windows\fonts\verdanaz.ttf
+GulimChe: c:\windows\fonts\gulim.ttc,1
+IrisUPC Bold Italic: c:\windows\fonts\UPCIBI.TTF
+Webdings: c:\windows\fonts\webdings.ttf
+GungsuhChe: c:\windows\fonts\batang.ttc,3
+Century Gothic: c:\windows\fonts\GOTHIC.TTF
+Bookman Old Style: c:\windows\fonts\BOOKOS.TTF
+Angsana New Bold: c:\windows\fonts\ANGSAB.TTF
+Engravers MT: c:\windows\fonts\ENGR.TTF
+Blue Highway Linocut: c:\windows\fonts\BLUEHIGL.TTF
+Browallia New Bold Italic: c:\windows\fonts\BROWAZ.TTF
+Agency FB Bold: c:\windows\fonts\AGENCYB.TTF
+Franklin Gothic Book: c:\windows\fonts\FRABK.TTF
+Agency FB: c:\windows\fonts\AGENCYR.TTF
+Arial Narrow Italic: c:\windows\fonts\ARIALNI.TTF
+BatangChe: c:\windows\fonts\batang.ttc,1
+Ligurino Bold: c:\windows\fonts\ligurino bold.ttf
+DilleniaUPC Bold: c:\windows\fonts\UPCDB.TTF
+Angsana New Bold Italic: c:\windows\fonts\ANGSAZ.TTF
+LilyUPC Bold: c:\windows\fonts\UPCLB.TTF
+Simplified Arabic Fixed: c:\windows\fonts\simpfxo.ttf
+MS UI Gothic: c:\windows\fonts\msgothic.ttc,2
+Earwig Factory: c:\windows\fonts\EARWIGFA.TTF
+Arial Italic: c:\windows\fonts\ariali.ttf
+Arnprior: c:\windows\fonts\ARNPRIOR.TTF
+MS Reference Specialty: c:\windows\fonts\REFSPCL.TTF
+FrankRuehl: c:\windows\fonts\frank.ttf
+Bodoni MT Condensed Italic: c:\windows\fonts\BOD_CI.TTF
+Latha: c:\windows\fonts\latha.ttf
+OCR A Extended: c:\windows\fonts\OCRAEXT.TTF
+Palatino Linotype: c:\windows\fonts\pala.ttf
+Georgia: c:\windows\fonts\georgia.ttf
+MV Boli: c:\windows\fonts\mvboli.ttf
+Cordia New Bold Italic: c:\windows\fonts\CORDIAZ.TTF
+Tandelle Bold: c:\windows\fonts\tandelle bold.ttf
+Gulim: c:\windows\fonts\gulim.ttc,0
+Times New Roman: c:\windows\fonts\times.ttf
+Palatino Linotype Bold Italic: c:\windows\fonts\palabi.ttf
+Georgia Bold: c:\windows\fonts\georgiab.ttf
+Lucida Sans Italic: c:\windows\fonts\LSANSI.TTF
+Calibri Bold Italic: c:\windows\fonts\CALIBRIZ.TTF
+Copperplate Gothic Bold: c:\windows\fonts\COPRGTB.TTF
+DilleniaUPC Italic: c:\windows\fonts\UPCDI.TTF
+Cordia New Bold: c:\windows\fonts\CORDIAB.TTF
+Consolas Italic: c:\windows\fonts\CONSOLAI.TTF
+Simplified Arabic Bold: c:\windows\fonts\simpbdo.ttf
+Rockwell Bold: c:\windows\fonts\ROCKB.TTF
+AngsanaUPC  Bold: c:\windows\fonts\ANGSAUB.TTF
+KodchiangUPC Bold: c:\windows\fonts\UPCKB.TTF
+SimHei: c:\windows\fonts\simhei.ttf
+Arial Narrow: c:\windows\fonts\ARIALN.TTF
+Perpetua Titling MT Light: c:\windows\fonts\PERTILI.TTF
+Forte: c:\windows\fonts\FORTE.TTF
+IrisUPC Italic: c:\windows\fonts\UPCII.TTF
+Calisto MT Italic: c:\windows\fonts\CALISTI.TTF
+Tahoma Bold: c:\windows\fonts\tahomabd.ttf
+Bodoni MT Black Italic: c:\windows\fonts\BOD_BLAI.TTF
+LilyUPC: c:\windows\fonts\UPCLL.TTF
+Blue Highway Bold: c:\windows\fonts\BLUEBOLD.TTF
+Franklin Gothic Medium: c:\windows\fonts\framd.ttf
+Minya Nouvelle  Bold Italic: c:\windows\fonts\MINYNBI_.TTF
+Arial Narrow Bold Italic: c:\windows\fonts\ARIALNBI.TTF
+Courier New Italic: c:\windows\fonts\couri.ttf
+JasmineUPC Bold Italic: c:\windows\fonts\UPCJBI.TTF
+Bodoni MT Condensed Bold Italic: c:\windows\fonts\BOD_CBI.TTF
+Century Schoolbook Italic: c:\windows\fonts\SCHLBKI.TTF
+Tahoma: c:\windows\fonts\tahoma.ttf
+Arial Narrow Bold: c:\windows\fonts\ARIALNB.TTF
+Courier New: c:\windows\fonts\cour.ttf
+Corbel Bold Italic: c:\windows\fonts\CORBELZ.TTF
+Miriam Transparent: c:\windows\fonts\mriamtr.ttf
+David Bold: c:\windows\fonts\davidbd.ttf
+MS Mincho: c:\windows\fonts\msmincho.ttc,0
+Calibri Italic: c:\windows\fonts\CALIBRII.TTF
+Verdana: c:\windows\fonts\verdana.ttf
+Angsana New Italic: c:\windows\fonts\ANGSAI.TTF
+Cambria Italic: c:\windows\fonts\CAMBRIAI.TTF
+Teen: c:\windows\fonts\TEEN____.TTF
+Rockwell Condensed: c:\windows\fonts\ROCC____.TTF
+Century Schoolbook Bold: c:\windows\fonts\SCHLBKB.TTF
+KodchiangUPC Italic: c:\windows\fonts\UPCKI.TTF
+Planet Benson 2: c:\windows\fonts\PLANETBE.TTF
+Garamond: c:\windows\fonts\GARA.TTF
+Haettenschweiler: c:\windows\fonts\HATTEN.TTF
+Gloucester MT Extra Condensed: c:\windows\fonts\GLECB.TTF
+Palace Script MT: c:\windows\fonts\PALSCRI.TTF
+Tw Cen MT Condensed Bold: c:\windows\fonts\TCCB____.TTF
+Pupcat: c:\windows\fonts\PUPCAT__.TTF
+Ligurino Italic: c:\windows\fonts\ligurino italic.ttf
+Perpetua: c:\windows\fonts\PER_____.TTF
+MS PMincho: c:\windows\fonts\msmincho.ttc,1
+Gill Sans Ultra Bold Condensed: c:\windows\fonts\GILLUBCD.TTF
+Calisto MT: c:\windows\fonts\CALIST.TTF
+Bookman Old Style Bold Italic: c:\windows\fonts\BOOKOSBI.TTF
+Constantia Italic: c:\windows\fonts\CONSTANI.TTF
+Eras Demi ITC: c:\windows\fonts\ERASDEMI.TTF
+CordiaUPC  Bold: c:\windows\fonts\CORDIAUB.TTF
+Narkisim: c:\windows\fonts\nrkis.ttf
+Angsana New: c:\windows\fonts\ANGSA.TTF
+Candara: c:\windows\fonts\CANDARA.TTF
+Tw Cen MT Condensed: c:\windows\fonts\TCCM____.TTF
+Calisto MT Bold Italic: c:\windows\fonts\CALISTBI.TTF
+Gill Sans MT Bold Italic: c:\windows\fonts\GILBI___.TTF
+Cambria Bold Italic: c:\windows\fonts\CAMBRIAZ.TTF
+SimSun-PUA: c:\windows\fonts\simsun.ttc,2
+Consolas Bold: c:\windows\fonts\CONSOLAB.TTF
+Candara Bold Italic: c:\windows\fonts\CANDARAZ.TTF
+Minya Nouvelle Italic: c:\windows\fonts\MINYNI__.TTF
+Candara Bold: c:\windows\fonts\CANDARAB.TTF
+Ligurino Condensed: c:\windows\fonts\ligurino condensed.ttf
+Maiandra GD: c:\windows\fonts\MAIAN.TTF
+Tandelle Italic: c:\windows\fonts\tandelle italic.ttf
+Eras Light ITC: c:\windows\fonts\ERASLGHT.TTF
+Waker: c:\windows\fonts\waker___.ttf
+Arial Rounded MT Bold: c:\windows\fonts\ARLRDBD.TTF
+Lucida Sans Typewriter Bold Oblique: c:\windows\fonts\LTYPEBO.TTF
+Elephant: c:\windows\fonts\ELEPHNT.TTF
+KodchiangUPC: c:\windows\fonts\UPCKL.TTF
+Tw Cen MT Italic: c:\windows\fonts\TCMI____.TTF
+Rockwell Italic: c:\windows\fonts\ROCKI.TTF
+Fixed Miriam Transparent: c:\windows\fonts\mriamfx.ttf
+Amienne: c:\windows\fonts\AMIENNE_.TTF
+AngsanaUPC  Italic: c:\windows\fonts\ANGSAUI.TTF
+Vrinda: c:\windows\fonts\vrinda.ttf
+Euphorigenic S: c:\windows\fonts\euphorigenic_s.ttf
+Rockwell Extra Bold: c:\windows\fonts\ROCKEB.TTF
+Corbel Bold: c:\windows\fonts\CORBELB.TTF
+BrowalliaUPC  Bold Italic: c:\windows\fonts\BROWAUZ.TTF
+Franklin Gothic Medium Cond: c:\windows\fonts\FRAMDCN.TTF
+Burnstown Dam: c:\windows\fonts\BURNSTOW.TTF
+Script MT Bold: c:\windows\fonts\SCRIPTBL.TTF
+Berylium Bold Italic: c:\windows\fonts\Berylibi.ttf
+Credit Valley Italic: c:\windows\fonts\CREDITVI.TTF
+Comic Sans MS: c:\windows\fonts\comic.ttf
+Browallia New Italic: c:\windows\fonts\BROWAI.TTF
+Goudy Stout: c:\windows\fonts\GOUDYSTO.TTF
+MS Gothic: c:\windows\fonts\msgothic.ttc,0
+Aharoni Bold: c:\windows\fonts\ahronbd.ttf
+Boopee Bold: c:\windows\fonts\boopee_bold.ttf
+Trebuchet MS Italic: c:\windows\fonts\trebucit.ttf
+Mangal: c:\windows\fonts\mangal.ttf
+Curlz MT: c:\windows\fonts\CURLZ___.TTF
+Goudy Old Style: c:\windows\fonts\GOUDOS.TTF
+Bodoni MT Condensed: c:\windows\fonts\BOD_CR.TTF
+Rockwell Bold Italic: c:\windows\fonts\ROCKBI.TTF
+AngsanaUPC  Bold Italic: c:\windows\fonts\ANGSAUZ.TTF
+DotumChe: c:\windows\fonts\gulim.ttc,3
+Book Antiqua Bold: c:\windows\fonts\ANTQUAB.TTF
+DilleniaUPC: c:\windows\fonts\UPCDL.TTF
+Corbel: c:\windows\fonts\CORBEL.TTF
+Lucida Sans Unicode: c:\windows\fonts\l_10646.ttf
+Browallia New Bold: c:\windows\fonts\BROWAB.TTF
+Gigi: c:\windows\fonts\GIGI.TTF
+Impact: c:\windows\fonts\impact.ttf
+David Transparent: c:\windows\fonts\davidtr.ttf
+Blackadder ITC: c:\windows\fonts\ITCBLKAD.TTF
+Byington: c:\windows\fonts\byington.ttf
+Century Schoolbook: c:\windows\fonts\CENSCBK.TTF
+MS PGothic: c:\windows\fonts\msgothic.ttc,1
+EucrosiaUPC: c:\windows\fonts\UPCEL.TTF
+Tandelle Bold Italic: c:\windows\fonts\tandelle bolditalic.ttf
+Hurry Up: c:\windows\fonts\HURRYUP.TTF
+Catriel Bold: c:\windows\fonts\catriel bold.ttf
+Credit Valley Bold Italic: c:\windows\fonts\CREDITVZ.TTF
+PMingLiU: c:\windows\fonts\mingliu.ttc,1
+Bodoni MT: c:\windows\fonts\BOD_R.TTF
+EucrosiaUPC Bold: c:\windows\fonts\UPCEB.TTF
+Courier New Bold Italic: c:\windows\fonts\courbi.ttf
+Baveuse: c:\windows\fonts\BAVEUSE.TTF
+CordiaUPC  Bold Italic: c:\windows\fonts\CORDIAUZ.TTF
+Bradley Hand ITC: c:\windows\fonts\BRADHITC.TTF
+Wingdings 2: c:\windows\fonts\WINGDNG2.TTF
+Wingdings 3: c:\windows\fonts\WINGDNG3.TTF
+Minya Nouvelle Bold: c:\windows\fonts\MINYNB__.TTF
+Gill Sans MT Condensed: c:\windows\fonts\GILC____.TTF
+Bodoni MT Bold Italic: c:\windows\fonts\BOD_BI.TTF
+Dotum: c:\windows\fonts\gulim.ttc,2
+Century Gothic Bold: c:\windows\fonts\GOTHICB.TTF
+Monotype Corsiva: c:\windows\fonts\MTCORSVA.TTF
+Traditional Arabic: c:\windows\fonts\trado.ttf
+Franklin Gothic Demi: c:\windows\fonts\FRADM.TTF
+Tunga: c:\windows\fonts\tunga.ttf
+Palatino Linotype Bold: c:\windows\fonts\palab.ttf
+Biondi: c:\windows\fonts\biondi.ttf
+Tw Cen MT Bold: c:\windows\fonts\TCB_____.TTF
+Century Gothic Bold Italic: c:\windows\fonts\GOTHICBI.TTF
+Cambria Bold: c:\windows\fonts\CAMBRIAB.TTF
+Castellar: c:\windows\fonts\CASTELAR.TTF
+Cambria: c:\windows\fonts\CAMBRIA.TTC,0
+BrowalliaUPC  Italic: c:\windows\fonts\BROWAUI.TTF
+Gill Sans MT Italic: c:\windows\fonts\GILI____.TTF
+Franklin Gothic Demi Cond: c:\windows\fonts\FRADMCN.TTF
+Franklin Gothic Book Italic: c:\windows\fonts\FRABKIT.TTF
+Gungsuh: c:\windows\fonts\batang.ttc,2
+Consolas: c:\windows\fonts\CONSOLA.TTF
+Perpetua Italic: c:\windows\fonts\PERI____.TTF
+Lucida Sans Typewriter Regular: c:\windows\fonts\LTYPE.TTF
+Lucida Console: c:\windows\fonts\lucon.ttf
+Rod: c:\windows\fonts\rod.ttf
+Arabic Transparent Bold: c:\windows\fonts\artrbdo.ttf
+Amienne Bold: c:\windows\fonts\AMIENNEB.TTF
+Consolas Bold Italic: c:\windows\fonts\CONSOLAZ.TTF
+Goudy Old Style Bold: c:\windows\fonts\GOUDOSB.TTF
+BrowalliaUPC  Bold: c:\windows\fonts\BROWAUB.TTF
+Trebuchet MS Bold: c:\windows\fonts\trebucbd.ttf
+Corbel Italic: c:\windows\fonts\CORBELI.TTF
+Century Gothic Italic: c:\windows\fonts\GOTHICI.TTF
+Blue Highway D Type: c:\windows\fonts\BLUEHIGD.TTF
+Copperplate Gothic Light: c:\windows\fonts\COPRGTL.TTF
+Verdana Bold: c:\windows\fonts\verdanab.ttf
+Pristina: c:\windows\fonts\PRISTINA.TTF
+Cordia New: c:\windows\fonts\CORDIA.TTF
+Symbol: c:\windows\fonts\symbol.ttf
+Lucida Sans Demibold Roman: c:\windows\fonts\LSANSD.TTF
+Calibri: c:\windows\fonts\CALIBRI.TTF
+Eras Bold ITC: c:\windows\fonts\ERASBD.TTF
+Berylium: c:\windows\fonts\BERYLIUM.TTF
+MingLiU: c:\windows\fonts\mingliu.ttc,0
+Huxtable: c:\windows\fonts\huxtable.ttf
+Batang: c:\windows\fonts\batang.ttc,0
+Calibri Bold: c:\windows\fonts\CALIBRIB.TTF
+Bookman Old Style Italic: c:\windows\fonts\BOOKOSI.TTF
+Georgia Bold Italic: c:\windows\fonts\georgiaz.ttf
+Bodoni MT Bold: c:\windows\fonts\BOD_B.TTF
+LilyUPC Italic: c:\windows\fonts\UPCLI.TTF
+Franklin Gothic Medium Italic: c:\windows\fonts\framdit.ttf
+Rockwell: c:\windows\fonts\ROCK.TTF
+Candara Italic: c:\windows\fonts\CANDARAI.TTF
+Catriel: c:\windows\fonts\catriel regular.ttf
+Lucida Sans Demibold Italic: c:\windows\fonts\LSANSDI.TTF
+Goudy Old Style Italic: c:\windows\fonts\GOUDOSI.TTF
+Bookman Old Style Bold: c:\windows\fonts\BOOKOSB.TTF
+Constantia: c:\windows\fonts\CONSTAN.TTF
+Arabic Transparent: c:\windows\fonts\artro.ttf
+Catriel Bold Italic: c:\windows\fonts\catriel bolditalic.ttf
+Times New Roman Bold: c:\windows\fonts\timesbd.ttf
+Arial Black: c:\windows\fonts\ariblk.ttf
+Tandelle: c:\windows\fonts\tandelle regular.ttf
+NSimSun: c:\windows\fonts\simsun.ttc,1
+Book Antiqua: c:\windows\fonts\BKANT.TTF
+Heavy Heap: c:\windows\fonts\HeavyHeap.ttf
+Constantia Bold Italic: c:\windows\fonts\CONSTANZ.TTF
+LilyUPC Bold Italic: c:\windows\fonts\UPCLBI.TTF
+FreesiaUPC: c:\windows\fonts\UPCFL.TTF
+Wingdings: c:\windows\fonts\wingding.ttf
+Shruti: c:\windows\fonts\shruti.ttf
+AngsanaUPC: c:\windows\fonts\ANGSAU.TTF
+Arial Bold Italic: c:\windows\fonts\arialbi.ttf
+Book Antiqua Bold Italic: c:\windows\fonts\ANTQUABI.TTF
+IrisUPC Bold: c:\windows\fonts\UPCIB.TTF
+CordiaUPC: c:\windows\fonts\CORDIAU.TTF
+Georgia Italic: c:\windows\fonts\georgiai.ttf
+Century Schoolbook Bold Italic: c:\windows\fonts\SCHLBKBI.TTF
+IrisUPC: c:\windows\fonts\UPCIL.TTF
+JasmineUPC Italic: c:\windows\fonts\UPCJI.TTF
+Marlett: c:\windows\fonts\marlett.ttf
+EucrosiaUPC Bold Italic: c:\windows\fonts\UPCEBI.TTF
+Courier New Bold: c:\windows\fonts\courbd.ttf
+Cordia New Italic: c:\windows\fonts\CORDIAI.TTF
+MS Reference Sans Serif: c:\windows\fonts\REFSAN.TTF

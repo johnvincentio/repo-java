@@ -1,0 +1,32 @@
+DROP PROCEDURE hercdb.jv_test1;
+
+CREATE PROCEDURE hercdb.jv_test1 (IN pActive VARCHAR(5)) 
+RESULT SETS 1 
+LANGUAGE SQL 
+BEGIN 
+	DECLARE c1 CURSOR FOR
+	SELECT * FROM hercdb.LDAPMembers 
+	WHERE active = 'A' 
+	ORDER BY username;
+
+	OPEN c1;
+
+END @
+
+
+
+
+insert into hercdb.LDAPMembers (username, active, approval, role, reports,
+	password, question, answer, temporarypassword, failurecounter, dialect, 
+	prefix, fname, mname, lname, suffix, title,
+	bname, address1, address2, city, country, zip, email, phone, fax,
+	ponumber, pcardtype, pcardnumber, expmonth, expyear, seccode,
+	releaseExtend, updateDate, approver)
+values ('aaaa', 'A', 'A', 'YNNNNNNNNNNNNNNNNNNN', 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',
+	'aaaa99', 'personalquestion aaaa', 'personalanswer aaaa','',0,'enUS',
+	'MR','Winston','E','Churchhill','SR','Prime Minister, Knight',
+	'Pontvale Cleaners','413 First Ave','','Pontvale','USNJ','03124',
+	'WTemp1@hertz.com','912-344-5643','9435256545','PO3928','VSA','4012888888881881','12','09','5432',
+	'Y',date('2006-02-01'),'');
+	
+	

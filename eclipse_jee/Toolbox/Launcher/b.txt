@@ -1,0 +1,682 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+<launcher>
+
+	<scenario name="radtool7" 
+		application="java" 
+		main="com.idc.rad.gui.App" 
+		classpath="C:\development\herc_09_04\RadTool2;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin; C:\WINDOWS\system32; C:\WINDOWS; c:\jv\utils" 
+		cwd="c:\tmp" >
+		<params>
+			<param name="7"/>
+			<param name="c:\jv\utils\rad7.properties"/>
+		</params>
+		<envs>
+			<env name="jv" value="something"/>
+		</envs>
+	</scenario>
+
+	<scenario name="radtool6" 
+		application="java" 
+		main="com.idc.rad.gui.App" 
+		classpath="C:\development\herc_09_04\RadTool2;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin; C:\WINDOWS\system32; C:\WINDOWS; c:\jv\utils" 
+		cwd="c:\tmp" >
+		<params>
+			<param name="C:\jv\utils\rad6_irac.properties"/>
+		</params>
+	</scenario>
+
+	<scenario name="grepdirgui" 
+		application="java" 
+		main="com.idc.grepgui.GrepdirGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appcleaner" 
+		application="java" 
+		main="com.idc.appender.AppCleaner" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appcoder" 
+		application="java" 
+		main="com.idc.coder.App" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="appender" 
+		application="java" 
+		main="com.idc.appender.App" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="dbtool" 
+		application="java" 
+		main="com.idc.dbtool.DBToolGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\irac7\wrkspc\Toolbox\Jars\db2java.zip;C:\irac7\wrkspc\Toolbox\Jars\jt400.jar;
+C:\irac7\wrkspc\Toolbox\Jars\commons-lang-2.3.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="diffallgui" 
+		application="java -Xms1g -Xmx1g" 
+		main="com.idc.diff.all.gui.DiffallGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+			<params>
+				<param name="c:\jv\utils\diffallgui.properties"/>
+			</params>
+	</scenario>
+
+	<scenario name="appender" 
+		application="java" 
+		main="com.idc.diff.file.AppGUI" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="FilesSinceGui" 
+		application="java" 
+		main="com.idc.filesgui.FilesSinceGui" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+	<scenario name="Jarlist" 
+		application="java" 
+		main="com.idc.file.jar.Jarlist" 
+		classpath="C:\irac7\wrkspc\Toolbox\Toolbox;C:\irac7\wrkspc\Toolbox\Toolbox\log4j-1.2.13.jar;C:\Program Files\IBM\SDP70\jdk\lib" 
+		path="C:\Program Files\IBM\SDP70\jdk\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\jv\utils" 
+		cwd="c:/jv/utils" >
+	</scenario>
+
+</launcher>
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
+
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+	</appender>
+
+	<appender name="fileAppender" class="org.apache.log4j.FileAppender">
+		<param name="File" value="/tmp/toolbox.log" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] [%t] %p - %m%n" />
+		</layout>
+	</appender>
+
+	<root>
+		<priority value="all" />	<!-- debug, error -->
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="fileAppender" />
+	</root>
+
+</log4j:configuration>
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+<?xml version="1.0"?>
+
+<project name="toolbox" default="make_jar" basedir="."> 
+
+	<property name="my.jar.file" value="c:/jv/utils/launcher.jar"/>
+	<property name="my.manifest.file" value="mymanifest.txt"/>
+	<property name="my.version" value="1.0.0"/>
+
+	<target name="clean">
+		<echo message="Deleting My JAR file - ${my.jar.file}"/>	
+		<delete file="${my.jar.file}" />
+	</target>
+
+	<target name="timestamp">
+		<tstamp>
+			<format property="my.datestamp" pattern="dd-MMMM-yyyy hh:mm:ss" />
+		</tstamp>
+	</target>
+
+	<target name="make_manifest" depends="timestamp">
+		<echo message="Creating manifest file - ${my.manifest.file}"/>	
+		<delete file="${my.manifest.file}" />
+		<manifest file="${my.manifest.file}">
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Class-Path" value="toolbox.jar log4j-1.2.13.jar"/>
+			<attribute name="Main-Class" value="com.idc.launcher.Launcher"/>
+			<section name="com/idc/launcher">
+				<attribute name="Specification-Title" value="Java Launcher Jar"/>
+				<attribute name="Specification-Version" value="${my.version}"/>
+				<attribute name="Specification-Vendor" value="Jars idc"/>
+				<attribute name="Implementation-Title" value="launcher"/>
+				<attribute name="Implementation-Version" value="${my.version} ${my.datestamp}"/> 
+				<attribute name="Implementation-Vendor" value="idc"/>
+			</section>
+			<section name="com/idc/launcher/">
+				<attribute name="Sealed" value="true"/>
+			</section>
+		</manifest>
+	</target>
+
+	<target name="make_jar" depends="clean, make_manifest">
+		<echo message="Creating My JAR file - ${my.jar.file}"/>
+		<echo message="base directory ${basedir}"/>
+		<jar destfile="${my.jar.file}" manifest="${my.manifest.file}">
+			<fileset dir="${basedir}" includes="**/**.class" />
+		</jar>
+	</target>
+
+</project>
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.idc.file.exec.ExecuteCommandThread;
+import com.idc.file.exec.PrintLine;
+import com.idc.trace.LogHelper;
+import com.idc.xml.smart.AttributeInfo;
+import com.idc.xml.smart.AttributeItemInfo;
+import com.idc.xml.smart.JVxml;
+import com.idc.xml.smart.NodeInfo;
+import com.idc.xml.smart.NodeItemInfo;
+
+public class Launcher {
+	public static void main(String[] args) {
+		LogHelper.info (">>> Launcher::main");
+		(new Launcher()).doApp (args);
+		LogHelper.info ("<<< Launcher::main");
+	}
+
+	private void doApp (String[] args) {
+		if (args.length < 2) {
+			LogHelper.fatal ("Launcher Usage; Launcher scenario launcher_file");
+			return;
+		}
+
+		File launcherFile = new File (args[1]);
+		if (! launcherFile.isFile()) {
+			LogHelper.fatal ("Launcher file :"+args[1]+": not found");
+			return;
+		}
+
+		ScenarioItemInfo scenarioItemInfo = makeXml (launcherFile, args[0]);
+		if (scenarioItemInfo == null) {
+			LogHelper.fatal ("Launcher scenario :"+args[0]+": not found");
+			return;
+		}
+		LogHelper.debug ("scenarioItemInfo "+scenarioItemInfo);
+
+		ParamInfo paramInfo = scenarioItemInfo.getParamInfo();
+
+		String[] strCmd = new String[2 + paramInfo.getSize()];
+		int pos = 0;
+		strCmd[pos++] = scenarioItemInfo.getApplication();
+		strCmd[pos++] = scenarioItemInfo.getMain();
+		for (Iterator iter = paramInfo.getItems(); iter.hasNext(); ) {
+			ParamItemInfo paramItemInfo = (ParamItemInfo) iter.next();
+			strCmd[pos++] = paramItemInfo.getName();
+		}
+
+		Map<String, String> map = new HashMap<String, String> (System.getenv());
+		map.remove ("CLASSPATH");
+		map.remove ("PATH");
+		map.put ("CLASSPATH", scenarioItemInfo.getClasspath());
+		map.put ("PATH", scenarioItemInfo.getPath());
+
+		EnvInfo envInfo = scenarioItemInfo.getEnvInfo();
+		for (Iterator iter = envInfo.getItems(); iter.hasNext(); ) {
+			EnvItemInfo envItemInfo = (EnvItemInfo) iter.next();
+			map.put (envItemInfo.getName(), envItemInfo.getValue());
+		}
+		String[] envp = getMap (map);
+
+		File cwd = new File (scenarioItemInfo.getCwd());		// cwd must exist
+
+		ExecuteCommandThread executeCommandThread = new ExecuteCommandThread (strCmd, envp, cwd, new PrintLine());
+		executeCommandThread.start();
+	}
+
+	private ScenarioItemInfo makeXml (File launcherFile, String scenario) {
+		LogHelper.info (">>> Launcher::makeXml; launcher file :"+launcherFile.getPath()+" scenario "+scenario);
+		ScenarioInfo scenarioInfo  = new ScenarioInfo();
+		NodeItemInfo nodeItemInfo = JVxml.loadXML (launcherFile);
+		LogHelper.debug (nodeItemInfo.toString());
+		NodeInfo nodeInfo = nodeItemInfo.getNodeInfo();
+		for (Iterator iter = nodeInfo.getItems(); iter.hasNext(); ) {
+			NodeItemInfo nodeItemInfo2 = (NodeItemInfo) iter.next();
+			AttributeInfo attribInfo = nodeItemInfo2.getAttributeInfo();
+			LogHelper.debug ("attribInfo "+attribInfo);
+			AttributeItemInfo attributeItemInfo = attribInfo.getAttributeItemInfo("name", scenario);
+			LogHelper.debug ("attributeItemInfo "+attributeItemInfo);
+			if (attributeItemInfo == null) continue;
+
+			ParamInfo paramInfo = new ParamInfo();
+			EnvInfo envInfo = new EnvInfo();
+			NodeInfo nodeInfo2 = nodeItemInfo2.getNodeInfo();
+			for (Iterator iter2 = nodeInfo2.getItems(); iter2.hasNext(); ) {
+				NodeItemInfo nodeItemInfo3 = (NodeItemInfo) iter2.next();
+				LogHelper.debug ("nodeItemInfo3 "+nodeItemInfo3);	//find env and params
+				if ("envs".equalsIgnoreCase(nodeItemInfo3.getName())) {
+					NodeInfo nodeInfo3 = nodeItemInfo3.getNodeInfo();
+					for (Iterator iter3 = nodeInfo3.getItems(); iter3.hasNext(); ) {
+						NodeItemInfo nodeItemInfo4 = (NodeItemInfo) iter3.next();
+						AttributeInfo attribInfo4 = nodeItemInfo4.getAttributeInfo();
+						envInfo.add (new EnvItemInfo (
+								attribInfo4.getAttributeItemInfo("name"),
+								attribInfo4.getAttributeItemInfo("value")));
+					}
+				}
+				if ("params".equalsIgnoreCase(nodeItemInfo3.getName())) {
+					NodeInfo nodeInfo3 = nodeItemInfo3.getNodeInfo();
+					for (Iterator iter3 = nodeInfo3.getItems(); iter3.hasNext(); ) {
+						NodeItemInfo nodeItemInfo4 = (NodeItemInfo) iter3.next();
+						AttributeInfo attribInfo4 = nodeItemInfo4.getAttributeInfo();
+						paramInfo.add (new ParamItemInfo (attribInfo4.getAttributeItemInfo("name")));
+					}
+				}
+			}
+
+			LogHelper.debug ("attributeItemInfo "+attributeItemInfo.toString());
+			scenarioInfo.add (new ScenarioItemInfo (
+					attribInfo.getAttributeItemInfo("name"),
+					attribInfo.getAttributeItemInfo("application"),
+					attribInfo.getAttributeItemInfo("main"),
+					attribInfo.getAttributeItemInfo("classpath"),
+					attribInfo.getAttributeItemInfo("path"),
+					attribInfo.getAttributeItemInfo("cwd"),
+					paramInfo, envInfo));
+		}
+		ScenarioItemInfo scenarioItemInfo = scenarioInfo.getScenarioItemInfo(scenario);
+		LogHelper.info ("<<< Launcher::makeXml");
+		return scenarioItemInfo;
+	}
+
+	private String[] getMap (Map map) {
+		List<MapItemInfo> list = makeList (map);
+		String[] envp = new String [list.size()];
+		int count = 0;
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			MapItemInfo item = (MapItemInfo) iter.next();
+			envp[count++] = item.getKey() + "=" + item.getValue();
+		}
+		return envp;
+	}
+
+	private List<MapItemInfo> makeList (Map map) {
+		List<MapItemInfo> list = new ArrayList<MapItemInfo>();
+		Iterator keyValuePairs = map.entrySet().iterator();
+		for (int i = 0; i < map.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			list.add (new MapItemInfo ((String) entry.getKey(), (String) entry.getValue()));
+		}
+		Collections.sort (list);
+		return list;
+	}
+
+	@SuppressWarnings("unused")
+	private void showSortedMap (Map map) {
+		List<MapItemInfo> list = makeList (map);
+		for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+			MapItemInfo item = (MapItemInfo) iter.next();
+			LogHelper.debug ("*****************Sorted here: "+item.getKey() + "=" + item.getValue());
+		}
+	}
+}
+
+/*
+	private String[] getMap (Map map) {
+		Iterator keyValuePairs = map.entrySet().iterator();
+		String[] envp = new String [map.size()];
+		int count = 0;
+		for (int i = 0; i < map.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value1 = (String) entry.getValue();
+			envp[count++] = key + "=" + value1;
+		}
+		return envp;
+	}
+	@SuppressWarnings("unused")
+	private void showMap99 (Map map) {
+		Iterator keyValuePairs = map.entrySet().iterator();
+		for (int i = 0; i < map.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			LogHelper.debug (key + "=" + value);
+		}
+	}
+*/
+/*
+private ScenarioItemInfo makeXml99 (String scenario) {
+	String file = "c:\\jv\\utils\\launcher.xml";
+	ScenarioInfo scenarioInfo  = new ScenarioInfo();
+	NodeItemInfo nodeItemInfo = JVxml.loadXML (new File (file));
+	LogHelper.debug (nodeItemInfo.toString());
+	NodeInfo nodeInfo = nodeItemInfo.getNodeInfo();
+	for (Iterator iter = nodeInfo.getItems(); iter.hasNext(); ) {
+		NodeItemInfo item = (NodeItemInfo) iter.next();
+		AttributeInfo attribInfo = item.getAttributeInfo();
+		AttributeItemInfo attributeItemInfo = attribInfo.getAttributeItemInfo("application", scenario);
+		if (attributeItemInfo == null) continue;
+
+		LogHelper.debug ("attributeItemInfo "+attributeItemInfo.toString());
+		scenarioInfo.add (new ScenarioItemInfo (
+				attribInfo.getAttributeItemInfo("name"),
+				attribInfo.getAttributeItemInfo("application"),
+				attribInfo.getAttributeItemInfo("main"),
+				attribInfo.getAttributeItemInfo("classpath"),
+				attribInfo.getAttributeItemInfo("path"),
+				attribInfo.getAttributeItemInfo("cwd"),
+				attribInfo.getAttributeItemInfo("params")));
+	}
+	ScenarioItemInfo scenarioItemInfo = scenarioInfo.getScenarioItemInfo(scenario);
+	return scenarioItemInfo;
+}
+*/
+
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.util.Iterator;
+import java.util.Map;
+
+public class SubApp {
+	public static void main (String[] args) {
+		(new SubApp()).doTest();
+	}
+	private void doTest() {
+		System.out.println(">>> SubApp::doTest");
+		Map map = System.getenv();
+		Iterator keyValuePairs1 = map.entrySet().iterator();
+		System.out.println("***********************************");
+		for (int i = 0; i < map.size(); i++) {
+			Map.Entry entry = (Map.Entry) keyValuePairs1.next();
+			String key = (String) entry.getKey();
+			String value = (String) entry.getValue();
+			System.out.println("key :" + key + ": value :" + value + ":");
+		}
+		System.out.println("<<< SubApp::doTest");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.Serializable;
+
+public class ScenarioItemInfo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private String name;
+	private String application;
+	private String main; 
+	private String classpath;
+	private String path;
+	private String cwd;
+	private ParamInfo paramInfo;
+	private EnvInfo envInfo;
+
+	public ScenarioItemInfo (String name, String application, String main, 
+			String classpath, String path, String cwd,
+			ParamInfo paramInfo, EnvInfo envInfo) {
+		this.name = name;
+		this.application = application;
+		this.main = main;
+		this.classpath = classpath;
+		this.path = path;
+		this.cwd = cwd;
+		this.paramInfo = paramInfo;
+		this.envInfo = envInfo;
+	}
+	public String getName() {return name;}
+	public String getApplication() {return application;}
+	public String getMain() {return main;}
+	public String getClasspath() {return classpath;}
+	public String getPath() {return path;}
+	public String getCwd() {return cwd;}
+	public ParamInfo getParamInfo() {return paramInfo;}
+	public EnvInfo getEnvInfo() {return envInfo;}
+
+	public void setName (String name) {this.name = name;}
+	public void setApplication (String application) {this.name = application;}
+	public void setMain (String main) {this.main = main;}
+	public void setClasspath (String classpath) {this.classpath = classpath;}
+	public void setPath (String path) {this.path = path;}
+	public void setCwd (String cwd) {this.cwd = cwd;}
+
+	public String toString() {
+		return "("+getName()+","+getApplication()+","+getMain()+","+
+				getClasspath()+","+getPath()+","+getCwd()+","+getParamInfo()+","+getEnvInfo()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.Serializable;
+
+public class ScenarioInfo implements Serializable {
+	private static final long serialVersionUID = 1;
+	private ArrayList<ScenarioItemInfo> m_list = new ArrayList<ScenarioItemInfo>();
+
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (ScenarioItemInfo item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public ScenarioItemInfo getScenarioItemInfo (String name) {
+		for (Iterator iter = getItems(); iter.hasNext(); ) {
+			ScenarioItemInfo item = (ScenarioItemInfo) iter.next();
+			if (item.getName().equalsIgnoreCase(name)) return item;
+		}
+		return null;
+	}
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((ScenarioItemInfo) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.Serializable;
+
+public class ParamItemInfo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private String name;
+	public ParamItemInfo (String name) {
+		this.name = name;
+	}
+	public String getName() {return name;}
+
+	public void setName (String name) {this.name = name;}
+
+	public String toString() {
+		return "("+getName()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.Serializable;
+
+public class ParamInfo implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private ArrayList<ParamItemInfo> m_list = new ArrayList<ParamItemInfo>();
+
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (ParamItemInfo item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((ParamItemInfo) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.Serializable;
+
+public class MapItemInfo implements Serializable, Comparable<MapItemInfo> {
+	private static final long serialVersionUID = 1L;
+
+	private String key;
+	private String value;
+
+	public MapItemInfo (String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
+
+	public String getKey() {return key;}
+	public String getValue() {return value;}
+
+	public String toString() {
+		return "(" + getKey() + "," + getValue() + ")";
+	}
+
+	public int compareTo (MapItemInfo item) {
+		return key.compareTo(item.getKey());
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.io.Serializable;
+
+public class EnvItemInfo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private String name;
+	private String value;
+	public EnvItemInfo (String name, String value) {
+		this.name = name;
+		this.value = value;
+	}
+	public String getName() {return name;}
+	public String getValue() {return value;}
+
+	public void setName (String name) {this.name = name;}
+	public void setValue (String value) {this.value = value;}
+
+	public String toString() {
+		return "("+getName()+","+getValue()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.launcher;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.Serializable;
+
+public class EnvInfo implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private ArrayList<EnvItemInfo> m_list = new ArrayList<EnvItemInfo>();
+
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (EnvItemInfo item) {m_list.add(item);}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((EnvItemInfo) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}

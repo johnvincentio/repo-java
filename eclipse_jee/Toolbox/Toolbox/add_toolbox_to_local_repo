@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Add toolbox.jar to maven local repository
+#
+MY_JAR="/Users/jv/Desktop/MyDevelopment/repo_shell_scripts/mac/JVTools/toolbox.jar"
+MY_GROUP_ID="com.idc"
+MY_ARTIFACT_ID="toolbox"
+#
+echo "Adding $MY_JAR to maven local repository"
+echo ""
+echo "Group id $MY_GROUP_ID"
+echo "Artifact id $MY_ARTIFACT_ID"
+echo ""
+#
+mvn install:install-file \
+    -Dfile=$MY_JAR \
+    -DgroupId=$MY_GROUP_ID \
+    -DartifactId=$MY_ARTIFACT_ID \
+    -Dversion=1.0  \
+    -Dpackaging=jar
+
+echo "Complete"

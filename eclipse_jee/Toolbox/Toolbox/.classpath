@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Jars/db2java.zip"/>
+	<classpathentry kind="lib" path="log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="/Jars/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="/Jars/jt400.jar"/>
+	<classpathentry kind="lib" path="/Jars/ant.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JDec"/>
+	<classpathentry kind="lib" path="/Jars/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="/Jars/j2ee.jar"/>
+	<classpathentry kind="lib" path="/Jars/mysql-connector-java-5.1.30-bin.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

@@ -1,0 +1,4 @@
+When making a JAR set the Class-Path in the manifest.mf to the location the source code is in. So if the source code is in the folder C:/Projects/SourceCode/ set the 
+Class-Path: File://C:/Projects/SourceCode/
+
+Also make sure the agreement is read and you are in agreement with its terms and conditions before continuing. These just don't apply to using the program as stated in Section 7. By using, modifying, and bundling this software and/or source code you have agreed to the terms and conditions of the entire agreement.

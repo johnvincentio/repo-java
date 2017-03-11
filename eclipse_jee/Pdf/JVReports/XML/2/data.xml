@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<extract_01 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<report_purpose>account summary and open invoices</report_purpose>
+
+	<account>
+		<name>ABC INC</name>
+		<account_number>1434171</account_number>
+		<dross>FRED</dross>
+		<company>
+			<name>ABC INC</name>
+			<account_number>1434171</account_number>
+		</company>
+
+		<bill_to>
+			<address1>12345 WISTERIA WAY</address1>
+			<address2></address2>
+			<city>OKLAHOMA CITY</city>
+			<state>OK</state>
+			<zip>73111</zip>
+			<phone>201-307-5272</phone>
+			<fax></fax>
+		</bill_to>
+
+		<details>
+			<contact>ROBERT IACOBUCCI</contact>
+			<opened_date>06/12/98</opened_date>
+			<open_ar_amount>$34,292.17</open_ar_amount>
+			<last_order_date>02/13/08</last_order_date>
+			<on_rent_amount>$29,853.37</on_rent_amount>
+			<last_payment_date>10/11/05</last_payment_date>
+			<ytd_billed>$102,973.11</ytd_billed>
+			<last_payment_amount>$70,947.69</last_payment_amount>
+			<prior_yr_billed>$0.00</prior_yr_billed>
+		</details>
+
+		<aging>
+			<grant_total>$34,292.17</grant_total>
+			<current>
+				<total>$0.00</total>
+			</current>
+			<days_30>
+				<total>$12.00</total>
+			</days_30>
+			<days_60>
+				<total>$46.00</total>
+			</days_60>
+			<days_90>
+				<total>$1500.00</total>
+			</days_90>
+			<days_120>
+				<total>$2311.00</total>
+			</days_120>
+			<days_150>
+				<total>$36732.00</total>
+			</days_150>
+		</aging>
+
+	</account>
+
+</extract_01>

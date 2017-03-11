@@ -1,0 +1,141 @@
+
+C:\jvDwnlds\SQLServer\jdbc 2.0\sqljdbc_2.0\enu\help\index.htm
+
+http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/mapping.html
+
+http://database.ittoolbox.com/groups/technical-functional/db2-l/how-db2-bit-fields-work-318548
+
+http://www.bigresource.com/MS_SQL-Odd-DatabaseMetaData-getColumns-behavior-JlurFdSj.html
+http://technet.microsoft.com/en-us/library/ms379048(SQL.90).aspx
+http://archives.postgresql.org/pgsql-patches/2003-06/msg00402.php
+
+select * from mytable;
+
+
+<!--
+
+Airclic Development: HERTZ836\DEVL
+Airclic Production: AIRCLICP\I2
+
+-->
+
+
+select name, user_name(uid) from sysobjects where type='U';
+
+
+Connecting to database using airclickProd
+
+select name, user_name(uid) from sysobjects where type='U'
+
+name                                                                                                                                                                                                                                                                      
+'netTech_ACUserQuery'                                                                                                                                 'dbo'                                                                                                                                     
+'netTech_ACUserQueryError'                                                                                                                                 'dbo'                                                                                                                                     
+'netTech_Movement'                                                                                                                                 'dbo'                                                                                                                                     
+'netTech_MovementArc'                                                                                                                                 'dbo'                                                                                                                                     
+'netTech_MovementError'                                                                                                                                 'dbo'                                                                                                                                     
+'GeneralLog'                                                                                                                                 'dbo'                                                                                                                                     
+'TIMEDATA'                                                                                                                                 'dbo'                                                                                                                                     
+'Employee'                                                                                                                                 'dbo'                                                                                                                                     
+'ACHarvestState'                                                                                                                                 'dbo'                                                                                                                                     
+'ACUser'                                                                                                                                 'dbo'                                                                                                                                     
+'HERTZ'                                                                                                                                 'dbo'                                                                                                                                     
+'AcError'                                                                                                                                 'dbo'                                                                                                                                     
+'HERTZ_TEMP'                                                                                                                                 'dbo'                                                                                                                                     
+
+13 rows took 421 millisecs
+
+Disconnecting from database
+
+
+netTech_ACUserQuery
+netTech_ACUserQueryError
+netTech_Movement
+netTech_MovementArc
+netTech_MovementError
+GeneralLog
+TIMEDATA
+Employee
+ACHarvestState
+ACUser
+HERTZ
+AcError
+HERTZ_TEMP
+
+/*
+		allTableInfo.add (new TableInfo("netTech_ACUserQuery"));
+		allTableInfo.add (new TableInfo("netTech_ACUserQueryError"));
+		allTableInfo.add (new TableInfo("netTech_Movement"));
+		allTableInfo.add (new TableInfo("netTech_MovementArc"));
+		allTableInfo.add (new TableInfo("netTech_MovementError"));
+		allTableInfo.add (new TableInfo("GeneralLog"));
+		allTableInfo.add (new TableInfo("TIMEDATA"));
+		allTableInfo.add (new TableInfo("Employee"));
+		allTableInfo.add (new TableInfo("ACHarvestState"));
+		allTableInfo.add (new TableInfo("ACUser"));
+		allTableInfo.add (new TableInfo("HERTZ"));
+		allTableInfo.add (new TableInfo("AcError"));
+		allTableInfo.add (new TableInfo("HERTZ_TEMP"));
+*/
+
+
+
+***** trouble in getRows; Incorrect syntax near the keyword 'When'.
+Could not get rows for table CATCLASSMAINTENANCE
+
+
+select CoCode,Category,EquipmentClass,Sequence,How,StepNbr,When,HoursToComplete,PartListNbr from CATCLASSMAINTENANCE
+
+Incorrect syntax near the keyword 'When'.
+
+
+
+Writing the drop table statements for table HERTZ
+Writing the create table statements for table HERTZ
+Writing the grant statements for table HERTZ
+Writing the insert statements for table HERTZ
+Exception in thread "main" java.lang.NullPointerException
+	at com.idc.sql.app.sqlserver.DBSQLServer.getRows(DBSQLServer.java:276)
+	at com.idc.sql.app.sqlserver.MakeSQL.doWork(MakeSQL.java:194)
+	at com.idc.sql.app.sqlserver.MakeSQL.main(MakeSQL.java:28)
+	
+// unique list is here:
+		ArrayList<String> includeTableList = new ArrayList<String>();
+//		includeTableList.add ("ARIDETF2");
+//		includeTableList.add ("ARIDETV1");
+		includeTableList.add ("ARIHD2FL");
+//		includeTableList.add ("ARIHDRF2");
+		includeTableList.add ("ARIHDRFL");
+		includeTableList.add ("CRAHDRFL");
+		includeTableList.add ("CUSJBLFL");
+//		includeTableList.add ("CUSMASF4");
+		includeTableList.add ("CUSMASFL");
+//		includeTableList.add ("CUSMS2F2");
+		includeTableList.add ("CUSMS2FL");
+//		includeTableList.add ("EQPCCMF1");
+		includeTableList.add ("EQPCCMFL");
+		includeTableList.add ("EQPCPHFL");
+		includeTableList.add ("EQPCPRFL");
+		includeTableList.add ("EQPMASFL");
+		includeTableList.add ("ITMMASFL");
+		includeTableList.add ("MARACDFL");
+//		includeTableList.add ("RACDETF3");
+		includeTableList.add ("RACDETFL");
+//		includeTableList.add ("RACDETH3");
+//		includeTableList.add ("RACHDRF4");
+		includeTableList.add ("RACHDRFL");
+//		includeTableList.add ("RACHDRH3");
+//		includeTableList.add ("RACHDRH4");
+		includeTableList.add ("RAOADTFL");
+		includeTableList.add ("RAOAMTFL");
+		includeTableList.add ("RAODETFL");
+//		includeTableList.add ("RAOHDRF2");
+//		includeTableList.add ("RAOHDRF5");
+		includeTableList.add ("RAOHDRFL");
+//		includeTableList.add ("RAPKUPF4");
+		includeTableList.add ("RAPKUPFL");
+//		includeTableList.add ("RASDETF3");
+		includeTableList.add ("SYSLOCFL");
+		includeTableList.add ("SYSPGMFL");
+//		includeTableList.add ("SYSSECF2");
+		includeTableList.add ("WOHEADFL");
+		

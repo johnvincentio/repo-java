@@ -1,0 +1,2427 @@
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+public class PrintOut {
+	private static final int STATUS_IDLE = 0;
+	private static final int STATUS_DELETE = 1;
+	private static final int STATUS_INSERT = 2;
+//	private static final int STATUS_MOVE_NEW = 3;
+//	private static final int STATUS_MOVE_OLD = 4;
+//	private static final int STATUS_SAME = 5;
+	private static final int STATUS_CHANGE = 6;
+
+	private Diff m_diff;
+
+	private boolean m_anyPrinted;
+	private int m_printStatus;
+	private int m_printOldLine;
+	private int m_printNewLine;
+
+	public PrintOut(Diff diff) {m_diff = diff;}
+
+	public boolean printOut() {
+		m_printStatus = STATUS_IDLE;
+		m_anyPrinted = false;
+		for (m_printOldLine = m_printNewLine = 1; ;) {
+			if (m_printOldLine > m_diff.getOldInfo().getMaxLine()) {
+				newConsume();
+				break;
+			}
+			if (m_printNewLine > m_diff.getNewInfo().getMaxLine()) {
+				oldConsume();
+				break;
+			}
+			if (m_diff.getNewInfo().getOther(m_printNewLine) < 0 ) {
+				if (m_diff.getOldInfo().getOther(m_printOldLine) < 0)
+					showChange();
+				else
+					showInsert();
+			}
+			else if (m_diff.getOldInfo().getOther(m_printOldLine) < 0)
+				showDelete();
+			else if (m_diff.getBlocklen(m_printOldLine) < 0)
+				skipOld();
+			else if (m_diff.getOldInfo().getOther(m_printOldLine) == m_printNewLine)
+				showSame();
+			else
+				showMove();
+		}
+		if (m_anyPrinted == true)
+			m_diff.printLine(">>>> End of differences.");
+		else
+			m_diff.printLine(">>>> Files are identical.");
+		return (! m_anyPrinted);
+	}
+
+	/*
+	 * newConsume. Have run out of old file. 
+	 * Print the rest of the new file, as inserts and/or moves.
+	 */
+	private void newConsume() {
+		for( ; ;) {
+			if (m_printNewLine > m_diff.getNewInfo().getMaxLine())
+				break;	/* end of file */
+			if (m_diff.getNewInfo().getOther(m_printNewLine) < 0)
+				showInsert();
+			else
+				showMove();
+		}
+	}
+
+	/**
+	 * oldConsume. Have run out of new file.
+	 * Process the rest of the old file, printing any
+	 * parts which were deletes or moves.
+	 */
+	private void oldConsume() {
+		for( ; ;) {
+			if (m_printOldLine > m_diff.getOldInfo().getMaxLine())
+				break;	   /* end of file */
+			m_printNewLine = m_diff.getOldInfo().getOther(m_printOldLine);
+			if (m_printNewLine < 0)
+				showDelete();
+			else if (m_diff.getBlocklen(m_printOldLine) < 0)
+				skipOld();
+			else
+				showMove();
+		}
+	}
+
+	/**
+	 * showDelete
+	 * Expects m_printOldLine is at a deletion.
+	 */
+	private void showDelete() {
+		if (m_printStatus != STATUS_DELETE)
+			m_diff.printLine( ">>>> DELETE AT " + m_printOldLine);
+		m_printStatus = STATUS_DELETE;
+		m_diff.printLine(
+			m_diff.getOldInfo().getSymbol(m_printOldLine).getSymbol());
+		m_anyPrinted = true;
+		m_printOldLine++;
+	}
+
+	/*
+	 * showInsert
+	 * Expects m_printNewLine is at an insertion.
+	 */
+	private void showInsert() {
+		if (m_printStatus == STATUS_CHANGE)
+			m_diff.printLine(">>>>	 CHANGED TO" );
+		else if (m_printStatus != STATUS_INSERT) 
+			m_diff.printLine(">>>> INSERT BEFORE " + m_printOldLine);
+		m_printStatus = STATUS_INSERT;
+		m_diff.printLine(
+			m_diff.getNewInfo().getSymbol(m_printNewLine).getSymbol());
+		m_anyPrinted = true;
+		m_printNewLine++;
+	}
+
+	/**
+	 * showChange
+	 * Expects m_printNewLine is an insertion.
+	 *  Expects m_printOldLine is a deletion.
+	 */
+	private void showChange() {
+		if (m_printStatus != STATUS_CHANGE) 
+			m_diff.printLine( ">>>> " + m_printOldLine + " CHANGED FROM");
+		m_printStatus = STATUS_CHANGE;
+		m_diff.printLine(
+			m_diff.getOldInfo().getSymbol(m_printOldLine).getSymbol());
+		m_anyPrinted = true;
+		m_printOldLine++;
+	}
+
+	/**
+	 * skipOld
+	 * Expects m_printOldLine at start of an old block that has
+	 * already been announced as a move.
+	 * Skips over the old block.
+	 */
+	private void skipOld() {
+		m_printStatus = STATUS_IDLE;
+		for ( ; ;) {
+			if (++m_printOldLine > m_diff.getOldInfo().getMaxLine())
+				break;	 /* end of file  */
+			if (m_diff.getOldInfo().getOther(m_printOldLine) < 0)
+				break;	/* end of block */
+			if (m_diff.getBlocklen(m_printOldLine) != 0)
+				break;	  /* start of another */
+		}
+	}
+
+	/**
+	 * skipNew
+	 * Expects m_printNewLine is at start of a new block that has
+	 * already been announced as a move.
+	 * Skips over the new block.
+	 */
+	private void skipNew() {
+		int oldline;
+		m_printStatus = STATUS_IDLE;
+		for ( ; ;) {
+			if (++m_printNewLine > m_diff.getNewInfo().getMaxLine())
+				break;	/* end of file  */
+			oldline = m_diff.getNewInfo().getOther(m_printNewLine);
+			if (oldline < 0)
+				break;			 /* end of block */
+			if (m_diff.getBlocklen(oldline) != 0)
+				break;		  /* start of another */
+		}
+	}
+
+	/**
+	 * showSame
+	 * Expects m_printNewLine and m_printOldLine at start of
+	 * two blocks that aren't to be displayed.
+	 */
+	private void showSame() {
+		int count;
+		m_printStatus = STATUS_IDLE;
+		if (m_diff.getNewInfo().getOther(m_printNewLine) != m_printOldLine) {
+			System.err.println("BUG IN LINE REFERENCING");
+			System.exit(1);
+		}
+		count = m_diff.getBlocklen(m_printOldLine);
+		m_printOldLine += count;
+		m_printNewLine += count;
+	}
+
+	/**
+	 * showMove
+	 * Expects m_printOldLine, m_printNewLine at start of
+	 * two different blocks ( a move was done).
+	 */
+	private void showMove() {
+		int oldblock = m_diff.getBlocklen(m_printOldLine);
+		int newother = m_diff.getNewInfo().getOther(m_printNewLine);
+		int newblock = m_diff.getBlocklen(newother);
+
+		if (newblock < 0)
+			skipNew();	 // already printed.
+		else if (oldblock >= newblock) {	 // assume new's blk moved.
+			m_diff.setBlocklen(newother, -1);	 // stamp block as "printed".
+			m_diff.printLine(">>>> " + newother + 
+					" THRU " + (newother + newblock - 1) + 
+					" MOVED TO BEFORE " + m_printOldLine);
+			for ( ; newblock > 0; newblock--, m_printNewLine++)
+				m_diff.printLine(
+					m_diff.getNewInfo().getSymbol(m_printNewLine).getSymbol());
+			m_anyPrinted = true;
+			m_printStatus = STATUS_IDLE;
+		} else		/* assume old's block moved */
+			skipOld();	  /* target line# not known, display later */
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+public class Node {	/* the tree is made up of these nodes */
+	private static Node m_topNode = null;	/* symtab is a tree hung from this */
+	private static final int FRESHNODE = 0;
+	private static final int OLDONCE = 1;
+	private static final int NEWONCE = 2;
+	private static final int BOTHONCE = 3;
+	private static final int OTHER = 4;
+
+	private Node m_left, m_right;
+	private int m_state;			/* enum m_state */
+	private int m_linenum;
+	private String m_strLine;
+
+/**
+* Construct a new symbol table node and fill in its fields.
+* @param strLine	A line of the text file
+*/
+	public Node(String strLine) {
+		m_left = m_right = null;
+		m_state = FRESHNODE;		/* linenum field is not always valid */
+		m_strLine = strLine;
+	}
+	public static void showNode(Node pNode, int lvl, char type) {
+		System.out.println("(L,Lvl,T,S,Str)("+pNode.m_linenum+","+lvl+","+
+			type+","+pNode.m_state+","+ pNode.m_strLine+")");
+		lvl++;
+		if (pNode.m_left!= null) showNode (pNode.m_left, lvl, 'L');
+		if (pNode.m_right != null) showNode (pNode.m_right, lvl, 'R');
+	}
+	public static void traverseTree (String msg) {
+		System.out.println(">>> Node::traverseTree(); "+msg);
+		Node node = m_topNode;
+		if (node != null) {
+			int lvl = 0;
+			showNode (node, lvl, 'T');
+		}
+		System.out.println("<<< Node::traverseTree()");
+	}
+/**
+* matchsymbol	   Searches tree for a match to the line.
+* @param strLine, a line of text
+* If node's m_state == FRESHNODE, then created the node.
+*/
+	private static Node matchsymbol(String strLine) {
+		int comparison;
+		Node lNode = m_topNode;
+		if (m_topNode == null) return m_topNode = new Node(strLine);
+		for(;;) {
+			comparison = lNode.m_strLine.compareTo(strLine);
+			if (comparison == 0)
+				return lNode;	  /* found */
+			else if (comparison < 0) {	// m_strLine < strLine
+				if (lNode.m_left == null) {
+					lNode.m_left = new Node(strLine);
+					return lNode.m_left;
+				}
+				lNode = lNode.m_left;
+			}
+			else { // if (comparison > 0) {	// m_strLine > strLine
+				if (lNode.m_right == null) {
+					lNode.m_right = new Node(strLine);
+					return lNode.m_right;
+				}
+				lNode = lNode.m_right;
+			}
+		}
+	}
+
+/**
+* addSymbol(String strLine) - Saves line into the symbol table.
+* Returns a handle to the symtab entry for that unique line.
+* If bInOldFile nonzero, then linenum is remembered.
+*/
+	public static Node addSymbol(String strLine, boolean bInOldFile, int linenum) {
+		Node lNode;
+		lNode = matchsymbol(strLine);  /* find the node in the tree */
+		if (lNode.m_state == FRESHNODE) {
+			lNode.m_state = bInOldFile ? OLDONCE : NEWONCE;
+		}
+		else {
+			if ((lNode.m_state == OLDONCE && !bInOldFile) ||
+				(lNode.m_state == NEWONCE && bInOldFile))
+				lNode.m_state = BOTHONCE;
+			else
+				lNode.m_state = OTHER;
+		}
+		if (bInOldFile) lNode.m_linenum = linenum;
+		return lNode;
+	}
+
+	public int getLinenum() {return m_linenum;}
+	public boolean symbolIsUnique() {return (m_state == BOTHONCE);}
+	public String getSymbol() {return m_strLine;}
+//	public void showSymbol() {System.out.println(m_strLine);}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import java.io.*;
+
+public class FileInfo {			/** This is the info kept per-file.	 */
+	private static final int MAXLINECOUNT = 20000;
+	private String m_strFile;
+	private BufferedReader m_file;	/* File handle that is open for read.  */
+	private int m_maxLine;	/* After input done, # lines in file.  */
+	private Node m_symbol[]; /* The symtab handle of each line. */
+	private int m_other[]; /* Map of line# to line# in other file */
+	/* ( -1 means don't-know ).		*/
+
+	public FileInfo(String filename) {
+//		debug.info(">>> FileInfo::FileInfo; filename "+filename);
+		m_strFile = filename;
+		m_symbol = new Node [MAXLINECOUNT+2];
+		m_other  = null;
+		m_maxLine = 0;
+//	debug.info("<<< FileInfo::FileInfo");
+	}
+
+	public void inputScan(boolean bOld) throws IOException {
+//	debug.info(">>> FileInfo:inputScan()");
+		String sbuf;
+		try {
+			m_file = new BufferedReader(
+					new FileReader (new File(m_strFile)));
+			while ((sbuf = m_file.readLine()) != null) {
+				int linenum = ++m_maxLine;
+				if (linenum > MAXLINECOUNT) {
+					System.err.println("MAXLINECOUNT exceeded, must stop.");
+					System.exit(1);
+				}
+				m_symbol[linenum] = Node.addSymbol(sbuf, bOld, linenum);
+			}
+			m_file.close();
+		} catch (IOException e) {
+			System.err.println("Diff can't read file " + m_strFile);
+			System.err.println("Error Exception was:" + e);
+			System.exit(1);
+		}
+//		debug.info("<<< FileInfo:inputScan()");
+	}
+	public void initAlloc() {m_other  = new int[m_symbol.length + 2];}
+	public int getMaxLine() {return m_maxLine;}
+	public Node getSymbol (int num) {return m_symbol[num];}
+	public int getOther (int num) {return m_other[num];}
+	public void setOther (int num, int value) {m_other[num] = value;}
+	public void showOther(String msg) {
+		System.out.println(">>> showOther(): "+msg);
+		for (int i=0; i<m_maxLine + 2; i++) {
+			System.out.println("(i,value) ("+i+","+m_other[i]+")");
+		}
+		System.out.println("<<< showOther()");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import java.io.IOException;
+
+import com.idc.file.exec.OutputLine;
+
+public class Diff {
+
+	private static final int UNREAL=Integer.MAX_VALUE;
+	private FileInfo m_oldInfo, m_newInfo;
+	private PrintOut m_printOut;
+	private int m_nBlocklen;
+
+	/** m_blocklen is the info about found blocks. It will be set to 0, except
+	 * at the line#s where blocks start in the old file. At these places it
+	 * will be set to the # of lines in the block. During printout ,
+	 * this # will be reset to -1 if the block is!  printed as a MOVE block
+	 * (because the printout phase will encounter the block twice, but
+	 * must only print it once.)
+	 * The array declarations are to MAXLINECOUNT+2 so that we can have two
+	 * extra lines (pseudolines) at line# 0 and line# MAXLINECOUNT+1
+	 * (or less).
+	 */
+	private int m_blocklen[];
+
+	private OutputLine m_printline;
+	public void printLine(String msg) {m_printline.println(msg);}
+	public Diff(OutputLine printline) {m_printline = printline;}
+
+	public boolean doDiff(String oldFile, String newFile) {
+		m_oldInfo = new FileInfo(oldFile);
+		m_newInfo = new FileInfo(newFile);
+		m_printOut = new PrintOut (this);
+		printLine( ">>>> Difference of file \"" + oldFile + 
+			"\" \n and file \"" + newFile + "\".\n");
+		try {
+//			Node.traverseTree("Before first scan");		// debugging
+			m_oldInfo.inputScan(true);
+//			Node.traverseTree("Before second scan");	// debugging
+			m_newInfo.inputScan(false);
+//			Node.traverseTree("After second scan");		// debugging
+		} catch (IOException e) {
+			System.err.println("Read error: " + e);
+			return false;
+		}
+		m_nBlocklen = m_oldInfo.getMaxLine();
+		if (m_newInfo.getMaxLine() > m_nBlocklen) m_nBlocklen = m_newInfo.getMaxLine();
+		m_nBlocklen += 2;
+		m_blocklen = new int[m_nBlocklen];
+		m_oldInfo.initAlloc();
+		m_newInfo.initAlloc();
+		transForm();
+//		showBlocklen("after transform()");	// debugging
+//		m_oldInfo.showOther("old file");	// debugging
+//		m_newInfo.showOther("new file");	// debugging
+		return m_printOut.printOut();
+	}
+	public FileInfo getOldInfo() {return m_oldInfo;}
+	public FileInfo getNewInfo() {return m_newInfo;}
+	public int getBlocklen(int num) {return m_blocklen[num];}
+	public void setBlocklen(int num, int value) {m_blocklen[num] = value;}
+	/*
+	private void showBlocklen(String msg) {
+		System.out.println(">>> showBlocklen(); "+msg);
+		for (int i=0; i<m_nBlocklen; i++) {
+			System.out.println("(i,value) ("+i+","+m_blocklen[i]+")");
+		}
+		System.out.println("<<< showBlocklen()");
+	}
+	*/
+
+	/*
+	 * transform	
+	 * Analyzes the file differences and leaves its findings in
+	 * the global arrays m_oldInfo.other, m_newInfo.other, and m_blocklen.
+	 * Expects both files in symtab.
+	 * Expects valid "maxLine" and "symbol" in m_oldInfo and m_newInfo.
+	 */
+	private void transForm() {				  
+		int oldline, newline;
+		int oldmax = m_oldInfo.getMaxLine() + 2;  /* Count pseudolines at  */
+		int newmax = m_newInfo.getMaxLine() + 2;  /* ..front and rear of file */
+
+		for (oldline=0; oldline < oldmax; oldline++)
+			m_oldInfo.setOther(oldline ,-1);
+		for (newline=0; newline < newmax; newline++)
+			m_newInfo.setOther(newline, -1);
+
+		scanUnique();  /* scan for lines used once in both files */
+		scanAfter();   /* scan past sure-matches for non-unique blocks */
+		scanBefore();  /* scan backwards from sure-matches */
+		scanBlocks();  /* find the fronts and lengths of blocks */
+	}
+
+	/*
+	 * scanunique
+	 * Scans for lines which are used exactly once in each file.
+	 * Expects both files in symtab, and m_oldInfo and m_newInfo valid.
+	 * The appropriate "other" array entries are set to the line# in
+	 * the other file.
+	 * Claims pseudo-lines at 0 and XXXinfo.maxLine+1 are unique.
+	 */
+	private void scanUnique() {
+		int oldline, newline;
+		Node lNode;
+
+		for (newline = 1; newline <= m_newInfo.getMaxLine(); newline++) {
+			lNode = m_newInfo.getSymbol(newline);
+			if (lNode.symbolIsUnique()) {	// 1 use in each file
+				oldline = lNode.getLinenum();
+				m_newInfo.setOther(newline, oldline); // record 1-1 map
+				m_oldInfo.setOther(oldline, newline);
+			}
+		}
+		m_newInfo.setOther(0, 0);
+		m_oldInfo.setOther(0, 0);
+		m_newInfo.setOther(m_newInfo.getMaxLine() + 1, m_oldInfo.getMaxLine() + 1);
+		m_oldInfo.setOther(m_oldInfo.getMaxLine() + 1, m_newInfo.getMaxLine() + 1);
+	}
+
+	/*
+	 * scanafter
+	 * Expects both files in symtab, and m_oldInfo and m_newInfo valid.
+	 * Expects the "other" arrays contain positive #s to indicate
+	 * lines that are unique in both files.
+	 * For each such pair of places, scans past in each file.
+	 * Contiguous groups of lines that match non-uniquely are
+	 * taken to be good-enough matches, and so marked in "other".
+	 * Assumes each other[0] is 0.
+	 */
+	private void scanAfter() {
+		int oldline, newline;
+		for (newline = 0; newline <= m_newInfo.getMaxLine(); newline++) {
+			oldline = m_newInfo.getOther(newline);
+			if (oldline >= 0) {			/* is unique in old &amp; new */
+				for ( ; ;) {			/* scan after there in both files */
+					if (++oldline > m_oldInfo.getMaxLine()) break; 
+					if (m_oldInfo.getOther(oldline) >= 0) break;
+					if (++newline > m_newInfo.getMaxLine()   ) break; 
+					if (m_newInfo.getOther(newline) >= 0) break;
+					if (m_newInfo.getSymbol(newline) !=
+						m_oldInfo.getSymbol(oldline)) break;  // not same
+					m_newInfo.setOther(newline, oldline); // record a match
+					m_oldInfo.setOther(oldline, newline);
+				}
+			}
+		}
+	}
+
+	/**
+	 * scanbefore
+	 * As scanafter, except scans towards file fronts.
+	 * Assumes the off-end lines have been marked as a match.
+	 */
+	private void scanBefore() {
+		int oldline, newline;
+		for (newline = m_newInfo.getMaxLine() + 1; newline > 0; newline--) {
+			oldline = m_newInfo.getOther(newline);
+			if (oldline >= 0) {		   /* unique in each */
+				for( ; ;) {
+					if (--oldline <= 0) break;
+					if (m_oldInfo.getOther(oldline) >= 0) break;
+					if (--newline <= 0) break;
+					if (m_newInfo.getOther(newline) >= 0) break;
+					if (m_newInfo.getSymbol(newline) !=
+						m_oldInfo.getSymbol(oldline)) break;  // not same
+					m_newInfo.setOther(newline, oldline); // record a match
+					m_oldInfo.setOther(oldline, newline);
+				}
+			}
+		}
+	}
+
+	/**
+	 * scanblocks - Finds the beginnings and lengths of blocks of matches.
+	 * Sets the m_blocklen array (see definition).
+	 * Expects m_oldInfo valid.
+	 */
+	private void scanBlocks() {
+		int oldline, newline;
+		int oldfront = 0;	  // line# of front of a block in old, or 0 
+		int newlast = -1;	  // newline's value during prev. iteration
+
+		for (oldline = 1; oldline <= m_oldInfo.getMaxLine(); oldline++)
+			m_blocklen[oldline] = 0;
+		m_blocklen[m_oldInfo.getMaxLine() + 1] = UNREAL; // starts a mythical blk
+		for (oldline = 1; oldline <= m_oldInfo.getMaxLine(); oldline++) {
+			newline = m_oldInfo.getOther(oldline);
+			if (newline < 0)
+				oldfront = 0;  /* no match: not in block */
+			else {				   /* match. */
+				if (oldfront == 0) oldfront = oldline;
+				if (newline != (newlast+1)) oldfront = oldline;
+				++m_blocklen[oldfront];		
+			}
+			newlast = newline;
+		}
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import com.idc.file.exec.OutputLine;
+import com.idc.file.exec.PrintLine;
+
+public class AppTTY {
+	AppTTY() {}
+	public static void main(String args[]) {
+		if (args.length != 2) {
+			System.err.println("Usage: diff oldfile newfile");
+			System.exit(1);
+		}
+		OutputLine cout = new PrintLine();
+		Diff diff = new Diff(cout);
+		boolean bDiff = diff.doDiff(args[0], args[1]);
+		if (bDiff) System.exit(0);
+		System.exit(1);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class AppGUI extends JFrame {
+	private static final long serialVersionUID = 1;
+	public AppGUI(String msg) {
+		super(msg);
+		setContentPane(makeMyContentPane());
+		setSize(1250,900);		// width, height
+		setVisible(true);
+	}
+	public static void main (String args[]) {
+		JFrame frame = new AppGUI ("Compare Application");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	private Container makeMyContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new GridLayout(1, 2, 0, 0));
+
+		Appfile m_onefile = new Appfile();
+		Appfile m_twofile = new Appfile();
+		Appdiff onediff = new Appdiff(m_onefile, m_twofile);
+
+		JSplitPane splitPane1 = new JSplitPane(
+									JSplitPane.HORIZONTAL_SPLIT,
+									m_onefile.makeContentPane(), 
+									m_twofile.makeContentPane());
+		splitPane1.setDividerSize(10);	
+		splitPane1.setDividerLocation(435);	
+		splitPane1.setOneTouchExpandable(true);
+
+		JSplitPane splitPane = new JSplitPane(
+									JSplitPane.HORIZONTAL_SPLIT,
+									splitPane1, 
+									onediff.makeContentPane());
+		splitPane.setDividerLocation(900);	
+		splitPane.setOneTouchExpandable(true);
+
+		pane.add(splitPane);
+		return pane;
+	}
+}
+/*
+	private Container makeMyContentPane2() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new GridLayout(1, 3, 0, 0));
+
+		JPanel onePane = new JPanel();
+		Appfile onefile = new Appfile();
+		onePane.add(onefile.makeContentPane());
+		pane.add(onePane);
+
+		JPanel twoPane = new JPanel();
+		Appfile twofile = new Appfile();
+		twoPane.add(twofile.makeContentPane());
+		pane.add(twoPane);
+
+		JPanel threePane = new JPanel();
+		Appdiff onediff = new Appdiff(onefile, twofile);
+		threePane.add(onediff.makeContentPane());
+		pane.add(threePane);
+		return pane;
+	}
+*/
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import com.idc.utils.JVString;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.io.*;
+import java.util.Iterator;
+
+public class Appfile extends JPanel implements DropTargetListener {
+	private static final long serialVersionUID = 1;
+	private JTextField m_filenameField;
+	private JTextArea m_textArea;
+	private int m_nLineNumber = 0;
+
+	public Appfile() {}
+	public String getCompareFilename() {return m_filenameField.getText();}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel topPane = new JPanel();
+		m_filenameField = new JTextField(20);
+		new DropTarget(m_filenameField, DnDConstants.ACTION_COPY_OR_MOVE, this);
+		topPane.add(m_filenameField);
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(50,35);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(false);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll, BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));	//t,l,b,r
+
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+	private void readFile(final String filename) {
+//		System.out.println(">>> Test:readFile");
+		BufferedReader buf = null;
+		String line;
+		try {
+			buf = new BufferedReader(new FileReader(filename));
+			while ((line = buf.readLine()) != null) {
+				handleLine(line);
+			}
+			m_textArea.setCaretPosition(0);
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		finally {
+			try {
+				if (buf != null) buf.close();
+			}
+			catch (IOException exception2) {
+				exception2.printStackTrace();
+			}
+		}
+//		System.out.println("<<< Test:readFile");
+	}
+	public synchronized void drop(DropTargetDropEvent e) {
+		System.out.println(">>> Abc:drop");
+		try {
+			Transferable tr = e.getTransferable();
+			if (tr.isDataFlavorSupported (DataFlavor.javaFileListFlavor)) {
+				e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+				java.util.List fileList = (java.util.List)
+				tr.getTransferData(DataFlavor.javaFileListFlavor);
+				Iterator iterator = fileList.iterator();
+				while (iterator.hasNext()) {
+					File file = (File)iterator.next();
+					clearMessagesArea();
+					m_nLineNumber = 0;
+					readFile (file.getAbsolutePath());
+					m_textArea.setCaretPosition(0);
+//					m_textArea.setSelectionStart(0);
+//					m_textArea.setMargin(new Insets(10,10,10,10));
+					setFilenameMessage(file.getAbsolutePath());
+				}
+				e.getDropTargetContext().dropComplete(true);
+			} else {
+				System.err.println ("Rejected");
+				e.rejectDrop();
+			}
+		}
+		catch (IOException io) {
+			io.printStackTrace();
+			e.rejectDrop();
+		}
+		catch (UnsupportedFlavorException ufe) {
+			ufe.printStackTrace();
+			e.rejectDrop();
+		}
+		System.out.println ("<<< Abc:drop");
+	}
+	public void dragEnter(DropTargetDragEvent e) {
+//		System.out.println("--- Abc:dragEnter");
+	}
+	public void dragExit(DropTargetEvent e) {
+//		System.out.println("--- Abc:dragExit");
+	}
+	public void dragOver(DropTargetDragEvent e) {
+//		System.out.println("--- Abc:dragOver");
+	}
+	public void dropActionChanged(DropTargetDragEvent e) {
+//		System.out.println("--- Abc:dropActionChanged");
+	}
+
+	public void setFilenameMessage (final String msg) {
+		SwingUtilities.invokeLater (
+				new Runnable() {
+					public void run() {
+						m_filenameField.setText(msg);
+						validate();
+					}
+				}
+			);
+	}
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+				new Runnable() {
+					public void run() {
+						m_textArea.append(msg);
+						m_textArea.append("\n");
+					}
+				}
+			);
+	}
+	public void clearMessagesArea () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.setText("");
+					m_textArea.setCaretPosition(
+							m_textArea.getText().length());
+					validate();
+				}
+			}
+		);
+	}
+	private void handleLine(final String line) {
+		JVString jvstr = new JVString(line);
+		jvstr.replace("\t","	");
+		jvstr.insert(++m_nLineNumber+".  ");
+		setMessagesArea (jvstr.getString());
+	}
+}
+
+/*
+private void readFileToEditor(final String filename) {
+System.out.println(">>> Test:readFileToEditor");
+EditorKit kit = m_textPane.getEditorKit();
+Document document = m_textPane.getDocument();
+
+try {
+document.remove(0,document.getLength());
+kit.read(new FileReader(filename), document, 0);
+}
+catch(Exception ex) {
+ex.printStackTrace();
+}
+System.out.println("<<< Test:readFileToEditor");
+}
+*/
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.file;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+import com.idc.file.exec.OutputLine;
+import com.idc.utils.JVString;
+
+public class Appdiff extends JPanel implements ActionListener, OutputLine {
+	private static final long serialVersionUID = 1;
+	private Appfile m_appFile1, m_appFile2;
+	private JButton m_btnDiff;
+	private JTextArea m_textArea;
+
+	public Appdiff(Appfile a1, Appfile a2) {m_appFile1 = a1; m_appFile2 = a2;}
+	public Container makeContentPane() {
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+
+		JPanel topPane = new JPanel();
+		m_btnDiff = new JButton("Compare");
+		m_btnDiff.addActionListener(this);
+		topPane.add(m_btnDiff);
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		m_textArea = new JTextArea(50,35);
+		m_textArea.setLineWrap(false);
+		m_textArea.setEditable(false);
+		m_textArea.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+
+		JScrollPane scroll = new JScrollPane(m_textArea,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		midPane.add(scroll,	BorderLayout.CENTER);
+		midPane.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));//t,l,b,r
+
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		return pane;
+	}
+	public Dimension getPreferredSize() {return new Dimension(400, 800);}
+	public Dimension getMinimumSize() {return getPreferredSize();}
+
+	public void setMessagesArea (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.append(msg);
+					m_textArea.append("\n");
+				}
+			}
+		);
+	}
+	public void clearMessagesArea () {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_textArea.setText("");
+					m_textArea.setCaretPosition(
+							m_textArea.getText().length());
+					validate();
+				}
+			}
+		);
+	}
+	public void println(final String line) {
+		JVString jvstr = new JVString(line);
+		jvstr.replace("\t","	");
+		setMessagesArea (jvstr.getString());		
+	}
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JButton) {
+			if (source == m_btnDiff) {
+				clearMessagesArea();
+				compareSelected();
+			}			
+		}
+		else
+			System.out.println("else type");
+	}
+	private void compareSelected() {
+		Diff diff = new Diff(this);
+		diff.doDiff(m_appFile1.getCompareFilename(), m_appFile2.getCompareFilename());
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.diff.dir;
+
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.sql.Time;
+
+public class Output {
+	private PrintWriter m_writer;
+	public Output (String name) {
+		try {
+		m_writer = new PrintWriter(new OutputStreamWriter(
+				new FileOutputStream (name, false)), true);
+		} catch (Exception ex) {
+			System.out.println("exception in setFile");
+			System.exit(1);
+		}
+	}
+	public void println () {m_writer.println ();}
+	public void println (String msg) {m_writer.println (msg);}
+	public void print (String msg) {m_writer.print (msg);}
+	public void timing (String msg) {
+		println ((new Time(System.currentTimeMillis())).toString() + "; " + msg);
+	}
+	public void close() {m_writer.close();}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.diff.dir;
+
+import java.io.File;
+import java.io.Serializable;
+
+public class BaseItemInfo implements Serializable {
+	private static final long serialVersionUID = 1;
+	private File file;
+	private String path;
+	private String relative;
+	private String name;
+	private boolean complete = false;
+	public BaseItemInfo (String base, File file) {
+		this.file = file;
+		path = file.getAbsolutePath();
+		name = file.getName();
+		int num = path.indexOf(base);
+//		System.out.println("num "+num);
+		if (num < 0) {
+			System.out.println("Trouble; File "+toString());
+			System.exit(1);
+		}
+		relative = path.substring(base.length()+1);
+	}
+	public File getBase() {return file;}
+	public String getName() {return name;}
+	public String getPath() {return path;}
+	public String getRelative() {return relative;}
+
+	public boolean isComplete() {return complete;}
+	public void setComplete() {complete = true;}
+
+	public String toString() {
+		return "("+getRelative()+")\n";
+	}
+}
+/*
+	public String toString() {
+		return "("+getBase().getName()+")\n";
+	}
+			return "("+getRelative()+")\n";
+*/
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.diff.dir;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class BaseInfo implements Serializable {
+	private static final long serialVersionUID = 1;
+	private ArrayList<BaseItemInfo> m_list = new ArrayList<BaseItemInfo>();
+	private String m_base;
+
+	public BaseInfo (String base) {m_base = base;}
+	public String getBase() {return m_base;}
+	public Iterator getItems() {return m_list.iterator();}
+	public void add (BaseItemInfo item) {
+		if (item != null) m_list.add(item);
+	}
+	public int getSize() {return m_list.size();}
+	public boolean isNone() {return getSize() < 1;}
+
+	public BaseItemInfo getByRelativeName (BaseItemInfo item) {
+//		System.out.println("stage 1 :"+item.getRelative()+":");
+		if (item == null) return null;
+		BaseItemInfo baseItemInfo;
+		Iterator iter = getItems();
+		while (iter.hasNext()) {
+			baseItemInfo = (BaseItemInfo) iter.next();
+//			System.out.println("stage 4 :"+baseItemInfo.getRelative()+":");
+			if (baseItemInfo == null) continue;
+			if (baseItemInfo.getRelative().equals(item.getRelative()))
+				return baseItemInfo;
+		}
+//		System.out.println("stage 1a :"+item.getRelative()+":");
+//		System.out.println("stage 7");
+		return null;
+	}
+	public BaseInfo getByName (BaseItemInfo item) {
+//		System.out.println(">>> getByName :"+item.getName()+":");
+		if (item == null) return null;
+		BaseInfo baseInfo = new BaseInfo(m_base);
+		BaseItemInfo baseItemInfo;
+		Iterator iter = getItems();
+		while (iter.hasNext()) {
+			baseItemInfo = (BaseItemInfo) iter.next();
+			if (baseItemInfo == null) continue;
+			if (baseItemInfo.getName().equals(item.getName()))
+				baseInfo.add(baseItemInfo);
+		}
+//		System.out.println("<<< getByName :"+baseInfo.toString());
+		return baseInfo;
+	}
+
+	public void sortByName() {Collections.sort (m_list, new SortFileName());}
+	private class SortFileName implements Comparator <BaseItemInfo> {
+		public int compare(BaseItemInfo a, BaseItemInfo b) {
+			return a.getName().compareTo(b.getName());
+		}
+	}
+
+	public void sortByRelative() {Collections.sort (m_list, new SortRelativeName());}
+	private class SortRelativeName implements Comparator<BaseItemInfo> {
+		public int compare(BaseItemInfo a, BaseItemInfo b) {
+			return a.getRelative().compareTo(b.getRelative());
+		}
+	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i=0; i<m_list.size(); i++)
+			buf.append(((BaseItemInfo) m_list.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+
+package com.idc.diff.dir;
+
+import java.io.File;
+import java.util.Iterator;
+
+public class App {
+	public static void main(String[] args) {
+		(new App()).doApp();
+	}
+	private void doApp() {
+//		String basedir = "c:\\irac\\src\\herc_st";
+		String basedir = "C:\\tmp\\kv1\\src";
+		BaseInfo basedirInfo = new BaseInfo(basedir);
+		doDirectory (new File(basedir), basedirInfo);
+//		System.out.println("basedirInfo "+basedirInfo.toString());
+		System.out.println("size "+basedirInfo.getSize());
+
+//		String compdir = "c:\\tmp\\herc01\\herc_st";
+		String compdir = "C:\\tmp\\kv2\\src";
+		BaseInfo compdirInfo = new BaseInfo(compdir);
+		doDirectory (new File(compdir), compdirInfo);
+//		System.out.println("compdirInfo "+compdirInfo.toString());
+		System.out.println("size "+compdirInfo.getSize());
+
+		Output output1 = new Output("c:\\tmp\\file1.bat");
+		Output output2 = new Output("c:\\tmp\\file2.bat");
+		Output report = new Output("c:\\tmp\\report.txt");
+/*
+ * Pass 1 - look for each file in the same directory structure
+ */
+		BaseItemInfo baseItemInfo, compItemInfo;
+		basedirInfo.sortByRelative();
+		compdirInfo.sortByRelative();
+		Iterator iter = compdirInfo.getItems();
+		while (iter.hasNext()) {
+			compItemInfo = (BaseItemInfo) iter.next();
+			baseItemInfo = basedirInfo.getByRelativeName(compItemInfo);
+			if (baseItemInfo == null) {
+				report.println("File "+compItemInfo.getRelative()+" not found in baseline");				
+			}
+			else {
+				compareFiles (output1, baseItemInfo, compItemInfo);
+				compItemInfo.setComplete();
+			}
+		}
+/*
+ * Pass 2 - look for each remaining file anywhere in the directory structure
+ */
+		BaseInfo myBaseInfo;
+		BaseItemInfo myBaseItemInfo;
+		iter = compdirInfo.getItems();
+		while (iter.hasNext()) {
+			compItemInfo = (BaseItemInfo) iter.next();
+			if (compItemInfo.isComplete()) continue;
+			myBaseInfo = basedirInfo.getByName(compItemInfo);
+			if (myBaseInfo == null || myBaseInfo.getSize() < 1) {
+				report.println("File "+compItemInfo.getName()+" not found anywhere in the baseline");				
+			}
+			else {
+//				System.out.println("myBaseInfo size "+myBaseInfo.getSize());
+				Iterator iter2 = myBaseInfo.getItems();
+				while (iter2.hasNext()) {
+					myBaseItemInfo = (BaseItemInfo) iter2.next();
+					compareFiles (output2, myBaseItemInfo, compItemInfo);
+				}
+				compItemInfo.setComplete();
+			}
+		}	
+
+		output1.close();
+		output2.close();
+		report.close();
+	}
+
+	private void compareFiles (Output output, BaseItemInfo base, BaseItemInfo comp) {
+		StringBuffer buf = new StringBuffer();
+		buf.append ("fc /w ");
+		buf.append (base.getPath());
+		buf.append (" ");
+		buf.append (comp.getPath());
+		output.println(buf.toString());
+	}
+
+	private void doDirectory (File diffDir, BaseInfo baseInfo) {
+//		System.out.println(">>> doDirectory; "+diffDir.getPath());
+		if (! diffDir.isDirectory()) return;
+
+		File file;
+		File[] allFiles = diffDir.listFiles();
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isFile() && isIncludedFileType(file))
+				baseInfo.add (new BaseItemInfo(baseInfo.getBase(), file));
+		}
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isDirectory()) doDirectory(file, baseInfo);
+		}
+//		System.out.println("<<< doDirectory");
+	}
+
+	private boolean isIncludedFileType (File file) {
+		String ext = getExtension(file.getName());
+		if (ext != null && ext.trim().toLowerCase().equals("java")) return true;
+		if (ext != null && ext.trim().toLowerCase().equals("xml")) return true;
+		return false;
+	}
+	private String getExtension(String name) {
+		int n1 = name.lastIndexOf('.');
+		if (n1 < 0) return "";
+		return name.substring(n1+1);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class JVList {
+	private List<String> m_list = new ArrayList<String>();
+	public void add(String item) {m_list.add(item);}
+	public Iterator getItems() {return m_list.iterator();}
+	public boolean isInlist(String str) {
+		Iterator iter = getItems();
+		while (iter.hasNext()) {
+			String tmp = (String) iter.next();
+			if (str.equals(tmp)) return true;
+		}
+		return false;
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Extensions {
+	private ArrayList<Extension> m_list = new ArrayList<Extension>();
+	public void add (Extension item) {m_list.add(item);}
+	public Iterator getItems() {return m_list.iterator();}
+	public int getSize() {return m_list.size();}
+	public boolean isMatchAndChecked (String strFile) {
+		Iterator iter = getItems();
+		Extension item;
+		while (iter.hasNext()) {
+			item = (Extension) iter.next();
+			if (item.isActive() && item.isMatch(strFile)) return true;
+		}
+		return false;
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import javax.swing.JCheckBox;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Extension {
+	private String m_display;
+	private JCheckBox m_checkBox;
+	private Pattern m_pattern;
+	public Extension (String strPattern, String display, boolean active) {
+		m_display = display;
+		m_checkBox = new JCheckBox (m_display);
+		m_checkBox.setSelected(active);
+		m_pattern = Pattern.compile (strPattern);
+	}
+	public JCheckBox getCheckBox() {return m_checkBox;}
+	public String getExtension() {return m_display;}
+	public boolean isActive() {return m_checkBox.isSelected();}
+	public boolean isMatch (String filename) {
+		Matcher m = m_pattern.matcher (filename);
+		return m.matches();
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import java.io.File;
+import java.util.Iterator;
+
+import com.idc.diff.all.DiffFiles;
+import com.idc.file.exec.ExecuteCommand;
+import com.idc.file.exec.OutputLine;
+import com.idc.trace.LogHelper;
+
+public class Diffgui {
+	private DiffallGui m_app;
+	private OutputLine m_output;
+	public Diffgui(DiffallGui app) {
+		m_app = app;
+		m_output = m_app.getMessagesArea();
+	}
+
+	public boolean isSearchStopped() {
+		LogHelper.info("is search stopped; "	+ m_app.getAppThread().getStopStatus());
+		return m_app.getAppThread().getStopStatus();
+	}
+	private void handleProgressIndicator() {m_app.handleProgressIndicator();}
+	private void addMessage(String msg) {m_output.println(msg);}
+
+	public void doDiffdir (File baseDir, File compareDir, boolean bDeleteActive,
+			boolean bCompareFiles, boolean bDelIgnoredFiles, boolean bIgnoreWhiteSpace,
+			boolean bCleaningPass) {
+		addMessage("");
+		addMessage("Base directory " + baseDir);
+		addMessage("Comparing directory " + compareDir);
+		addMessage("");
+		if (bDeleteActive)
+			addMessage("Deletes are turned on");
+		if (bCompareFiles)
+			addMessage("Non identical files will be compared");
+		if (bDelIgnoredFiles)
+			addMessage("Ignored files will be deleted");
+		if (bIgnoreWhiteSpace)
+			addMessage("White space will be ignored by the compare");
+		addMessage("");
+		addMessage("Comparing file extensions:");
+		Iterator iter = m_app.getCompareExtensions().getItems();
+		while (iter.hasNext()) {
+			addMessage("\t" + ((Extension) iter.next()).getExtension());
+		}
+		addMessage("");
+		addMessage("Delete file extensions:");
+		iter = m_app.getDeleteExtensions().getItems();
+		while (iter.hasNext()) {
+			addMessage("\t" + ((Extension) iter.next()).getExtension());
+		}
+
+		addMessage("");
+		addMessage("Cleaning pass through "+baseDir);
+		doCleaningDirectory (baseDir, bDeleteActive, bDelIgnoredFiles);
+		addMessage("");
+		addMessage("Cleaning pass through "+compareDir);
+		doCleaningDirectory (compareDir, bDeleteActive, bDelIgnoredFiles);
+
+		if (! bCleaningPass) {
+			addMessage("");
+			DiffFiles diffFiles = new DiffFiles();
+			doDirectory (baseDir, compareDir, compareDir, diffFiles, 
+					bDeleteActive, bCompareFiles, bIgnoreWhiteSpace);
+
+			if (bDeleteActive) {
+				addMessage("");
+				addMessage("Cleaning pass through "+baseDir);
+				doCleaningDirectory (baseDir, bDeleteActive, bDelIgnoredFiles);
+			}
+		}
+	}
+
+	private void doCleaningDirectory (File currentDir, boolean bDeleteActive, boolean bDelIgnoredFiles) {
+		if (isSearchStopped()) return; // user stopped the search
+		LogHelper.info(">>> doCleaningDirectory; " + currentDir.getPath());
+		if (! currentDir.isDirectory()) return;
+
+		handleProgressIndicator();
+		if (handleJunkDirectory (currentDir)) return;
+
+		handleProgressIndicator();
+		File[] allFiles = currentDir.listFiles();
+		for (int i = 0; i < allFiles.length; i++) {
+			if (isSearchStopped()) return; // user stopped the search
+			File file = allFiles[i];
+			if (file.isFile()) {
+				if (bDeleteActive && isDeleteType(file.getName())) {
+					removeFile(file);
+					continue;
+				}
+				if (bDelIgnoredFiles && (! isCompareType(file.getName()))) removeIgnoredFile(file);
+			}
+		}
+
+		handleProgressIndicator();
+		for (int i = 0; i < allFiles.length; i++) {
+			if (isSearchStopped()) return; // user stopped the search
+			File file = allFiles[i];
+			if (file.isDirectory())
+				doCleaningDirectory (file, bDeleteActive, bDelIgnoredFiles);
+		}
+
+		handleProgressIndicator();
+		if (currentDir.listFiles().length < 1) removeDirectory(currentDir);
+
+		allFiles = null;
+		LogHelper.info("<<< doCleaningDirectory; " + currentDir.getPath());
+	}
+
+	private void doDirectory (File baseDir, File compareDir, File currentDir, DiffFiles diffFiles, 
+			boolean bDeleteActive, boolean bCompareFiles, boolean bIgnoreWhiteSpace) {
+		handleProgressIndicator();
+		File[] allFiles = currentDir.listFiles();
+		for (int i = 0; i < allFiles.length; i++) {
+			if (isSearchStopped()) return; // user stopped the search
+			File file = allFiles[i];
+			if (file.isFile()) {
+				String newFile = file.getPath();
+				String baseFile = baseDir.getPath() + file.getPath().substring(compareDir.getPath().length());
+				addMessage(" ");
+				addMessage("Comparing: " + newFile);
+				addMessage("with: " + baseFile);
+				if (! (new File(baseFile)).isFile()) {
+					addMessage("Not found in the baseline: " + newFile);
+				} else {
+					if (diffFiles.compareFiles (newFile, baseFile)) {
+						addMessage("Identical");
+						if (bDeleteActive) {
+							removeFile(file);
+							removeFile(new File(baseFile));
+						}
+					} else {
+						addMessage("Different");
+						if (bCompareFiles) doCompare (baseFile, newFile, bIgnoreWhiteSpace);
+					}
+				}
+			}
+			file = null;
+		}
+
+		handleProgressIndicator();
+		for (int i = 0; i < allFiles.length; i++) {
+			if (isSearchStopped()) return; // user stopped the search
+			File file = allFiles[i];
+			if (file.isDirectory())
+				doDirectory(baseDir, compareDir, file, diffFiles, bDeleteActive, bCompareFiles, bIgnoreWhiteSpace);
+		}
+
+		handleProgressIndicator();
+		if (currentDir.listFiles().length < 1) removeDirectory(currentDir);
+
+		allFiles = null;
+		LogHelper.info("<<< doDirectory");
+	}
+
+	private void doCompare(String baseFile, String newFile, boolean bIgnoreWhiteSpace) {
+		ExecuteCommand exec = new ExecuteCommand();
+		if (bIgnoreWhiteSpace) {
+			String[] strCmd = { "fc", "/W", "/N", baseFile, newFile };
+			exec.executeCommand(strCmd, m_output);
+		} else {
+			String[] strCmd = { "fc", "/N", baseFile, newFile };
+			exec.executeCommand(strCmd, m_output);
+		}
+		exec = null;
+	}
+
+	private void removeDirectory(File dir) {
+		addMessage("Deleted directory; " + dir.getPath());
+		dir.delete();
+	}
+
+	private void removeFile(File file) {
+		addMessage("Deleted file; " + file.getPath());
+		file.delete();
+	}
+
+	private void removeIgnoredFile(File file) {
+		addMessage("Deleted ignored file; " + file.getPath());
+		file.delete();
+	}
+
+	private boolean handleJunkDirectory (File file) { // true if .svn, .metadata
+		String name = file.getName();
+		if (name == null) return false;
+		if ((! name.equals(".svn")) && (! name.equals(".metadata"))) return false;
+		deleteNonEmptyDirectory(file);
+		return true;
+	}
+
+	public boolean deleteNonEmptyDirectory(File path) {
+		if (path.exists()) {
+			addMessage("Deleted junk directory ; " + path.getPath());
+			File[] files = path.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory())
+					deleteNonEmptyDirectory (files[i]);
+				else
+					files[i].delete();
+			}
+			files = null;
+		}
+		return (path.delete());
+	}
+
+	private boolean isCompareType(String strFile) {
+		return m_app.getCompareExtensions().isMatchAndChecked(strFile);
+	}
+
+	private boolean isDeleteType(String strFile) {
+		return m_app.getDeleteExtensions().isMatchAndChecked(strFile);
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import com.idc.swing.JVMessagesArea;
+import com.idc.trace.LogHelper;
+import com.idc.utils.JVString;
+
+import java.util.Properties;
+import java.util.Iterator;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.File;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
+
+public class DiffallGui extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1;
+	private String m_strPropertiesFile = "diffallgui.properties";
+	private String m_strEditor;
+	private Extensions m_extCompare = new Extensions();
+	private Extensions m_extDelete = new Extensions();
+	private static final int MAX_CNTR=1000;
+	private int m_cntr = 0;
+	private JVMessagesArea m_messagesArea;
+	private JButton m_btnStart;
+	private JButton m_btnDirBase;
+	private JTextField m_dirBaseField;
+	private JButton m_btnDirDiff;
+	private JTextField m_dirDiffField;
+	private JFileChooser m_fileChooserBase;
+	private JFileChooser m_fileChooserDiff;
+	private JLabel m_txtStatus;
+	private JProgressBar m_progress;
+	private JTextField m_editField; 
+	private JButton m_btnEdit;
+	private JButton m_btnClear;
+	private JButton m_btnClearText;
+	private JCheckBox m_chkDeletes;
+	private JCheckBox m_chkCompares;
+	private JCheckBox m_chkDelIgnored;
+	private JCheckBox m_chkIgnoreWhiteSpace;
+	private JCheckBox m_chkClean;
+	
+	private AppThread m_appThread = null;
+	private Diffgui m_diffgui;
+
+	public DiffallGui (String msg, String[] args) {
+		super(msg);
+		LogHelper.info("starting app");
+		if (args.length > 0 && args[0].length() > 8)
+			m_strPropertiesFile = args[0];
+		System.out.println("Properties file:"+m_strPropertiesFile);
+		setupExtensions();
+		setContentPane(makeContentPane());
+		m_diffgui = new Diffgui(this);
+		this.addWindowListener (new WindowAdapter() {
+			public void windowClosing (WindowEvent e) {
+				doStopClient();
+			}
+		});
+		setSize(700,900);
+		pack();
+		setVisible(true);	
+	}
+	public AppThread getAppThread() {return m_appThread;}
+	public static void main(String[] args) {
+		new DiffallGui("DiffdirGui", args);
+	}
+	private Container makeContentPane() {
+		Properties prop = new Properties();
+		try{
+			prop.load(new FileInputStream(m_strPropertiesFile));
+		} catch(IOException ioe) {
+			System.err.println("Exception getting properties; "+ioe.getMessage());
+		}
+		m_strEditor = prop.getProperty("GUI_EDITOR");
+		System.out.println("gui_editor :"+m_strEditor+":");
+		JPanel paneA1a = new JPanel();
+		m_btnDirBase = new JButton("Baseline Directory");
+		m_btnDirBase.addActionListener(this);
+		m_dirBaseField = new JTextField(20);
+		m_dirBaseField.setText("/tmp101/a");
+		m_dirBaseField.addActionListener(this);	
+		m_fileChooserBase = new JFileChooser();
+		m_fileChooserBase.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		m_fileChooserBase.setCurrentDirectory(new File(getDirBaseField()));
+		paneA1a.add(m_btnDirBase);
+		paneA1a.add(m_dirBaseField);	
+		
+		JPanel paneA1b = new JPanel();
+		m_btnDirDiff = new JButton("Compare Directory");
+		m_btnDirDiff.addActionListener(this);
+		m_dirDiffField = new JTextField(20);
+		m_dirDiffField.setText("/tmp101/b");
+		m_dirDiffField.addActionListener(this);	
+		m_fileChooserDiff = new JFileChooser();
+		m_fileChooserDiff.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		m_fileChooserDiff.setCurrentDirectory(new File(getDirDiffField()));
+		paneA1b.add(m_btnDirDiff);
+		paneA1b.add(m_dirDiffField);		
+
+		JPanel paneA2 = new JPanel();
+		m_chkDeletes = new JCheckBox("Delete");
+		m_chkDeletes.setToolTipText("On will delete files found to be identical.");
+		m_chkCompares = new JCheckBox("Compare");
+		m_chkCompares.setToolTipText("On will compare files if found to be different.");
+		m_chkCompares.setSelected(true);
+		m_chkDelIgnored = new JCheckBox("Delete Ignored");
+		m_chkDelIgnored.setToolTipText("On will delete ignored files.");
+		m_chkIgnoreWhiteSpace = new JCheckBox("Ignore White Space");
+		m_chkIgnoreWhiteSpace.setToolTipText("The compare will ignore white space.");
+		m_chkClean = new JCheckBox("Cleaning");
+		m_chkClean.setToolTipText("Not useful files and directories will be deleted.");
+		paneA2.add(m_chkDeletes);
+		paneA2.add(m_chkCompares);
+		paneA2.add(m_chkDelIgnored);
+		paneA2.add(m_chkIgnoreWhiteSpace);
+		paneA2.add(m_chkClean);
+	
+		JPanel paneA1 = new JPanel();
+		paneA1.setLayout(new BorderLayout());
+		paneA1.add(paneA1a, BorderLayout.CENTER);
+		paneA1.add(paneA1b, BorderLayout.EAST);
+
+		JPanel paneA = new JPanel();
+		paneA.setLayout(new BorderLayout());
+		paneA.add(paneA1, BorderLayout.CENTER);
+		paneA.add(paneA2, BorderLayout.EAST);
+
+		JPanel paneB1a = new JPanel();
+		paneB1a.setLayout(new BorderLayout());
+		paneB1a.add(new JLabel("Compare Extensions"), BorderLayout.WEST);
+
+		JPanel paneB1b = new JPanel();
+		paneB1b.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
+		int col = 6;
+		int num1 = m_extCompare.getSize();
+		int num2 = num1 / col;
+		if (num2 * col < num1) num2++;
+		System.out.println("num1 "+num1+" num2 "+num2);
+		paneB1b.setLayout(new GridLayout(num2,col,0,0));
+		Iterator iter = m_extCompare.getItems();
+		while(iter.hasNext()) 
+			paneB1b.add(((Extension) iter.next()).getCheckBox());
+		
+		JPanel paneB2a = new JPanel();
+		paneB2a.setLayout(new BorderLayout());
+		paneB2a.add(new JLabel("Delete Extensions"), BorderLayout.WEST);
+
+		JPanel paneB2b = new JPanel();
+		paneB2b.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
+		num1 = m_extDelete.getSize();
+		num2 = num1 / col;
+		if(num2 * col < num1) num2++;
+		System.out.println("num1 "+num1+" num2 "+num2);
+		paneB2b.setLayout(new GridLayout(num2,col,0,0));
+		iter = m_extDelete.getItems();
+		while(iter.hasNext()) 
+			paneB2b.add(((Extension) iter.next()).getCheckBox());
+
+		JPanel paneB1 = new JPanel();
+		paneB1.setLayout(new BorderLayout());
+		paneB1.add(paneB1a, BorderLayout.NORTH);
+		paneB1.add(paneB1b, BorderLayout.CENTER);
+		JPanel paneB2 = new JPanel();
+		paneB2.setLayout(new BorderLayout());
+		paneB2.add(paneB2a, BorderLayout.NORTH);
+		paneB2.add(paneB2b, BorderLayout.CENTER);
+		
+		JPanel paneB = new JPanel();
+		paneB.setLayout(new BorderLayout());
+		paneB.add(paneB1, BorderLayout.NORTH);
+		paneB.add(paneB2, BorderLayout.CENTER);
+		
+		JPanel topPane = new JPanel();
+		topPane.setLayout(new BorderLayout());
+		topPane.add(paneA, BorderLayout.NORTH);
+		topPane.add(paneB, BorderLayout.CENTER);
+
+		JPanel midPane = new JPanel();
+		midPane.setLayout(new BorderLayout());
+		midPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		m_messagesArea = new JVMessagesArea();
+		m_messagesArea.makeContentPane(30, 100);
+		midPane.add(new JScrollPane(m_messagesArea.getTextArea()), BorderLayout.CENTER);
+
+		JPanel lowPane = new JPanel();
+		m_btnStart = new JButton("Start");
+		m_btnStart.setDefaultCapable(true);
+		m_btnStart.addActionListener(this);
+		lowPane.add(m_btnStart);
+						
+		m_txtStatus = new JLabel();
+		lowPane.add (m_txtStatus);
+		m_progress = new JProgressBar();
+		lowPane.add(m_progress);
+		m_editField = new JTextField(35);
+		m_editField.addActionListener(this);
+		m_btnEdit = new JButton("Edit");
+		m_btnEdit.addActionListener(this);
+		m_btnClear = new JButton("Clear");
+		m_btnClear.addActionListener(this);
+		m_btnClearText = new JButton("Clear Text");
+		m_btnClearText.addActionListener(this);
+		lowPane.add(m_editField);		
+		lowPane.add(m_btnEdit);
+		lowPane.add(m_btnClear);
+		lowPane.add(m_btnClearText);
+	
+		JPanel pane = new JPanel();
+		pane.setLayout(new BorderLayout());
+		pane.add(topPane,BorderLayout.NORTH);
+		pane.add(midPane,BorderLayout.CENTER);
+		pane.add(lowPane,BorderLayout.SOUTH);			
+		return pane;
+	}
+	public JVMessagesArea getMessagesArea() {return m_messagesArea;}
+	public void setButtonText (boolean bBtn) {
+		final String msg;
+		if(bBtn) msg = "Start";
+		else msg = "Stop";
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnStart.setText(msg);
+				}
+			}
+		);
+	}
+	public void setDirBaseButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnDirBase.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+	public void setDirDiffButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnDirDiff.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+
+	public void setStatusMessage (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_txtStatus.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+
+	public void initProgressBar (final int iMin, final int iMax) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setMinimum(iMin);
+					m_progress.setMaximum(iMax);
+					m_progress.setValue(iMin);
+					m_progress.setStringPainted(false);	// true for %age
+//					m_progress.setIndeterminate(true);		// jdk 1.4
+				}
+			}
+		);		
+	}
+	public void setProgressBar (final int value) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_progress.setValue(value);
+				}
+			}
+		);
+	}
+	public void setEditButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnEdit.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+	public void setClearButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnClear.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+	public void setClearTextButtonActive (final boolean bBtn) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_btnClearText.setEnabled(bBtn);
+				}
+			}
+		);
+	}
+	private void setDirBaseField (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_dirBaseField.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+	private void setDirDiffField (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_dirDiffField.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+	private void setEditField (final String msg) {
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					m_editField.setText(msg);
+					validate();
+				}
+			}
+		);		
+	}
+	public void setStarted() {
+		setButtonText(false);
+		setDirBaseButtonActive(false);
+		setDirDiffButtonActive(false);
+		setEditButtonActive(false);
+		setClearButtonActive(false);
+		setClearTextButtonActive(false);
+	}
+	public void setStopped() {
+		setButtonText(true);
+		setDirBaseButtonActive(true);
+		setDirDiffButtonActive(true);
+		setEditButtonActive(true);
+		setClearButtonActive(true);
+		setClearTextButtonActive(true);
+	}		
+	public void actionPerformed (ActionEvent e) {
+		Object source = e.getSource();
+		if(source instanceof JButton) {
+//			LogHelper.info("jbutton");
+			if(source == m_btnStart) {
+//				LogHelper.info("m_btnStart");
+				JButton jb = (JButton) e.getSource();
+				String strBtn = jb.getText();
+				if (strBtn.equals("Start"))
+					startSelected();
+				else if (strBtn.equals("Stop")) {
+					m_appThread.setStop();
+					setStopped();
+				}							
+			}
+			else if (source == m_btnDirBase) {
+//				LogHelper.info("btnDirBase");
+				m_fileChooserBase.setCurrentDirectory(new File(getDirBaseField()));
+				int retval = m_fileChooserBase.showOpenDialog(DiffallGui.this);
+				if(retval == JFileChooser.APPROVE_OPTION) {
+					File file = m_fileChooserBase.getSelectedFile();
+					setDirBaseField (file.getPath());
+				}
+			}
+			else if (source == m_btnDirDiff) {
+//				LogHelper.info("btnDirDiff");
+				m_fileChooserDiff.setCurrentDirectory(new File(getDirDiffField()));
+				int retval = m_fileChooserDiff.showOpenDialog(DiffallGui.this);
+				if(retval == JFileChooser.APPROVE_OPTION) {
+					File file = m_fileChooserDiff.getSelectedFile();
+					setDirDiffField (file.getPath());
+				}
+			}
+			else if (source == m_btnEdit) {
+//				LogHelper.info("btnEdit");
+				String strFile = m_editField.getText().trim();
+				if(strFile.length() > 0) {
+					File file = new File(strFile);
+					if(file.isFile())
+						doEditor(strFile);
+				}
+			}
+			else if (source == m_btnClear) {
+//				LogHelper.info("btnClear");
+				setEditField("");
+			}
+			else if (source == m_btnClearText) {
+//				LogHelper.info("btnClearText");
+				m_messagesArea.clear();
+			}
+		}
+//		else
+//			LogHelper.info("else type");
+	}
+	public void doEditor(String strFile) {
+		String[] strCmd = {m_strEditor, strFile};		
+//		LogHelper.info("strCmd :"+strCmd+":");
+		try{
+			Runtime.getRuntime().exec(strCmd);
+		}
+		catch(IOException e) {
+//			LogHelper.info("cannot run command "+strCmd);
+		}
+	}
+	private String getDirBaseField() {return m_dirBaseField.getText();}
+	private String getDirDiffField() {return m_dirDiffField.getText();}
+	private boolean isDirBaseFieldValid() {
+		String strDir = getDirBaseField();
+		if (strDir == null|| strDir.length() < 1) return false;
+		File file = new File (strDir);
+		if(! file.isDirectory()) return false;
+		return true;
+	}
+	private boolean isDirDiffFieldValid() {
+		String strDir = getDirDiffField();
+		if (strDir == null|| strDir.length() < 1) return false;
+		File file = new File (strDir);
+		if (! file.isDirectory()) return false;
+		return true;
+	}
+	private boolean isDeleteFilesSelected() {return m_chkDeletes.isSelected();}
+	private boolean isCompareFilesSelected() {return m_chkCompares.isSelected();}
+	private boolean isDelIgnoredFilesSelected() {return m_chkDelIgnored.isSelected();}
+	private boolean isIgnoreWhiteSpace() {return m_chkIgnoreWhiteSpace.isSelected();}
+	private boolean isCleanSelected() {return m_chkClean.isSelected();}
+	public void setSize (int width, int height) {
+		super.setSize (width, height);
+		validate();
+		repaint();
+	}
+	public void handleProgressIndicator() {
+		m_cntr++;
+		if(m_cntr > MAX_CNTR) m_cntr = 1;
+		setProgressBar(m_cntr);		
+	}
+	public void handleLine(final String line) {
+		JVString jvstr = new JVString(line);
+		jvstr.replace("\t","	");
+		m_messagesArea.add(jvstr.getString());
+	}
+	private void startSelected() {
+		LogHelper.info(">>> startSelected");
+		boolean bError = false;
+		if (! isDirBaseFieldValid()) bError = true;
+		if( ! isDirDiffFieldValid()) bError = true;
+		if (bError) {
+			setStatusMessage("Enter all the fields and press Search");
+			setProgressBar(0);
+		}
+		else if (getDirBaseField().equals(getDirDiffField())) {
+			setStatusMessage("Directories must be different!");
+			setProgressBar(0);
+		}
+		else {
+			m_appThread = new AppThread(this);
+			m_appThread.start();
+			m_appThread.setStart();
+			setStarted();
+		}
+		LogHelper.info("<<< startSelected");		
+	}
+	public void doDiffdir() {
+		LogHelper.info(">>> doDiffdir");
+		setStatusMessage("working...");
+		initProgressBar(0,MAX_CNTR);
+		m_diffgui.doDiffdir (new File(getDirBaseField()), new File(getDirDiffField()),
+					isDeleteFilesSelected(), isCompareFilesSelected(),
+					isDelIgnoredFilesSelected(), isIgnoreWhiteSpace(), isCleanSelected());
+		if(m_diffgui.isSearchStopped()) {
+			m_messagesArea.add ("---------------------------------------");	
+			m_messagesArea.add ("Compare stopped by user");
+			m_messagesArea.add ("---------------------------------------");
+			setStatusMessage("Stopped...");
+		}
+		else{		
+			m_messagesArea.add ("---------------------------------------");	
+			m_messagesArea.add ("Compare is complete");
+			m_messagesArea.add ("---------------------------------------");
+			setProgressBar(MAX_CNTR);
+			setStatusMessage("Finished...");		
+		}
+		LogHelper.info("<<< doDiffdir");
+	}
+	public void doStopClient() {
+		if (m_appThread != null) {
+			m_appThread.setStop();
+			try {
+				while(m_appThread.isAlive()) {
+					LogHelper.info("thread is alive");
+					Thread.sleep(10);
+					LogHelper.info("Sleeping");
+				}
+				LogHelper.info("thread is not alive");
+			}
+			catch(InterruptedException e) {
+				LogHelper.info("no sleep");
+			}
+		}
+		m_appThread = null;
+		LogHelper.info("exiting app...");
+		System.exit(0);
+	}
+
+	public Extensions getCompareExtensions() {return m_extCompare;}
+	public Extensions getDeleteExtensions() {return m_extDelete;}
+	private void setupExtensions() {
+		m_extCompare.add (new Extension(".*?\\.bat", "*.bat", true));
+		m_extCompare.add (new Extension(".*?\\.classpath", "*.classpath", true));
+		m_extCompare.add (new Extension(".*?\\.compatibility", "*.compatibility", true));
+		m_extCompare.add (new Extension(".*?\\.conxmi", "*.conxmi", true));
+		m_extCompare.add (new Extension(".*?\\.css", "*.css", true));
+		m_extCompare.add (new Extension(".*?\\.dbxmi", "*.dbxmi", true));
+		m_extCompare.add (new Extension(".*?\\.dnx", "*.dnx", true));
+		m_extCompare.add (new Extension(".*?\\.dtd", "*.dtd", true));
+		m_extCompare.add (new Extension(".*?\\.gph", "*.gph", true));
+		m_extCompare.add (new Extension(".*?\\.html", "*.html", true));
+		m_extCompare.add (new Extension(".*?\\.iex", "*.iex", true));
+		m_extCompare.add (new Extension(".*?\\.j2ee", "*.j2ee", true));
+		m_extCompare.add (new Extension(".*?\\.jacl", "*.jacl", true));		
+		m_extCompare.add (new Extension(".*?\\.java", "*.java", true));
+		m_extCompare.add (new Extension(".*?\\.js", "*.js", true));
+		m_extCompare.add (new Extension(".*?\\.jsp", "*.jsp", true));
+		m_extCompare.add (new Extension(".*?\\.modulemaps", "*.modulemaps", true));
+		m_extCompare.add (new Extension(".*?\\.mf", "*.mf", true));
+		m_extCompare.add (new Extension(".*?\\.MF", "*.MF", true));
+		m_extCompare.add (new Extension(".*?\\.prefs", "*.prefs", true));
+		m_extCompare.add (new Extension(".*?\\.project", "*.project", true));
+		m_extCompare.add (new Extension(".*?\\.properties", "*.properties", true));
+		m_extCompare.add (new Extension(".*?\\.rlconxmi", "*.rlconxmi", true));
+		m_extCompare.add (new Extension(".*?\\.runtime", "*.runtime", true));
+		m_extCompare.add (new Extension(".*?\\.schxmi", "*.schxmi", true));
+		m_extCompare.add (new Extension(".*?\\.serverPreference", "*.serverPreference", true));
+		m_extCompare.add (new Extension(".*?\\.sql", "*.sql", true));
+		m_extCompare.add (new Extension(".*?\\.tblxmi", "*.tblxmi", true));
+		m_extCompare.add (new Extension(".*?\\.tld", "*.tld", true));
+		m_extCompare.add (new Extension(".*?\\.txt", "*.txt", true));
+		m_extCompare.add (new Extension(".*?\\.unknown", "*.unknown", true));
+		m_extCompare.add (new Extension(".*?\\.values", "*.values", true));
+		m_extCompare.add (new Extension(".*?\\.websettings", "*.websettings", true));
+		m_extCompare.add (new Extension(".*?\\.website-config", "*.website-config", true));
+		m_extCompare.add (new Extension(".*?\\.wsdd", "*.wsdd", true));
+		m_extCompare.add (new Extension(".*?\\.xmi", "*.xmi", true));
+		m_extCompare.add (new Extension(".*?\\.xml", "*.xml", true));
+		m_extCompare.add (new Extension(".*?\\.xsd", "*.xsd", true));
+		m_extCompare.add (new Extension(".*?\\.xsl", "*.xsl", true));
+																																				
+		m_extDelete.add (new Extension(".*?\\.bak", "*.bak", true));
+		m_extDelete.add (new Extension(".*?\\.checkedout", "*.checkedout", true));
+		m_extDelete.add (new Extension(".*?\\.class", "*.class", true));
+		m_extDelete.add (new Extension(".*?\\.contrib", "*.contrib", true));
+		m_extDelete.add (new Extension(".*?\\.dat", "*.dat", true));
+		m_extDelete.add (new Extension(".*?\\.dnx", "*.dnx", true));
+		m_extDelete.add (new Extension(".*?\\.ear", "*.ear", true));
+		m_extDelete.add (new Extension(".*?\\.hijacked", "*.hijacked", true));
+		m_extDelete.add (new Extension(".*?\\.index", "*.index", true));
+		m_extDelete.add (new Extension(".*?\\.ini", "*.ini", true));
+		m_extDelete.add (new Extension("ibm_ejbext.properties", "ibm_ejbext.properties", true));
+		m_extDelete.add (new Extension(".*?\\.jar", "*.jar", true));
+		m_extDelete.add (new Extension(".*?\\.keep", "*.keep", true));
+		m_extDelete.add (new Extension(".*?\\.lock", "*.lock", true));
+		m_extDelete.add (new Extension(".*?\\.log", "*.log", true));
+		m_extDelete.add (new Extension(".*?\\.psf", "*.psf", true));
+		m_extDelete.add (new Extension(".*?\\.swp", "*.swp", true));
+		m_extDelete.add (new Extension(".*?\\.webspheredeploy", "*.webspheredeploy", true));
+		m_extDelete.add (new Extension(".*?\\.zip", "*.zip", true));
+		m_extDelete.add (new Extension("_.*?\\.java", "_*.java", true));
+		m_extDelete.add (new Extension("EJS.*?\\.java", "EJS*.java",true));
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all.gui;
+
+import com.idc.trace.LogHelper;
+
+public class AppThread extends Thread {
+	private DiffallGui m_app;
+	private boolean m_bPleaseSuspendThisThread = true;
+	private boolean m_bStop = false;
+	
+	public AppThread (DiffallGui app) {
+		LogHelper.info(">>> AppThread::constructor");
+		m_app = app;
+		m_bPleaseSuspendThisThread = true;
+		LogHelper.info("<<< AppThread::constructor");		
+	}
+	public void setSuspend() {m_bPleaseSuspendThisThread = true;}
+	public boolean getStopStatus() {return m_bStop;}
+	private synchronized void setResume() {
+		m_bPleaseSuspendThisThread = false;
+		notify();
+	}
+	public void setStart () {
+		m_bStop = false;
+		setResume();
+	}
+	public void setStop() {
+		m_bStop = true;
+	}
+	public void run() {
+		LogHelper.info(">>> AppThread::run");
+		try {
+			synchronized(this) {
+				while(m_bPleaseSuspendThisThread) {
+					LogHelper.info("suspending thread");
+					wait();
+				}
+			}
+		}
+		catch(InterruptedException e) {
+			e.printStackTrace();
+		}			
+		m_app.doDiffdir();
+		m_app.setStopped();
+		LogHelper.info("<<< AppThread::run");
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class DiffFiles {
+	private static final int DATA_BLOCK_SIZE = 1024;
+	private byte[] newData = new byte[DATA_BLOCK_SIZE];
+	private byte[] oldData = new byte[DATA_BLOCK_SIZE];
+
+	public boolean compareFiles(String newFile, String oldFile) {	//true => files are the same
+//		System.out.println(">>> DiffFiles.compareFiles; "+newFile+", "+oldFile);
+		boolean bSame = false;		// assume files are different
+		File file = new File (newFile);
+		if (! file.isFile()) return bSame;	// ensure files exist
+		file = new File (oldFile);
+		if (! file.isFile()) return bSame;
+		file = null;
+
+		try {
+//			System.out.println("Opening file "+newFile);
+			FileInputStream newFis = new FileInputStream (newFile);
+			BufferedInputStream newBuf = new BufferedInputStream (newFis, DATA_BLOCK_SIZE);
+//			System.out.println("Opening file "+oldFile);
+			FileInputStream oldFis = new FileInputStream (oldFile);
+			BufferedInputStream oldBuf = new BufferedInputStream (oldFis, DATA_BLOCK_SIZE);
+
+			while (true) {
+				int newByteCount = newBuf.read (newData, 0, DATA_BLOCK_SIZE);
+				int oldByteCount = oldBuf.read (oldData, 0, DATA_BLOCK_SIZE);
+				if (newByteCount != oldByteCount) break;	// different
+				if (newByteCount < 0) {	// no differences found and EOF
+					bSame = true;
+					break;
+				}
+				if (! compareByteArrays (newByteCount, newData, oldData))
+					break;		// different data
+			}
+			newBuf.close(); oldBuf.close();
+			newFis.close(); oldFis.close();
+			newBuf = null;
+			newFis = null;
+			oldBuf = null;
+			oldFis = null;
+		}
+		catch (IOException ex) {
+			System.out.println("Unable to compare the files; "+ex.getMessage());
+			bSame = false;
+		}
+//		System.out.println("<<< DiffFiles.compareFiles; bSame "+bSame);
+		return bSame;
+	}
+	private boolean compareByteArrays (int count, byte[] arr1, byte[] arr2) {
+		boolean bSame = true;
+		for (int i=0; i<count; i++) {
+			if (arr1[i] != arr2[i]) {
+				bSame = false;
+				break;
+			}
+		}
+		return bSame;
+	}
+}
+
+
+***********************************************************************************
+PASTED TEXT
+***********************************************************************************
+
+package com.idc.diff.all;
+
+import java.io.File;
+
+import com.idc.diff.file.Diff;
+import com.idc.file.exec.OutputLine;
+import com.idc.file.exec.PrintLine;
+
+public class DiffAll {
+	private String m_strWorkDir;
+	private String m_strBaseDir;
+	private boolean m_bDeleteActive = true;	//true will do the deletes
+
+	private static final String[] m_astrTypes = {"unknown",
+			"java", "jsp", "js", "xml", "xsl", "xsd", "xmi",
+			"html", "css",
+			"properties", "mf", "bat",
+			"classpath", "serverPreference", "project"};
+	private static final String[] m_astrDeleteTypes = {"class",
+			"log", "ini", "bak", "dat", "swp"};
+
+	public DiffAll() {
+		m_strWorkDir = System.getProperty("user.dir");
+//		System.out.println("work dir "+m_strWorkDir);
+//		m_strWorkDir = "/tmp/test/work/filecompare";	// for now...
+	}
+	public static void main(String args[]) {
+		DiffAll app = new DiffAll();
+		app.doApp(args.length > 0 ? args[0] : "");
+	}
+	private void doApp (String arg) {
+		String strDir = arg.trim();
+//		System.out.println("arg is :"+strDir+":");
+		if (strDir == null || strDir.length() < 4) doUsageError();
+		File file = new File(strDir);
+		if (! file.exists()) doUsageError();
+		if (! file.isDirectory()) doUsageError();
+		if (strDir.toLowerCase().equals(m_strWorkDir.toLowerCase()))
+			doSuicideError();
+		m_strBaseDir = strDir;
+
+		System.out.println(" ");
+		System.out.println("DiffAll is beginning");
+		System.out.println(" ");
+		System.out.println("Baseline Directory: "+m_strBaseDir);
+		System.out.println(" Current Directory: "+m_strWorkDir);
+		doDirectory (new File(m_strWorkDir));
+		System.out.println(" ");
+		System.out.println("DiffAll is Complete");
+	}
+	private void doUsageError() {
+		System.out.println("Usage: DiffAll baseline_directory");
+		System.exit(1);
+	}
+	private void doSuicideError() {
+		System.out.println("You must be kidding...");
+		System.exit(1);
+	}
+	private void doDirectory (File dir) {
+//		System.out.println(">>> doDirectory; "+dir.getPath());
+		if (! dir.isDirectory()) return;
+
+		File file;
+		File[] allFiles = dir.listFiles();
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isFile()) doFile(file);
+		}
+		for (int i=0; i<allFiles.length; i++) {
+			file = allFiles[i];
+			if (file.isDirectory()) doDirectory(file);
+		}
+		if (dir.listFiles().length < 1) {	// empty directory
+			System.out.println(" ");
+			System.out.println("Directory is empty");
+			removeDirectory(dir);
+		}
+//		System.out.println("<<< doDirectory");
+	}
+	private void doFile (File file) {
+//		System.out.println(">>> doFile; "+file.getPath());
+		if (! file.isFile()) return;
+		if (isDeleteType (file)) {
+			System.out.println(" ");
+			System.out.println("File is not useful");
+			removeFile(file);
+			return;
+		}
+		if (getFileType(file) < 1) return;	// not a comparable file type
+
+		String newFile = file.getPath();
+		String baseFile = m_strBaseDir + 
+				file.getPath().substring(m_strWorkDir.length());
+		System.out.println(" ");
+		System.out.println("Comparing: "+newFile);
+		System.out.println("	 with: "+baseFile);
+		if (! (new File(baseFile)).isFile()) {
+			System.out.println("File "+newFile);
+			System.out.println("	 not found in the baseline");
+		}
+		else {
+			DiffFiles diffFiles = new DiffFiles ();
+			if (diffFiles.compareFiles(newFile, baseFile)) {
+				System.out.println("Files are identical");
+				removeFile(file);
+			}
+			else {
+				System.out.println("Files are different");
+				OutputLine cout = new PrintLine();
+				Diff diff = new Diff(cout);
+				diff.doDiff (baseFile, newFile);
+			}
+		}
+//		System.out.println("<<< doFile");
+	}
+	private void removeDirectory (File dir) {
+		System.out.println("Removing directory; "+dir.getPath());
+		if (m_bDeleteActive) dir.delete();
+	}
+	private void removeFile (File file) {
+		System.out.println("Removing file; "+file.getPath());
+		if (m_bDeleteActive) file.delete();
+	}
+	private int getFileType(File file) {
+		String strExt = getFileExtension (file.getName());
+		if (strExt == null) return 0;	// no extension
+		for (int i=0; i<m_astrTypes.length; i++) {
+			if (strExt.equalsIgnoreCase(m_astrTypes[i]))
+				return i;
+		}
+		return 0;
+	}
+	private boolean isDeleteType (File file) {
+		String strExt = getFileExtension (file.getName());
+		if (strExt == null) return false;	// no extension
+		for (int i=0; i<m_astrDeleteTypes.length; i++) {
+			if (strExt.equalsIgnoreCase(m_astrDeleteTypes[i]))
+				return true;
+		}
+		return false;
+	}
+	private String getFileExtension (String strName) {
+		int num = strName.lastIndexOf(".");
+		if (num < 0) return null;		// no extension
+		return strName.substring(num+1,strName.length());
+	}
+}

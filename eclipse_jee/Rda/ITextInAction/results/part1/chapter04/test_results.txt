@@ -1,0 +1,37 @@
+maximum: 0
+total used: 0
+initial memory use: 521888
+results/part1/chapter04/pdfptable_without_memory_management.pdf
+memory use: 4094632
+memory use: 3867000
+memory use: 3908208
+memory use: 3946456
+memory use: 3982864
+memory use: 4020360
+memory use: 4057184
+memory use: 4094264
+memory use: 4132400
+memory use: 4168264
+memory use: 4203776
+memory use: 4241664
+memory use: 5420904
+maximum: 5420904
+total used: 4899016
+initial memory use: 5334944
+results/part1/chapter04/pdfptable_with_memory_management.pdf
+memory use: 5460224
+memory use: 5329584
+memory use: 5333144
+memory use: 5335992
+memory use: 5338456
+memory use: 5342200
+memory use: 5344632
+memory use: 5347312
+memory use: 5349944
+memory use: 5352408
+memory use: 5356600
+memory use: 5359064
+memory use: 5259800
+maximum: 5460224
+total used: 125280
+initial memory use: 5201760

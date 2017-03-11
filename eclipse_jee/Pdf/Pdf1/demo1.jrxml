@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN"
+ "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport name="demo">
+<parameter name="Report_Title" class="java.lang.String"/> 
+<queryString><![CDATA[select * from sales_master]]></queryString>
+<field name="SALESMANNO" class="java.lang.String"/>
+<field name="SALESMAN_NAME" class="java.lang.String"/>
+<field name="CITY" class="java.lang.String"/>
+<field name="STATE" class="java.lang.String"/>
+<field name="QTY_SALES" class="java.math.BigDecimal"/>
+<title>     
+<band height="50" >
+<textField >
+<reportElement x="230" y="4" width="100" height="18"/> 
+<textFieldExpression class="java.lang.String">
+<![CDATA[$P{Report_Title}]]>
+</textFieldExpression>  
+</textField>
+</band>
+</title>
+<columnHeader>
+<band height="30">
+<staticText>
+<reportElement x="29" y="0" width="102" height="25"/> 
+<text><![CDATA[Salesman Name]]></text>
+</staticText>
+<staticText>
+<reportElement x="146" y="2" width="104" height="23"/>
+<text><![CDATA[City]]></text>
+</staticText>
+<staticText>
+<reportElement x="260" y="1" width="100" height="24"/> 
+<text><![CDATA[State]]></text>
+</staticText>
+<staticText>
+<reportElement x="383" y="1" width="94" height="23"/> 
+<text><![CDATA[Quantity Sold]]></text>
+</staticText>
+</band>
+</columnHeader>
+<detail>
+<band height="100">
+<textField>
+<reportElement x="28" y="8" width="100" height="29"/> 
+<textFieldExpression class="java.lang.String">
+<![CDATA[$F{SALESMAN_NAME}]]>
+</textFieldExpression>
+</textField>
+<textField >
+<reportElement x="146" y="11" width="100" height="25" /> 
+<textFieldExpression class="java.lang.String">
+<![CDATA[$F{CITY}]]>
+</textFieldExpression>
+</textField>
+<textField>
+<reportElement x="263" y="11" width="100" height="24" />
+<textFieldExpression class="java.lang.String">
+<![CDATA[$F{STATE}]]>
+</textFieldExpression>
+</textField>
+<textField >
+<reportElement x="384" y="12" width="100" height="24" /> 
+<textFieldExpression class="java.math.BigDecimal">
+<![CDATA[$F{QTY_SALES}]]>
+</textFieldExpression>
+</textField>
+</band>
+</detail>
+</jasperReport>

@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:resources.jdbc="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.jdbc.xmi" xmlns:resources.jms="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.jms.xmi" xmlns:resources.j2c="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.j2c.xmi" xmlns:resources="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.xmi" xmlns:resources.mail="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.mail.xmi" xmlns:resources.url="http://www.ibm.com/websphere/appserver/schemas/5.0/resources.url.xmi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xmi:Documentation>
+    <contact>{Your Contact Info}</contact>
+  </xmi:Documentation>
+  <resources.jdbc:JDBCProvider xmi:id="JDBCProvider_1" name="Cloudscape JDBC Driver" description="Cloudscape JDBC Provider" implementationClassName="com.ibm.db2j.jdbc.DB2jConnectionPoolDataSource"/>
+  <resources.jms:JMSProvider xmi:id="builtin_jmsprovider" name="WebSphere JMS Provider" description="Built-in WebSphere JMS Provider" externalInitialContextFactory="" externalProviderURL=""/>
+  <resources.jms:JMSProvider xmi:id="builtin_mqprovider" name="WebSphere MQ JMS Provider" description="WebSphere MQ JMS Provider" externalInitialContextFactory="" externalProviderURL="">
+    <classpath>${MQJMS_LIB_ROOT}</classpath>
+    <nativepath>${MQJMS_LIB_ROOT}</nativepath>
+  </resources.jms:JMSProvider>
+  <resources.j2c:J2CResourceAdapter xmi:id="builtin_rra" name="WebSphere Relational Resource Adapter" description="Built-in Relational Resource Adapter for Container Managed Persistence" archivePath="${WAS_LIBS_DIR}/rsadapter.rar">
+    <propertySet xmi:id="J2EEResourcePropertySet_8">
+      <resourceProperties xmi:id="J2EEResourceProperty_31" name="TransactionResourceRegistration" type="java.lang.String" value="dynamic" description="Type of transaction resource registration (enlistment).  Valid values are either &#34;static&#34; (immediate) or &#34;dynamic&#34; (deferred)."/>
+      <resourceProperties xmi:id="J2EEResourceProperty_32" name="InactiveConnectionSupport" type="java.lang.Boolean" value="true" description="Specify whether connection handles support implicit reactivation. (Smart Handle support). Value may be &#34;true&#34; or &#34;false&#34;."/>
+    </propertySet>
+  </resources.j2c:J2CResourceAdapter>
+  <resources.mail:MailProvider xmi:id="builtin_mailprovider" name="Built-in Mail Provider" description="The built-in mail provider">
+    <protocolProviders xmi:id="builtin_smtp" protocol="smtp" classname="com.sun.mail.smtp.SMTPTransport" type="TRANSPORT"/>
+    <protocolProviders xmi:id="builtin_pop3" protocol="pop3" classname="com.sun.mail.pop3.POP3Store" type="STORE"/>
+    <protocolProviders xmi:id="builtin_imap" protocol="imap" classname="com.sun.mail.imap.IMAPStore" type="STORE"/>
+  </resources.mail:MailProvider>
+  <resources.jdbc:JDBCProvider xmi:id="JDBCProvider_2" name="Default DB2 JDBC Provider" description="DB2 JDBC Provider" implementationClassName="COM.ibm.db2.jdbc.DB2ConnectionPoolDataSource">
+    <classpath>${DB2_JDBC_DRIVER_PATH}/db2java.zip</classpath>
+  </resources.jdbc:JDBCProvider>
+  <resources.url:URLProvider xmi:id="URLProvider_1" name="Default URL Provider" streamHandlerClassName="unused" protocol="unused"/>
+  <resources.jdbc:JDBCProvider xmi:id="JDBCProvider_3" name="JTOpen AS400 DB2 JDBC Provider" description="DB2 UDB for iSeries (Toolbox)" implementationClassName="com.ibm.as400.access.AS400JDBCConnectionPoolDataSource">
+    <classpath>${OS400_TOOLBOX_JDBC_DRIVER_PATH}/jt400.jar</classpath>
+    <factories xmi:type="resources.jdbc:DataSource" xmi:id="DataSource_1" name="RentalMan" jndiName="jdbc/RentalMan" description="RentalMan JDBC datasource" category="" authDataAlias="RentalMan" statementCacheSize="10" datasourceHelperClassname="com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper" relationalResourceAdapter="builtin_rra">
+      <propertySet xmi:id="J2EEResourcePropertySet_2">
+        <resourceProperties xmi:id="J2EEResourceProperty_3" name="serverName" type="java.lang.String" value="AS4DEV" description="This property is required. The name of the server from which the datasource will obtain connections." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_4" name="access" type="java.lang.String" value="all" description="This value can be used to restrict the type of operations that can be done with a specific connection. The default value is 'all' and basically means that the connection has full access to the JDBC API. The 'read call' value allows the connection to do only queries and call stored procedures. An attempt to update the database through an SQL statement will be stopped. The 'read only' value can be used to restrict a connection to only queries. Stored procedure calls and update statements will be stopped.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_5" name="blockSize" type="java.lang.Integer" value="32" description="This is the number of rows that will be fetched at a time for a result set. For typical forward only processing of a result set, a block of this size will be obtained. The possible values are: 0, 8, 16, 32, 64, 128, 256, 512. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_6" name="blockCriteria" type="java.lang.Integer" value="2" description="Returns the criteria for retrieving data from the iSeries or AS/400 server in blocks of records. Specifying a non-zero value for this property will reduce the frequency of communication to the server, and therefore increase performance. The possible values are: 0 (no record blocking),1 (block if FOR FETCH ONLY is specified), 2 (block if FOR UPDATE is specified). ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_7" name="cursorHold" type="java.lang.Boolean" value="false" description="Specifies whether or not ResultSets should remain open when a transaction is committed. A value of true means that an application is able to access its open ResultSets after commit is called. A value of false means that commit will close any open cursors under the Connection. The default for WebSphere is false. This value property serves as a default value for all ResultSets made for the Connection. With cursor holdability support added in JDBC 3.0, this default is simply replaced if an application specifies a different holdability later to a v5r2 or later server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_8" name="bidiStringType" type="java.lang.Integer" value="" description="The output string type of bidi data, as defined by the CDRA (Character Data Representation Architecture). See com.ibm.as400.access.BidiStringType for more information.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_9" name="bigDecimal" type="java.lang.Boolean" value="true" description="Indicates whether a big decimal value is returned. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_10" name="dataCompression" type="java.lang.Boolean" value="true" description="Indicates whether data compression is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_11" name="dataSourceName" type="java.lang.String" value="" description="The Data Source name property. This property is used to name an underlying Data Source when connection pooling is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_12" name="dataTruncation" type="java.lang.Boolean" value="true" description="Specifies whether truncation of character data should cause warnings and exceptions to be generated (true) or if the data should just be silently truncated (false) if the data is used for a query of the database.  If data is being inserted or updated into the database and needs to be truncated, an exception will always be thrown. The default is true, data truncation of character fields should be honored.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_13" name="databaseName" type="java.lang.String" value="" description="Specifies the database to use for the connection, including one stored in an independent auxiliary storage pool. This property applies only when connecting to a V5R2 or later version of OS/400, in V5R1 and earlier this property is ignored. When you specify a database name, the name must exist in the relational database directory on the server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_14" name="dateFormat" type="java.lang.String" value="" description="Allows modification of how dates will be formatted. The possible values are : julian, mdy, dmy, ymd, usa, iso, eur, jis.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_15" name="dateSeparator" type="java.lang.String" value="" description="Allows modification of what the date separator will be. This is only valid in combination with some of the dateFormat values (per system rules). The possible values are: / - . , b">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_16" name="decimalSeparator" type="java.lang.String" value="" description="Allows modification of what the decimal separator should be. The possible values are: '. ,'">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_17" name="description" type="java.lang.String" value="" description="The description of the Data Source.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_18" name="driver" type="java.lang.String" value="toolbox" description="Returns the JDBC driver implementation. The IBM Toolbox for Java JDBC driver can select different JDBC driver implementations based on the environment. The default is to always use the Toolbox driver but via this property the native driver can be used when appropriate. If the environment is an AS/400 Java Virtual Machine on the same iSeries or AS/400 server as the database to which the program is connecting, the native IBM Developer Kit for Java JDBC driver can be used. This property has no effect if the 'secondary URL' property is set. The possible values are: toolbox, native. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_19" name="extendedDynamic" type="java.lang.Boolean" value="false" description="Indicates whether extended dynamic support is used. Extended dynamic support provides a mechanism for caching dynamic SQL statements on the server. The first time a particular SQL statement is run, it is stored in an SQL package on the server. On subsequent runs of the same SQL statement, the server can skip a significant part of the processing by using information stored in the SQL package.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_20" name="extendedMetaData" type="java.lang.Boolean" value="false" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R2 or newer versions of OS/400. Specifies whether the driver should request extended metadata from the server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_21" name="fullOpen" type="java.lang.Boolean" value="false" description="Specifies whether the server fully opens a file for each query. By default the server optimizes open requests.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_22" name="lazyClose" type="java.lang.Boolean" value="false" description="Indicates whether to delay closing cursors until subsequent requests.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_23" name="libraries" type="java.lang.String" value="RMHCQDATA" description="Specifies one or more libraries that you want to add to or replace the library list of the server job, and optionally sets the default library (default schema).  The server uses specified libraries to resolve unqualified stored procedure names, and stored procedures use them to resolve unqualified names. To specify multiple libraries, use commas or spaces to separate individual entries. You can use *LIBL as a placeholder for the current library list of the server job using the following rules;  1)When the first entry is *LIBL, the specified libraries are added to the current library list of the server job.  2) When you do not use *LIBL, the specified libraries replace the current library list of the server job.  Setting of the default schema depends on whether you use 'sql' or 'system' for the naming property.  For 'sql' naming the following rules apply... 1) The first entry (unless it is *LIBL) becomes the default schema 2) When the first entry is *LIBL, the second entry becomes the default schema. 3) When you do not set this property or when it contains only *LIBL, the user profile becomes the default schema.  For 'system' naming the following rules apply...  1) The server uses the specified libraries to search for unqualified names. 2) When you do not set this property or when it contains only *LIBL, the server uses the current library list of the server job to search for unqualified names.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_24" name="lobThreshold" type="java.lang.Integer" value="0" description="Tells the driver to place the actual values into the ResultSet storage instead of locators for lob columns if the lob column is smaller than the threshold size.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_25" name="naming" type="java.lang.String" value="sql" description="This property allows you to use either the traditional iSeries naming syntax or the standard sql naming syntax. 'system' naming means that you should use a '/' character to separate collection and table values, and 'sql' naming means that you should use a '.' character to separate the values. The setting of this value has ramifications for what the default library is also. See the 'libraries' property for further information on this. The default is to use 'sql' naming.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_26" name="package" type="java.lang.String" value="" description="The base name of the SQL package.  Note that only the first seven characters are significant. This property has no effect unless the extended dynamic property is set to true. In addition, this property must be set if the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_27" name="packageAdd" type="java.lang.Boolean" value="true" description="Indicates whether to add statements to an existing SQL package. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_28" name="packageCache" type="java.lang.Boolean" value="false" description="Indicates whether SQL packages are cached in memory. Caching SQL packages locally reduces the amount of communication to the server in some cases. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_29" name="packageCriteria" type="java.lang.String" value="default" description="The type of SQL statement to be stored in the SQL package. This can be useful to improve the performance of complex join conditions. This property has no effect unless the extended dynamic property is set to true. The possible values are: 'default' (only store SQL statements with parameter markers in the package) and 'select' (store all SQL SELECT statements to be stored in the package). The default value is 'default'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_30" name="packageError" type="java.lang.String" value="warning" description="Specify the action to take when SQL package errors occur. When an SQL package error occurs, the driver will optionally throw an SQLException or post a warning to the Connection, based on the value of this property. This property has no effect unless the extended dynamic property is set to true. The possible values are: exception, warning, and none. The default value is 'warning'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_33" name="packageLibrary" type="java.lang.String" value="QGPL" description="Specify the library for the SQL package. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_34" name="prefetch" type="java.lang.Boolean" value="true" description="Specifies whether or not the driver should fetch the first data for a ResultSet immediately after execution or wait until the data is requested. Default is true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_35" name="prompt" type="java.lang.Boolean" value="false" description="Indicates whether the user is prompted if a user name or password is needed to connect to the iSeries or AS/400 server. If a connection can not be made without prompting the user, and this property is set to false, then an attempt to connect will fail throwing an exception.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_36" name="proxyServer" type="java.lang.String" value="" description="The name of proxy server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_37" name="remarks" type="java.lang.String" value="system" description="Specify the source of the text for REMARKS columns in ResultSets returned by DatabaseMetaData methods. The possible values are : sql, (SQL object comment) and system (OS/400 object description). The default value is 'system'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_38" name="secondaryUrl" type="java.lang.String" value="" description="Specify the secondary url.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_39" name="secure" type="java.lang.Boolean" value="false" description="Indicates whether a Secure Socket Layer (SSL) connection is used to communicate with the server. SSL connections are only available when connecting to servers at V4R4 or later.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_40" name="serverTraceCategories" type="java.lang.Integer" value="0" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R1 or newer versions of OS/400. It specifies the level of tracing of the JDBC server job. The possible values are: '0'- trace is not active; '2'- start the database monitor on the JDBC server job; '4'- start debug on the JDBC server job; '8'- save the job log when the JDBC server job ends; '16'- start job trace on the JDBC server job; '32'- save SQL information. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_41" name="sort" type="java.lang.String" value="job" description="Specify how the AS/400 server sorts records before sending them to the client. The possible values are: 'hex' (base the sort on hexadecimal values), 'job' (base the sort on the setting for the server job), 'language' (base the sort on the language set in the sort language property), 'table' (base the sort on the sort sequence table set in the sort table property). ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_42" name="sortLanguage" type="java.lang.String" value="" description="Specify the three-character language ID to use for selection of a sort sequence.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_43" name="sortTable" type="java.lang.String" value="" description="Specify the library and file name of a sort sequence table stored on the iSeries or AS/400 server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_44" name="sortWeight" type="java.lang.String" value="" description="Specify how the iSeries or AS/400 server treats case while sorting records.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_45" name="threadUsed" type="java.lang.Boolean" value="true" description="Sets whether a thread is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_46" name="timeFormat" type="java.lang.String" value="" description="Allows modification of how time values will be formatted. The possible values are: hms, usa, iso, eur, jis">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_47" name="timeSeparator" type="java.lang.String" value="" description="Allows modification of what the time separator will be. This property is only used if the 'timeFormat' property is set to 'hms'. The possible values are: : . , b">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_48" name="trace" type="java.lang.Boolean" value="false" description="This property allows for turning on tracing of the connection. It can be used as a simple debugging aide. The default value is false, do not use tracing.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_49" name="translateBinary" type="java.lang.Boolean" value="false" description="This property can be used to force the JDBC driver to treat binary and varbinary data values as if they were char and varchar data values. The default for this property is false, binary data is not treated the same as character data.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_50" name="behaviorOverride" type="java.lang.Integer" value="" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is supported when connecting any version of OS/400. Sets the Toolbox JDBC Driver behaviors to override. Multiple behaviors can be changed in combination by adding the constants and passing that sum on the this method. Carefully consider the result of overriding the default behavior of the driver.  For example, setting the value of this property to 1 means the driver will no longer thrown an exception if Statement.executeQuery() or PreparedStatement.executeQuery() do not return a result set.  The driver will instead return null for the result set, even though the JDBC 3.0 specification states throwing an exception is the correct behavior. Be sure your application correctly handles the altered behavior. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_51" name="cursorSensitivity" type="java.lang.String" value="sensitive" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R2 or newer versions of OS/400. Sets the cursor sensitivity to be requested from the database. If the resultSetType is ResultSet.TYPE_FORWARD_ONLY or ResultSet.TYPE_SCROLL_SENSITIVE, the value of this property will control what cursor sensitivity is requested from the database. If the resultSetType is ResultSet.TYPE_SCROLL_INSENSITIVE, this property will be ignored. The possible values are: 'asensitive', 'insensitive', 'sensitive'. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_52" name="errors" type="java.lang.String" value="basic" description="This property is ignored in releases prior to V5R2. Allows the full system second level error text to be returned in SQLException object messages. The default is basic which returns only the standard message text. The possible values are : basic, full.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_53" name="loginTimeout" type="java.lang.Integer" value="0" description="Sets the maximum time in seconds that this data source can wait while attempting to connect to a database. A value of zero specifies that the timeout is the system default if one exists; otherwise it specifies that there is no timeout. The default value is initially zero. Note: This value is not used or supported.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_54" name="savePasswordWhenSerialized" type="java.lang.Boolean" value="false" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is supported when connecting any version of OS/400. Sets whether to save the password locally with the rest of the properties when this data source object is serialized. If the password is saved, it is up to the application to protect the serialized form of the object because it contains all necessary information to connect to the server. The default is false. It is a security risk to save the password with the rest of the properties so by default the password is not saved. If the application programmer chooses to accept this risk, set this property to true to force the Toolbox to save the password with the other properties when the data source object is serialized.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_55" name="keepAlive" type="java.lang.Boolean" value="" description="This property allows the turning on of socket keep alive.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_56" name="receiveBufferSize" type="java.lang.Integer" value="" description="This property sets the receive buffer size socket option to the specified value. The receive buffer size option is used as a hint for the size to set the underlying network I/O buffers. Increasing the receive buffer size can increase the performance of network I/O for high-volume connection, while decreasing it can help reduce the backlog of incoming data.  This value must be greater than 0.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_57" name="sendBufferSize" type="java.lang.Integer" value="" description="This property sets the send buffer size socket option to the specified value. The send buffer size option is used by the platform's networking code as a hint for the size to set the underlying network I/O buffers.  This value must be greater than 0.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_58" name="soLinger" type="java.lang.Integer" value="" description="This property allows the turning on of socket linger with the specified linger time in seconds.  The maxium value for this property is platform specific.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_59" name="soTimeout" type="java.lang.Integer" value="" description="This property enables/disables socket timeout with the specified value in milliseconds.  A timeout value must be greater than zero, a value of zero for this property indicates infinite timeout.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_60" name="tcpNoDelay" type="java.lang.Boolean" value="" description="This property allows the turning on of the TCP no delay socket option.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_61" name="enableMultithreadedAccessDetection" type="java.lang.Boolean" value="false" description="Indicates whether or not to detect multithreaded access to a Connection and its corresponding Statements, ResultSets, and MetaDatas.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+      </propertySet>
+      <connectionPool xmi:id="ConnectionPool_1" connectionTimeout="1800" maxConnections="10" minConnections="0" reapTime="180" unusedTimeout="1800" agedTimeout="0" purgePolicy="EntirePool"/>
+      <mapping xmi:id="MappingModule_1" mappingConfigAlias="DefaultPrincipalMapping" authDataAlias="RentalMan"/>
+    </factories>
+    <factories xmi:type="resources.jdbc:DataSource" xmi:id="DataSource_4" name="RentalManTraining" jndiName="jdbc/RentalManTraining" description="RentalMan Tranining JDBC datasource" category="" authDataAlias="RentalManTraining" statementCacheSize="10" datasourceHelperClassname="com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper" relationalResourceAdapter="builtin_rra">
+      <propertySet xmi:id="J2EEResourcePropertySet_7">
+        <resourceProperties xmi:id="J2EEResourceProperty_86" name="serverName" type="java.lang.String" value="AS4DEV" description="This property is required. The name of the server from which the datasource will obtain connections." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_87" name="access" type="java.lang.String" value="all" description="This value can be used to restrict the type of operations that can be done with a specific connection. The default value is 'all' and basically means that the connection has full access to the JDBC API. The 'read call' value allows the connection to do only queries and call stored procedures. An attempt to update the database through an SQL statement will be stopped. The 'read only' value can be used to restrict a connection to only queries. Stored procedure calls and update statements will be stopped.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_88" name="blockSize" type="java.lang.Integer" value="32" description="This is the number of rows that will be fetched at a time for a result set. For typical forward only processing of a result set, a block of this size will be obtained. The possible values are: 0, 8, 16, 32, 64, 128, 256, 512. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_89" name="blockCriteria" type="java.lang.Integer" value="2" description="Returns the criteria for retrieving data from the iSeries or AS/400 server in blocks of records. Specifying a non-zero value for this property will reduce the frequency of communication to the server, and therefore increase performance. The possible values are: 0 (no record blocking),1 (block if FOR FETCH ONLY is specified), 2 (block if FOR UPDATE is specified). ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_90" name="cursorHold" type="java.lang.Boolean" value="false" description="Specifies whether or not ResultSets should remain open when a transaction is committed. A value of true means that an application is able to access its open ResultSets after commit is called. A value of false means that commit will close any open cursors under the Connection. The default for WebSphere is false. This value property serves as a default value for all ResultSets made for the Connection. With cursor holdability support added in JDBC 3.0, this default is simply replaced if an application specifies a different holdability later to a v5r2 or later server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_91" name="bidiStringType" type="java.lang.Integer" value="" description="The output string type of bidi data, as defined by the CDRA (Character Data Representation Architecture). See com.ibm.as400.access.BidiStringType for more information.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_92" name="bigDecimal" type="java.lang.Boolean" value="true" description="Indicates whether a big decimal value is returned. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_93" name="dataCompression" type="java.lang.Boolean" value="true" description="Indicates whether data compression is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_94" name="dataSourceName" type="java.lang.String" value="" description="The Data Source name property. This property is used to name an underlying Data Source when connection pooling is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_95" name="dataTruncation" type="java.lang.Boolean" value="true" description="Specifies whether truncation of character data should cause warnings and exceptions to be generated (true) or if the data should just be silently truncated (false) if the data is used for a query of the database.  If data is being inserted or updated into the database and needs to be truncated, an exception will always be thrown. The default is true, data truncation of character fields should be honored.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_96" name="databaseName" type="java.lang.String" value="" description="Specifies the database to use for the connection, including one stored in an independent auxiliary storage pool. This property applies only when connecting to a V5R2 or later version of OS/400, in V5R1 and earlier this property is ignored. When you specify a database name, the name must exist in the relational database directory on the server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_97" name="dateFormat" type="java.lang.String" value="" description="Allows modification of how dates will be formatted. The possible values are : julian, mdy, dmy, ymd, usa, iso, eur, jis.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_98" name="dateSeparator" type="java.lang.String" value="" description="Allows modification of what the date separator will be. This is only valid in combination with some of the dateFormat values (per system rules). The possible values are: / - . , b">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_99" name="decimalSeparator" type="java.lang.String" value="" description="Allows modification of what the decimal separator should be. The possible values are: '. ,'">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_100" name="description" type="java.lang.String" value="" description="The description of the Data Source.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_101" name="driver" type="java.lang.String" value="toolbox" description="Returns the JDBC driver implementation. The IBM Toolbox for Java JDBC driver can select different JDBC driver implementations based on the environment. The default is to always use the Toolbox driver but via this property the native driver can be used when appropriate. If the environment is an AS/400 Java Virtual Machine on the same iSeries or AS/400 server as the database to which the program is connecting, the native IBM Developer Kit for Java JDBC driver can be used. This property has no effect if the 'secondary URL' property is set. The possible values are: toolbox, native. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_102" name="extendedDynamic" type="java.lang.Boolean" value="false" description="Indicates whether extended dynamic support is used. Extended dynamic support provides a mechanism for caching dynamic SQL statements on the server. The first time a particular SQL statement is run, it is stored in an SQL package on the server. On subsequent runs of the same SQL statement, the server can skip a significant part of the processing by using information stored in the SQL package.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_103" name="extendedMetaData" type="java.lang.Boolean" value="false" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R2 or newer versions of OS/400. Specifies whether the driver should request extended metadata from the server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_104" name="fullOpen" type="java.lang.Boolean" value="false" description="Specifies whether the server fully opens a file for each query. By default the server optimizes open requests.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_105" name="lazyClose" type="java.lang.Boolean" value="false" description="Indicates whether to delay closing cursors until subsequent requests.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_106" name="libraries" type="java.lang.String" value="RMHCDDATA" description="Specifies one or more libraries that you want to add to or replace the library list of the server job, and optionally sets the default library (default schema).  The server uses specified libraries to resolve unqualified stored procedure names, and stored procedures use them to resolve unqualified names. To specify multiple libraries, use commas or spaces to separate individual entries. You can use *LIBL as a placeholder for the current library list of the server job using the following rules;  1)When the first entry is *LIBL, the specified libraries are added to the current library list of the server job.  2) When you do not use *LIBL, the specified libraries replace the current library list of the server job.  Setting of the default schema depends on whether you use 'sql' or 'system' for the naming property.  For 'sql' naming the following rules apply... 1) The first entry (unless it is *LIBL) becomes the default schema 2) When the first entry is *LIBL, the second entry becomes the default schema. 3) When you do not set this property or when it contains only *LIBL, the user profile becomes the default schema.  For 'system' naming the following rules apply...  1) The server uses the specified libraries to search for unqualified names. 2) When you do not set this property or when it contains only *LIBL, the server uses the current library list of the server job to search for unqualified names.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_107" name="lobThreshold" type="java.lang.Integer" value="0" description="Tells the driver to place the actual values into the ResultSet storage instead of locators for lob columns if the lob column is smaller than the threshold size.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_108" name="naming" type="java.lang.String" value="sql" description="This property allows you to use either the traditional iSeries naming syntax or the standard sql naming syntax. 'system' naming means that you should use a '/' character to separate collection and table values, and 'sql' naming means that you should use a '.' character to separate the values. The setting of this value has ramifications for what the default library is also. See the 'libraries' property for further information on this. The default is to use 'sql' naming.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_109" name="package" type="java.lang.String" value="" description="The base name of the SQL package.  Note that only the first seven characters are significant. This property has no effect unless the extended dynamic property is set to true. In addition, this property must be set if the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_110" name="packageAdd" type="java.lang.Boolean" value="true" description="Indicates whether to add statements to an existing SQL package. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_111" name="packageCache" type="java.lang.Boolean" value="false" description="Indicates whether SQL packages are cached in memory. Caching SQL packages locally reduces the amount of communication to the server in some cases. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_112" name="packageCriteria" type="java.lang.String" value="default" description="The type of SQL statement to be stored in the SQL package. This can be useful to improve the performance of complex join conditions. This property has no effect unless the extended dynamic property is set to true. The possible values are: 'default' (only store SQL statements with parameter markers in the package) and 'select' (store all SQL SELECT statements to be stored in the package). The default value is 'default'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_113" name="packageError" type="java.lang.String" value="warning" description="Specify the action to take when SQL package errors occur. When an SQL package error occurs, the driver will optionally throw an SQLException or post a warning to the Connection, based on the value of this property. This property has no effect unless the extended dynamic property is set to true. The possible values are: exception, warning, and none. The default value is 'warning'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_114" name="packageLibrary" type="java.lang.String" value="QGPL" description="Specify the library for the SQL package. This property has no effect unless the extended dynamic property is set to true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_115" name="prefetch" type="java.lang.Boolean" value="true" description="Specifies whether or not the driver should fetch the first data for a ResultSet immediately after execution or wait until the data is requested. Default is true.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_116" name="prompt" type="java.lang.Boolean" value="false" description="Indicates whether the user is prompted if a user name or password is needed to connect to the iSeries or AS/400 server. If a connection can not be made without prompting the user, and this property is set to false, then an attempt to connect will fail throwing an exception.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_117" name="proxyServer" type="java.lang.String" value="" description="The name of proxy server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_118" name="remarks" type="java.lang.String" value="system" description="Specify the source of the text for REMARKS columns in ResultSets returned by DatabaseMetaData methods. The possible values are : sql, (SQL object comment) and system (OS/400 object description). The default value is 'system'.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_119" name="secondaryUrl" type="java.lang.String" value="" description="Specify the secondary url.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_120" name="secure" type="java.lang.Boolean" value="false" description="Indicates whether a Secure Socket Layer (SSL) connection is used to communicate with the server. SSL connections are only available when connecting to servers at V4R4 or later.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_121" name="serverTraceCategories" type="java.lang.Integer" value="0" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R1 or newer versions of OS/400. It specifies the level of tracing of the JDBC server job. The possible values are: '0'- trace is not active; '2'- start the database monitor on the JDBC server job; '4'- start debug on the JDBC server job; '8'- save the job log when the JDBC server job ends; '16'- start job trace on the JDBC server job; '32'- save SQL information. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_122" name="sort" type="java.lang.String" value="job" description="Specify how the AS/400 server sorts records before sending them to the client. The possible values are: 'hex' (base the sort on hexadecimal values), 'job' (base the sort on the setting for the server job), 'language' (base the sort on the language set in the sort language property), 'table' (base the sort on the sort sequence table set in the sort table property). ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_123" name="sortLanguage" type="java.lang.String" value="" description="Specify the three-character language ID to use for selection of a sort sequence.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_124" name="sortTable" type="java.lang.String" value="" description="Specify the library and file name of a sort sequence table stored on the iSeries or AS/400 server.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_125" name="sortWeight" type="java.lang.String" value="" description="Specify how the iSeries or AS/400 server treats case while sorting records.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_126" name="threadUsed" type="java.lang.Boolean" value="true" description="Sets whether a thread is used.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_127" name="timeFormat" type="java.lang.String" value="" description="Allows modification of how time values will be formatted. The possible values are: hms, usa, iso, eur, jis">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_128" name="timeSeparator" type="java.lang.String" value="" description="Allows modification of what the time separator will be. This property is only used if the 'timeFormat' property is set to 'hms'. The possible values are: : . , b">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_129" name="trace" type="java.lang.Boolean" value="false" description="This property allows for turning on tracing of the connection. It can be used as a simple debugging aide. The default value is false, do not use tracing.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_130" name="translateBinary" type="java.lang.Boolean" value="false" description="This property can be used to force the JDBC driver to treat binary and varbinary data values as if they were char and varchar data values. The default for this property is false, binary data is not treated the same as character data.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_131" name="behaviorOverride" type="java.lang.Integer" value="" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is supported when connecting any version of OS/400. Sets the Toolbox JDBC Driver behaviors to override. Multiple behaviors can be changed in combination by adding the constants and passing that sum on the this method. Carefully consider the result of overriding the default behavior of the driver.  For example, setting the value of this property to 1 means the driver will no longer thrown an exception if Statement.executeQuery() or PreparedStatement.executeQuery() do not return a result set.  The driver will instead return null for the result set, even though the JDBC 3.0 specification states throwing an exception is the correct behavior. Be sure your application correctly handles the altered behavior. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_132" name="cursorSensitivity" type="java.lang.String" value="asensitive" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is only supported when connecting to V5R2 or newer versions of OS/400. Sets the cursor sensitivity to be requested from the database. If the resultSetType is ResultSet.TYPE_FORWARD_ONLY or ResultSet.TYPE_SCROLL_SENSITIVE, the value of this property will control what cursor sensitivity is requested from the database. If the resultSetType is ResultSet.TYPE_SCROLL_INSENSITIVE, this property will be ignored. The possible values are: 'asensitive', 'insensitive', 'sensitive'. ">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_133" name="errors" type="java.lang.String" value="basic" description="This property is ignored in releases prior to V5R2. Allows the full system second level error text to be returned in SQLException object messages. The default is basic which returns only the standard message text. The possible values are : basic, full.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_134" name="loginTimeout" type="java.lang.Integer" value="0" description="Sets the maximum time in seconds that this data source can wait while attempting to connect to a database. A value of zero specifies that the timeout is the system default if one exists; otherwise it specifies that there is no timeout. The default value is initially zero. Note: This value is not used or supported.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_135" name="savePasswordWhenSerialized" type="java.lang.Boolean" value="false" description="This property was introduced in the V5R2 version of the Toolbox JDBC driver, and is supported when connecting any version of OS/400. Sets whether to save the password locally with the rest of the properties when this data source object is serialized. If the password is saved, it is up to the application to protect the serialized form of the object because it contains all necessary information to connect to the server. The default is false. It is a security risk to save the password with the rest of the properties so by default the password is not saved. If the application programmer chooses to accept this risk, set this property to true to force the Toolbox to save the password with the other properties when the data source object is serialized.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_136" name="keepAlive" type="java.lang.Boolean" value="" description="This property allows the turning on of socket keep alive.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_137" name="receiveBufferSize" type="java.lang.Integer" value="" description="This property sets the receive buffer size socket option to the specified value. The receive buffer size option is used as a hint for the size to set the underlying network I/O buffers. Increasing the receive buffer size can increase the performance of network I/O for high-volume connection, while decreasing it can help reduce the backlog of incoming data.  This value must be greater than 0.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_138" name="sendBufferSize" type="java.lang.Integer" value="" description="This property sets the send buffer size socket option to the specified value. The send buffer size option is used by the platform's networking code as a hint for the size to set the underlying network I/O buffers.  This value must be greater than 0.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_139" name="soLinger" type="java.lang.Integer" value="" description="This property allows the turning on of socket linger with the specified linger time in seconds.  The maxium value for this property is platform specific.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_140" name="soTimeout" type="java.lang.Integer" value="" description="This property enables/disables socket timeout with the specified value in milliseconds.  A timeout value must be greater than zero, a value of zero for this property indicates infinite timeout.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_141" name="tcpNoDelay" type="java.lang.Boolean" value="" description="This property allows the turning on of the TCP no delay socket option.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_142" name="enableMultithreadedAccessDetection" type="java.lang.Boolean" value="false" description="Indicates whether or not to detect multithreaded access to a Connection and its corresponding Statements, ResultSets, and MetaDatas.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+      </propertySet>
+      <connectionPool xmi:id="ConnectionPool_4" connectionTimeout="1800" maxConnections="10" minConnections="0" reapTime="180" unusedTimeout="1800" agedTimeout="0" purgePolicy="EntirePool"/>
+      <mapping xmi:id="MappingModule_7" mappingConfigAlias="DefaultPrincipalMapping" authDataAlias="RentalManTraining"/>
+    </factories>
+  </resources.jdbc:JDBCProvider>
+  <resources.jdbc:JDBCProvider xmi:id="JDBCProvider_4" name="MS SQL Server 2000" description="Microsoft JDBC driver for MSSQLServer 2000" implementationClassName="com.microsoft.jdbcx.sqlserver.SQLServerDataSource">
+    <classpath>${MSSQLSERVER_JDBC_DRIVER_PATH}/msbase.jar</classpath>
+    <classpath>${MSSQLSERVER_JDBC_DRIVER_PATH}/mssqlserver.jar</classpath>
+    <classpath>${MSSQLSERVER_JDBC_DRIVER_PATH}/msutil.jar</classpath>
+    <classpath>${MSSQLSERVER_JDBC_DRIVER_PATH}/spy.jar</classpath>
+    <factories xmi:type="resources.jdbc:DataSource" xmi:id="DataSource_2" name="Herc Gold Corporate" jndiName="jdbc/HercGoldCorporate" description="Herc Gold Corporate JDBC Datasource" category="" authDataAlias="Gold Service" statementCacheSize="10" datasourceHelperClassname="com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper" relationalResourceAdapter="builtin_rra">
+      <propertySet xmi:id="J2EEResourcePropertySet_5">
+        <resourceProperties xmi:id="J2EEResourceProperty_66" name="databaseName" type="java.lang.String" value="HERC Gold Corporate" description="This is a required property. The database name. For example, enter sample to make your Data Source point to sample" required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_67" name="serverName" type="java.lang.String" value="area51sql" description="This is a required property. The name of the server where MS SQL Server resides." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_68" name="portNumber" type="java.lang.Integer" value="2433" description="This is a required property. The TCP/IP port number where MS SQL Server resides." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_69" name="selectMethod" type="java.lang.String" value="cursor" description="Determine whether or not Microsoft SQL Server 'server cursors' are used for SQL queries. Default value is cursor. Direct mode is more efficient, but it limits applications to a single active Statement while in a transaction. See the Microsoft driver documentation for more information.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_70" name="dataSourceName" type="java.lang.String" value="" description="The name of the Data Source.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_71" name="spyAttributes" type="java.lang.String" value="" description="The spy attributes.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_72" name="loginTimeout" type="java.lang.Integer" value="" description="The maximum time to attempt to connect a database. If this value is non-zero, attempt to connect to the database will timeout when this specified value is reached.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_73" name="description" type="java.lang.String" value="" description="The description of this datasource.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_74" name="enable2Phase" type="java.lang.Boolean" value="false" description="When true, two phase connections are used. When false, one phase connections are used. Do not change this value because this value is set for with this provider">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_75" name="enableMultithreadedAccessDetection" type="java.lang.Boolean" value="false" description="Indicates whether or not to detect multithreaded access to a Connection and its corresponding Statements, ResultSets, and MetaDatas.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+      </propertySet>
+      <connectionPool xmi:id="ConnectionPool_2" connectionTimeout="1800" maxConnections="10" minConnections="0" reapTime="180" unusedTimeout="1800" agedTimeout="0" purgePolicy="EntirePool"/>
+      <mapping xmi:id="MappingModule_5" mappingConfigAlias="DefaultPrincipalMapping" authDataAlias="Gold Service"/>
+    </factories>
+    <factories xmi:type="resources.jdbc:DataSource" xmi:id="DataSource_3" name="Herc Web Updated Gold" jndiName="jdbc/HercWebUpdatedGold" description="Herc Web Updated Gold JDBC Datasource" category="" authDataAlias="Gold Service" statementCacheSize="10" datasourceHelperClassname="com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper" relationalResourceAdapter="builtin_rra">
+      <propertySet xmi:id="J2EEResourcePropertySet_6">
+        <resourceProperties xmi:id="J2EEResourceProperty_76" name="databaseName" type="java.lang.String" value="HERC Web Updated GOld" description="This is a required property. The database name. For example, enter sample to make your Data Source point to sample" required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_77" name="serverName" type="java.lang.String" value="area51sql" description="This is a required property. The name of the server where MS SQL Server resides." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_78" name="portNumber" type="java.lang.Integer" value="2433" description="This is a required property. The TCP/IP port number where MS SQL Server resides." required="true"/>
+        <resourceProperties xmi:id="J2EEResourceProperty_79" name="selectMethod" type="java.lang.String" value="cursor" description="Determine whether or not Microsoft SQL Server 'server cursors' are used for SQL queries. Default value is cursor. Direct mode is more efficient, but it limits applications to a single active Statement while in a transaction. See the Microsoft driver documentation for more information.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_80" name="dataSourceName" type="java.lang.String" value="" description="The name of the Data Source.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_81" name="spyAttributes" type="java.lang.String" value="" description="The spy attributes.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_82" name="loginTimeout" type="java.lang.Integer" value="" description="The maximum time to attempt to connect a database. If this value is non-zero, attempt to connect to the database will timeout when this specified value is reached.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_83" name="description" type="java.lang.String" value="" description="The description of this datasource.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_84" name="enable2Phase" type="java.lang.Boolean" value="false" description="When true, two phase connections are used. When false, one phase connections are used. Do not change this value because this value is set for with this provider">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+        <resourceProperties xmi:id="J2EEResourceProperty_85" name="enableMultithreadedAccessDetection" type="java.lang.Boolean" value="false" description="Indicates whether or not to detect multithreaded access to a Connection and its corresponding Statements, ResultSets, and MetaDatas.">
+          <required xsi:nil="true"/>
+        </resourceProperties>
+      </propertySet>
+      <connectionPool xmi:id="ConnectionPool_3" connectionTimeout="1800" maxConnections="10" minConnections="0" reapTime="180" unusedTimeout="1800" agedTimeout="0" purgePolicy="EntirePool"/>
+      <mapping xmi:id="MappingModule_6" mappingConfigAlias="DefaultPrincipalMapping" authDataAlias="Gold Service"/>
+    </factories>
+  </resources.jdbc:JDBCProvider>
+</xmi:XMI>

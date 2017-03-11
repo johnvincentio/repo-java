@@ -1,0 +1,728 @@
+
+package com.idc.webxml;
+
+import java.util.ArrayList;
+
+public class Welcome {
+		 ArrayList m_list = new ArrayList();
+		 int m_nPos = 0;
+		 public void add(String item) {m_list.add(item);}
+		 public boolean isEmpty() {return m_list.isEmpty();}
+		 public boolean hasNext() {return m_nPos < m_list.size();}
+		 public void getNext() {m_nPos++;}
+		 public String getFile() {return (String) m_list.get(m_nPos);}
+		 public void reset() {m_nPos = 0;}
+		 public void show() {
+		 		 if (! isEmpty()) {
+		 		 		 System.out.println("Showing all Welcome files");
+		 		 		 for (int i=0; i<m_list.size(); i++) {
+		 		 		 		 String item = (String) m_list.get(i);
+		 		 		 		 System.out.println("Welcome file "+item);
+		 		 		 }
+		 		 }
+		 }
+}
+
+package com.idc.webxml;
+
+public class Webapp {
+		 private String display;
+		 private Servlets servlets;
+		 private Mappings mappings;
+		 private Welcome welcome;
+		 public void setDisplay (String s) {display = s;}
+		 public void setServlets (Servlets items) {servlets = items;}
+		 public void setMappings (Mappings items) {mappings = items;}
+		 public void setWelcome (Welcome items) {welcome = items;}
+		 public String getDisplay() {return display;}
+		 public Servlets getServlets() {return servlets;}
+		 public Mappings getMappings() {return mappings;}
+		 public Welcome getWelcome() {return welcome;}
+		 public void show() {
+		 		 System.out.println("Display "+display);
+		 		 if (servlets != null) servlets.show();
+		 		 if (mappings != null) mappings.show();
+		 		 if (welcome != null) welcome.show();
+		 }
+}
+
+
+package com.idc.webxml;
+
+import java.util.ArrayList;
+
+public class Servlets {
+		 ArrayList m_list = new ArrayList();
+		 int m_nPos = 0;
+		 public void add(Servlet item) {m_list.add(item);}
+		 public boolean isEmpty() {return m_list.isEmpty();}
+		 public boolean hasNext() {return m_nPos < m_list.size();}
+		 public void getNext() {m_nPos++;}
+		 public Servlet getServlet() {return (Servlet) m_list.get(m_nPos);}
+		 public void reset() {m_nPos = 0;}
+		 public void show() {
+		 		 if (! isEmpty()) {
+		 		 		 System.out.println("Showing all Servlets");
+		 		 		 for (int i=0; i<m_list.size(); i++) {
+		 		 		 		 Servlet item = (Servlet) m_list.get(i);
+		 		 		 		 item.show();
+		 		 		 }
+		 		 }
+		 }
+}
+
+package com.idc.webxml;
+
+public class Servlet {
+		 private String name;		 
+		 private String servlet;
+		 private String sclass;
+	public String getName() {return name;}
+	public String getServlet() {return servlet;}
+	public String getSclass() {return sclass;}
+	public void setName (String name) {this.name = name;}
+	public void setServlet (String servlet) {this.servlet = servlet;}
+	public void setSclass (String sclass) {this.sclass = sclass;}
+	public void show() {
+			 System.out.println("Name :"+name+":");
+			 System.out.println("Servlet :"+servlet+":");
+			 System.out.println("Class :"+sclass+":");
+	}
+}
+
+
+
+package com.idc.webxml;
+
+public interface PrintLine {
+		 public void println(String msg);
+}
+
+
+package com.idc.webxml;
+
+public class OutputTTY implements PrintLine {
+		 public OutputTTY() {}
+		 public void println(String msg) {
+			 System.out.println(msg);
+		 }
+}
+
+
+package com.idc.webxml;
+
+public class OutputGUI implements PrintLine {
+		 private static Appfile m_app;
+		 public OutputGUI(Appfile app) {m_app = app;}
+		 public void println(String msg) {m_app.writeToTextArea(msg);}
+}
+
+
+
+package com.idc.webxml;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
+
+public class JVxml {
+		 public Webapp parse(String strXML) {
+//		 		 System.out.println("JVxml::parse; file :"+strXML+":");
+		 		 InputSource source = new InputSource(new StringReader(strXML));
+		 		 return handle (source);
+		 }
+		 public Webapp parse (File file) {
+		 		 InputSource source = null;
+		 		 try {
+		 		 		 source = new InputSource(new FileInputStream(file));
+		 		 }
+		 		 catch (FileNotFoundException ex) {
+		 		 		 System.out.println("--- FileNotFoundException ---:");
+		 		 		 System.out.println(ex.getMessage());
+		 		 }
+		 		 return handle (source);
+		 }
+		 private Webapp handle(InputSource source) {
+		 		 DocumentBuilderFactory docBuilderFactory;
+		 		 DocumentBuilder docBuilder;
+		 		 Document doc;
+		 		 
+//		 		 System.out.println(">>> JVxml::handle");
+		 		 Webapp webapp = new Webapp();
+		 		 try {
+		 		 		 docBuilderFactory = DocumentBuilderFactory.newInstance();
+		 		 		 docBuilderFactory.setNamespaceAware(false);
+		 		 		 docBuilderFactory.setIgnoringElementContentWhitespace(true);
+		 		 		 docBuilder = docBuilderFactory.newDocumentBuilder();
+		 		 		 doc = docBuilder.parse(source);
+		 		 		 doc.getDocumentElement().normalize();
+		 		 		 webapp = handleWebapp (webapp, doc);
+		 		 }
+		 		 catch (Exception ex) {
+		 		 		 System.out.println("Exception "+ex.getMessage());
+		 		 }
+//		 		 System.out.println("<<< JVxml::handle");
+		 		 return webapp;
+		 }
+		 private Webapp handleWebapp (Webapp webapp, Document doc) throws
+AppException {
+//		 		 System.out.println(">>> JVxml::handleWebapp");
+		 		 Element elem = doc.getDocumentElement();
+//		 		 System.out.println ("(1) nodeName "+elem.getNodeName());
+		 		 if (! elem.getNodeName().equals("web-app")) {
+		 		 		 throw new AppException ("Not a web-app");
+		 		 }
+
+		 		 NodeList nodeList = elem.getChildNodes();
+		 		 Node node;
+		 		 Servlets servlets = new Servlets();
+		 		 Mappings mappings = new Mappings();
+		 		 Welcome welcome = new Welcome();
+		 		 int len = (nodeList != null) ? nodeList.getLength() : 0;
+		 		 for (int i=0; i<len; i++) {
+		 		 		 node = nodeList.item(i);
+		 		 		 if (isThisNode (node, "display-name"))
+		 		 		 		 webapp.setDisplay(getNodeValue(node));
+		 		 		 else if (isThisNode (node, "servlet")) {
+		 		 		 		 servlets.add (handleServlet (node));
+		 		 		 }
+		 		 		 else if (isThisNode (node, "servlet-mapping")) {
+		 		 		 		 mappings.add (handleMapping (node));
+		 		 		 }
+		 		 		 else if (isThisNode (node, "welcome-file-list")) {
+		 		 		 		 welcome = handleWelcome (welcome, node);
+		 		 		 }
+		 		 }
+		 		 webapp.setServlets(servlets);
+		 		 webapp.setMappings(mappings);
+		 		 webapp.setWelcome(welcome);
+//		 		 System.out.println("<<< JVxml::handleWebapp");
+		 		 return webapp;
+		 }
+		 private Servlet handleServlet (Node pNode) {
+		 		 Servlet servlet = new Servlet();
+		 		 NodeList nodeList = pNode.getChildNodes();
+		 		 Node node;
+		 		 int len = (nodeList != null) ? nodeList.getLength() : 0;
+		 		 for (int i=0; i<len; i++) {
+		 		 		 node = nodeList.item(i);
+		 		 		 if (isThisNode (node, "display-name"))
+		 		 		 		 servlet.setName(getNodeValue(node));
+		 		 		 else if (isThisNode (node, "servlet-name"))
+		 		 		 		 servlet.setServlet(getNodeValue(node));
+		 		 		 else if (isThisNode (node, "servlet-class"))
+		 		 		 		 servlet.setSclass(getNodeValue(node));
+		 		 }
+//		 		 servlet.show();
+		 		 return servlet;
+		 }
+		 private Mapping handleMapping (Node pNode) {
+		 		 Mapping mapping = new Mapping();
+		 		 NodeList nodeList = pNode.getChildNodes();
+		 		 Node node;
+		 		 int len = (nodeList != null) ? nodeList.getLength() : 0;
+		 		 for (int i=0; i<len; i++) {
+		 		 		 node = nodeList.item(i);
+		 		 		 if (isThisNode (node, "servlet-name"))
+		 		 		 		 mapping.setName(getNodeValue(node));
+		 		 		 else if (isThisNode (node, "url-pattern"))
+		 		 		 		 mapping.setUrl(getNodeValue(node));
+		 		 }
+		 		 return mapping;
+		 }
+		 private Welcome handleWelcome (Welcome welcome, Node pNode) {
+		 		 NodeList nodeList = pNode.getChildNodes();
+		 		 Node node;
+		 		 int len = (nodeList != null) ? nodeList.getLength() : 0;
+		 		 for (int i=0; i<len; i++) {
+		 		 		 node = nodeList.item(i);
+		 		 		 if (isThisNode (node, "welcome-file"))
+		 		 		 		 welcome.add (getNodeValue(node));
+		 		 }
+		 		 return welcome;
+		 }
+		 private boolean isThisNode (Node node, String name) {
+		 		 if (node.getNodeType() != Node.ELEMENT_NODE) return false;
+		 		 if (node.getNodeName().equals(name)) return true;
+		 		 return false;
+		 }
+		 private String getNodeValue (Node node) {
+		 		  String strNodeValue = node.getFirstChild().getNodeValue().trim();
+//		 		  System.out.println("node value :"+strNodeValue+":");
+		 		  return strNodeValue;
+		 }
+		 private String getAttrValue (String name, Node node) {
+		 		 String strReturn = null;
+
+		 		 NamedNodeMap attrs = node.getAttributes();
+		 		 int attrCount = (attrs != null) ? attrs.getLength() : 0;
+		 		 for (int i=0; i<attrCount; i++) {
+		 		 		 Node attr = attrs.item(i);
+//		 		 		 System.out.println("Name "+attr.getNodeName()+" value
+"+attr.getNodeValue());
+		 		 		 if (name.equals(attr.getNodeName())) {
+		 		 		 		 strReturn = attr.getNodeValue();
+		 		 		 		 break;
+		 		 		 }
+		 		 }
+		 		 return strReturn;
+		 }
+}
+
+
+package com.idc.webxml;
+
+public class Mapping {
+		 private String name;
+		 private String url;
+	public String getName() {return name;}
+	public String getUrl() {return url;}
+	public void setName (String name) {this.name = name;}
+	public void setUrl (String url) {this.url = url;}
+	public void show() {
+			 System.out.println("Name "+name);
+			 System.out.println("url "+url);
+	}		 
+}
+
+
+package com.idc.webxml;
+
+import java.util.ArrayList;
+
+public class Mappings {
+		 ArrayList m_list = new ArrayList();
+		 int m_nPos = 0;
+		 public void add(Mapping item) {m_list.add(item);}
+		 public boolean isEmpty() {return m_list.isEmpty();}
+		 public boolean hasNext() {return m_nPos < m_list.size();}
+		 public void getNext() {m_nPos++;}
+		 public Mapping getMapping() {return (Mapping) m_list.get(m_nPos);}
+		 public void reset() {m_nPos = 0;}
+		 public void show() {
+		 		 if (! isEmpty()) {
+		 		 		 System.out.println("Showing all Mappings");
+		 		 		 for (int i=0; i<m_list.size(); i++) {
+		 		 		 		 Mapping item = (Mapping) m_list.get(i);
+		 		 		 		 item.show();
+		 		 		 }
+		 		 }
+		 }
+}
+
+
+package com.idc.webxml;
+
+public class JVString {
+		 private String m_string;
+		 public JVString(String str) {m_string = str;}
+
+		 public void replace(String pattern, String replace) {
+		 		 int s = 0;
+		 		 int e = 0;
+		 		 StringBuffer buf = new StringBuffer();
+	
+		 		 while ((e = m_string.indexOf(pattern, s)) >= 0) {
+		 		 		 buf.append(m_string.substring(s, e));
+		 		 		 buf.append(replace);
+		 		 		 s = e + pattern.length();
+		 		 }
+		 		 buf.append(m_string.substring(s));
+		 		 m_string = buf.toString();
+		 }
+		 public void insert(int nNumber) {
+		 		 StringBuffer buf = new StringBuffer();
+		 		 buf.append(nNumber).append(m_string);
+		 		 m_string = buf.toString();
+		 }
+		 public void insert(String str) {
+		 		 StringBuffer buf = new StringBuffer();
+		 		 buf.append(str).append(m_string);
+		 		 m_string = buf.toString();
+	}
+	public void initUpper() {
+		 		 StringBuffer buf = new StringBuffer();
+		 		 buf.append(m_string.substring(0, 1).toUpperCase());
+		 		 buf.append(m_string.substring(1));
+		 		 m_string = buf.toString();
+	}
+	public String getString() {return m_string;}
+	public void dump(String msg) {
+//			 System.out.println("--- dump String; "+msg+" :"+m_string+":");
+		 		 StringBuffer buf = new StringBuffer(m_string);
+		 		 char chr;
+		 		 for (int i=0; i<buf.length(); i++) {
+		 		 		 chr = buf.charAt(i);
+		 		 		 int iv = chr;
+//		 		 		 System.out.println("(i) "+i+" :"+chr+": :"+iv+":");
+		 		 }
+	}
+	public void removeNull() {
+//			 dump("before");
+		 		 StringBuffer ibuf = new StringBuffer(m_string);
+		 		 StringBuffer obuf = new StringBuffer();
+		 		 char chr;
+		 		 for (int i=0; i<ibuf.length(); i++) {
+		 		 		 chr = ibuf.charAt(i);
+		 		 		 int iv = chr;
+		 		 		 if (iv > 0) obuf.append(chr);
+		 		 }
+		 		 m_string = obuf.toString();
+//		 		 dump("after");
+	}
+	public boolean isEmpty(String value) {
+			 if (value == null) return true;
+			 if ("".equals(value.trim())) return true;
+			 return false;
+	}
+
+	public String getCapitalized(String str) {
+			 char ch;
+			 char prevCh = '.';	
+			 int max = str.length();
+			 char data[] = new char[max];
+
+			 for (int i = 0;  i < max;  i++) {
+			 		 ch = str.charAt(i);
+			 		 if (Character.isLetter(ch)  &&  ! Character.isLetter(prevCh)) {
+			 		 		 data[i] = Character.toUpperCase(ch);		
+			 		 } else
+			 		 		 data[i] = Character.toLowerCase(ch);	   
+   		 		 		 prevCh = ch;		  // prevCh for next iteration is ch.
+   		 		 }
+   		 		 str = new String(data);
+   		 		 return str;
+   		 }
+}
+
+
+
+package com.idc.webxml;
+
+import java.io.File;
+
+public class Control {
+		 private Webapp m_webapp;
+		 private PrintLine m_output;
+		 public Control (PrintLine output) {m_output = output;}
+		 public void convertWebXML(String strFile) {
+		 		 makeData(strFile);
+		 		 makeXML();
+		 }
+		 private void makeData(String strFile) {
+		 		 JVxml jvxml = new JVxml();
+		 		 File file = new File (strFile);
+		 		 m_webapp = jvxml.parse(file);
+//		 		 m_webapp.show();
+		 }
+		 private void makeXML() {
+		 		 output (0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		 		 output (0, "<web-app id=\"WebApp_ID\" version=\"2.4\"
+xmlns=\"http://java.sun.com/xml/ns/j2ee\"
+xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\">");
+		 		 output (1, makeNode ("display-name", m_webapp.getDisplay()));
+		 		 Servlets servlets = m_webapp.getServlets();
+		 		 Servlet servlet;
+		 		 while (servlets.hasNext()) {
+		 		 		 servlet = servlets.getServlet();
+		 		 		 output (1, "<servlet>");
+		 		 		 output (2, makeNode ("description", ""));
+		 		 		 output (2, makeNode ("display-name", servlet.getName()));
+		 		 		 output (2, makeNode ("servlet-name", servlet.getServlet()));
+		 		 		 output (2, makeNode ("servlet-class", servlet.getSclass()));
+		 		 		 output (1, "</servlet>");
+		 		 		 servlets.getNext();
+		 		 }
+		 		 Mappings mappings = m_webapp.getMappings();
+		 		 Mapping mapping;
+		 		 while (mappings.hasNext()) {
+		 		 		 mapping = mappings.getMapping();
+		 		 		 output (1, "<servlet-mapping>");
+		 		 		 output (2, makeNode ("servlet-name", mapping.getName()));
+		 		 		 output (2, makeNode ("url-pattern", mapping.getUrl()));
+		 		 		 output (1, "</servlet-mapping>");
+		 		 		 mappings.getNext();
+		 		 }
+		 		 Welcome welcome = m_webapp.getWelcome();
+		 		 String strFile;
+		 		 output (1, "<welcome-file-list>");
+		 		 while (welcome.hasNext()) {
+		 		 		 strFile = welcome.getFile();
+		 		 		 output (2, makeNode ("welcome-file", strFile));
+		 		 		 welcome.getNext();
+		 		 }
+		 		 output (1, "</welcome-file-list>");
+		 		 output (0, "</web-app>");
+		 }
+		 private String makeNode (String name, String value) {
+		 		 return "<"+name+">"+value+"</"+name+">";
+		 }
+		 private String makeNode (String name, int value) {
+		 		 return "<"+name+">"+Integer.toString(value)+"</"+name+">";
+		 }
+		 private void output (int tabs, String msg) {
+		 		 m_output.println(makeTabs(tabs)+msg);
+		 }
+		 private String makeTabs (int tabs) {
+		 		 String str = "";
+		 		 for (int i=0; i<tabs; i++) str += "\t";
+		 		 return str;
+		 }
+}
+
+
+package com.idc.webxml;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.io.*;
+import java.util.Iterator;
+
+public class Appfile extends JPanel implements ActionListener,
+DropTargetListener {
+		 private App m_app;
+		 private Clipboard m_clipboard;
+		 private JTextField m_filenameField;
+		 private JTextArea m_textArea;
+		 private JButton m_btnConvert;
+
+		 public Appfile(App app) {
+		 		 m_app = app;
+		 		 m_clipboard = m_app.getToolkit().getSystemClipboard();
+		 }
+		 public Container makeContentPane() {
+		 		 JPanel pane = new JPanel();
+		 		 pane.setLayout(new BorderLayout());
+
+		 		 JPanel topPane = new JPanel();
+		 		 m_filenameField = new JTextField(20);
+//		 		 m_filenameField.setText("/tmp/web.xml");
+		 		 new DropTarget(m_filenameField, 
+		 		 		 		 DnDConstants.ACTION_COPY_OR_MOVE,
+		 		 		 		 this);
+		 		 topPane.add(m_filenameField);
+
+		 		 JPanel midPane = new JPanel();
+		 		 midPane.setLayout(new BorderLayout());
+		 		 m_textArea = new JTextArea(40,60);
+		 		 m_textArea.setLineWrap(false);
+		 		 m_textArea.setEditable(false);
+		 		 m_textArea.setBorder(BorderFactory.createCompoundBorder(
+		 		 		 BorderFactory.createEmptyBorder(5,5,5,5),m_textArea.getBorder()));
+//		 		 System.out.println("tabsize "+m_textArea.getTabSize());
+		 		 m_textArea.setTabSize(4);
+//		 		 System.out.println("tabsize "+m_textArea.getTabSize());
+
+		 		 JScrollPane scroll = new JScrollPane(m_textArea,
+		 		 		 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		 		 		 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		 		 midPane.add(scroll,	BorderLayout.CENTER);
+		 		 midPane.setBorder(BorderFactory.createCompoundBorder(
+		 		 		 BorderFactory.createEmptyBorder(5,5,0,0),midPane.getBorder()));	//t,l,b,r
+
+		 		 JPanel lowPane = new JPanel();
+		 		 m_btnConvert = new JButton("Convert");
+		 		 m_btnConvert.addActionListener(this);
+	lowPane.add(m_btnConvert);
+
+		 		 pane.add(topPane,BorderLayout.NORTH);
+		 		 pane.add(midPane,BorderLayout.CENTER);
+		 		 pane.add(lowPane,BorderLayout.SOUTH);
+		 		 return pane;
+		 }
+		 public Dimension getPreferredSize() {return new Dimension(400, 800);}
+		 public Dimension getMinimumSize() {return getPreferredSize();}
+		 public synchronized void drop(DropTargetDropEvent e) {
+		 		 System.out.println(">>> Abc:drop");
+		 		 try {
+		 		 		 Transferable tr = e.getTransferable();
+		 		 		 if (tr.isDataFlavorSupported (DataFlavor.javaFileListFlavor)) {
+		 		 		 		 e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+		 		 		 		 java.util.List fileList = (java.util.List)
+		 		 		 		 		 tr.getTransferData(DataFlavor.javaFileListFlavor);
+		 		 		 		 Iterator iterator = fileList.iterator();
+		 		 		 		 while (iterator.hasNext()) {
+		 		 		 		 		 File file = (File)iterator.next();
+		 		 		 		 		 convertWebXML (file.getAbsolutePath());
+		 		 		 		 }
+		 		 		 		 e.getDropTargetContext().dropComplete(true);
+		 		 		 }
+		 		 		 else if (tr.isDataFlavorSupported (DataFlavor.stringFlavor)) {
+		 		 		 		 e.acceptDrop (DnDConstants.ACTION_COPY_OR_MOVE);
+		 		 		 		 String str = ((String)
+tr.getTransferData(DataFlavor.stringFlavor)).trim();
+		 		 		 		 if (str.startsWith("file:/")) str = str.substring(7);
+		 		 		 		 System.out.println("File is :"+str+":");
+		 		 		 		 File file = new File(str);
+		 		 		 		 if (file.isFile()) {
+		 		 		 		 		 convertWebXML (file.getAbsolutePath());
+		 		 		 		 }
+		 		 		 		 e.getDropTargetContext().dropComplete(true);
+		 		 		 }
+		 		 		 else {
+		 		 		 		 System.err.println ("Rejected");
+		 		 		 		 e.rejectDrop();
+		 		 		 }
+		 		 }
+		 		 catch (IOException io) {
+		 		 		 io.printStackTrace();
+		 		 		 e.rejectDrop();
+		 		 }
+		 		 catch (UnsupportedFlavorException ufe) {
+		 		 		 ufe.printStackTrace();
+		 		 		 e.rejectDrop();
+		 		 }
+		 		 System.out.println ("<<< Abc:drop");
+		 }
+		 public void dragEnter(DropTargetDragEvent e) {
+//		 		 System.out.println("--- Abc:dragEnter");
+		 }
+		 public void dragExit(DropTargetEvent e) {
+//		 		 System.out.println("--- Abc:dragExit");
+		 }
+		 public void dragOver(DropTargetDragEvent e) {
+//		 System.out.println("--- Abc:dragOver");
+		 }
+		 public void dropActionChanged(DropTargetDragEvent e) {
+//		 System.out.println("--- Abc:dropActionChanged");
+		 }
+		 private void clearFileNameField () {
+		 		 SwingUtilities.invokeLater (
+		 		 		 new Runnable() {
+		 		 		 		 public void run() {
+		 		 		 		 		 m_filenameField.setText("");
+		 		 		 		 		 validate();
+		 		 		 		 }
+		 		 		 }
+		 		 );		
+		 }
+		 public void setFilenameMessage (final String msg) {
+		 		 SwingUtilities.invokeLater (
+		 		 		 new Runnable() {
+		 		 		 		 public void run() {
+		 		 		 		 		 m_filenameField.setText(msg);
+		 		 		 		 		 validate();
+		 		 		 		 }
+		 		 		 }
+		 		 );		
+		 }
+		 private void setCaretToEnd() {
+		 		 m_textArea.setCaretPosition(m_textArea.getText().length());		 		 
+		 }
+		 private void clearMessages () {
+		 		 SwingUtilities.invokeLater (
+		 		 		 new Runnable() {
+		 		 		 		 public void run() {
+		 		 		 		 		 m_textArea.setText("");
+		 		 		 		 		 validate();
+		 		 		 		 }
+		 		 		 }
+		 		 );		
+		 }
+		 public void setMessagesArea (final String msg) {
+		 		 SwingUtilities.invokeLater (
+		 		 		 new Runnable() {
+		 		 		 		 public void run() {
+		 		 		 		 		 m_textArea.append(msg);
+		 		 		 		 		 m_textArea.append("\n");
+		 		 		 		 }
+		 		 		 }
+		 		 );
+		 }
+		 public void writeToTextArea(final String line) {
+		 		 JVString jvstr = new JVString(line);
+	jvstr.replace("	","	");
+		 		 jvstr.replace("	","\t");
+		 		 setMessagesArea (jvstr.getString());
+		 }
+		 public void actionPerformed (ActionEvent e) {
+		 		 Object source = e.getSource();
+		 		 if (source instanceof JButton) {
+		 		 		 System.out.println("jbutton");
+		 		 		 if (source == m_btnConvert) {
+		 		 		 		 System.out.println("btnConvert");
+		 		 		 		 convertWebXML(m_filenameField.getText());
+		 		 		 }
+		 }
+		 else
+		 		 System.out.println("else type");
+		 }
+		 private void convertWebXML(String strFile) {
+		 		 System.out.println("convertWebXML; file :"+strFile+":");
+		 		 File file = new File (strFile);
+		 		 if (file.exists() && file.canRead()) {
+		 		 		 Control control = new Control (new OutputGUI(this));
+		 		 		 control.convertWebXML(strFile);
+		 		 }
+		 }
+}
+
+
+
+package com.idc.webxml;
+
+public class AppException extends Exception {
+		 public AppException (String msg) {
+		 		 super(msg);
+		 }
+}
+
+
+
+package com.idc.webxml;
+
+public class App2 {
+		 
+		 public static void main(String[] args) {
+		 		 (new App2()).doTest();
+		 }
+		 private void doTest() {
+		 		 Control control = new Control (new OutputTTY());
+		 		 control.convertWebXML("/tmp/web.xml");
+		 }
+}
+
+
+package com.idc.webxml;
+
+import javax.swing.*;
+
+public class App extends JFrame {
+		 public App(String msg) {
+		 		 super(msg);
+		 		 setContentPane((new Appfile(this)).makeContentPane());
+		 		 setSize(700,730);		// width, height
+		 		 setVisible(true);
+		 }
+		 public static void main (String args[]) {
+		 		 JFrame frame = new App ("Web.xml Converter Application");
+		 		 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 }
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+<!-- Comment -->
+
+<project name="simpleCompile" default="compile" basedir=".">
+   <target name="init">
+	   <echo message="init"/>
+      <property name="clientDir" value="client"/>
+      <property name="serverDir" value="server"/>
+      <property name="utilsDir" value="utils"/>
+      <property name="deployDir" value="deploy"/>
+	  <property name="cpath" value="${deployDir}"/>
+   </target>
+
+   <target name="clean" depends="init">
+	   <echo message="clean"/>
+	   <delete>
+		   <fileset dir="${deployDir}" includes="**/*.class"/>
+	   </delete>
+   </target>
+
+   <target name="compile" depends="clean">
+	   <echo message="compile"/>
+     <javac destdir="${deployDir}" classpath="{cpath}">
+		<src path="${utilsDir}"/>
+		<src path="${clientDir}"/>
+		<src path="${serverDir}"/>
+	</javac>
+   </target>
+
+   <target name="runclient" depends="init">
+	   <echo message="runclient"/>
+	   <java classname="ScrabbleClient" fork="yes">
+			<classpath>
+				<pathelement location="${cpath}"/>
+			</classpath>
+		</java>
+   </target>
+   <target name="runserver" depends="init">
+		   <echo message="runserver"/>
+		   <java classname="ScrabbleServer" fork="yes">
+			<classpath>
+				<pathelement location="${cpath}"/>
+			</classpath>
+		</java>
+   </target>
+</project>
+
+

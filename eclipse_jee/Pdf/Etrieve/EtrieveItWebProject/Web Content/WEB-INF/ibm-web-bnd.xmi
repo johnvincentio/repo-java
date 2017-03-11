@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webappbnd:WebAppBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappbnd="webappbnd.xmi" xmlns:webapplication="webapplication.xmi" xmlns:commonbnd="commonbnd.xmi" xmlns:common="common.xmi" xmi:id="WebAppBinding_1" virtualHostName="default_host">
+  <webapp href="WEB-INF/web.xml#WebApp"/>
+  <resRefBindings xmi:id="ResourceRefBinding_1" jndiName="jdbc/HercWebUpdatedGold">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_2" jndiName="jdbc/HercGoldCorporate">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_2"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1107978117547" jndiName="jdbc/RentalMan">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1107978117547"/>
+  </resRefBindings>
+  <resRefBindings xmi:id="ResourceRefBinding_1126730295934" jndiName="jdbc/RentalManTraining">
+    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_1126730295934"/>
+  </resRefBindings>
+</webappbnd:WebAppBinding>

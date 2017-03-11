@@ -1,0 +1,995 @@
+
+select CMCRP#, cmname, cmadr1, cmadr2, cmcity, cmstat, cmzip, cmlidt 
+from CUSMS2FL a, CUSMASFL b 
+where="a.CMCMP2 ='HG' and a.CMNATLCON# = ?;
+
+
+	<query name="getSqlStatement1" type="select" distinct="false" 
+	where="a.CMCMP2 ='HG' and a.CMNATLCON# = ?">
+		<table name="CUSMASFL" alias="b" translatable="false">
+			<column name="CMCRP#"/>
+			<column name="cmname"/>
+			<column name="cmadr1"/>
+			<column name="cmadr2"/>
+			<column name="cmcity"/>
+			<column name="cmstat"/>
+			<column name="cmzip"/>
+			<column name="cmlidt"/>
+		</table>
+		<join on="(a.CMCMP2 = b.CMCMP and a.CMCUS#2 = b.CMCUS#)" type="inner">
+			<table name="CUSMS2FL" alias ="a" translatable="false">
+			</table>
+		</join>
+	</query>
+
+-- getNarpFromAccount
+select CMNATLCON# from RMHCQDATA.CUSMS2FL where CMCMP2 = 'HG' and CMCUS#2 = '5247'; 
+
+-- account 2801270
+
+-- getContractLocations
+select distinct d.E5LOC from RMHCQDATA.EQPCLRFL d, RMHCQDATA.EQPCPRFL a, RMHCQDATA.EQPCPHFL b, RMHCQDATA.EQPHPRFL c, RMHCQDATA.EQPDSCFL e 
+where a.EQCNT# = b.EYCNT# and a.EQCNT# = c.E6CNT# and a.EQCNT# = d.E5CNT# 
+and a.EQCNT# = e.EDCNT# and b.EYSTDT <= '20101201' and b.EYENDT >= '20060101' and a.EQCUS# = '2801270';
+
+-- getContractRentalItems
+select distinct e.EDCATG, e.EDCLAS from RMHCQDATA.EQPDSCFL e, RMHCQDATA.EQPCPRFL a, RMHCQDATA.EQPCPHFL b, RMHCQDATA.EQPHPRFL c, RMHCQDATA.EQPCLRFL d 
+where a.EQCNT# = b.EYCNT# and a.EQCNT# = c.E6CNT# and a.EQCNT# = d.E5CNT# and a.EQCNT# = e.EDCNT# 
+and b.EYSTDT <= '20101201' and b.EYENDT >= '20060101' and a.EQCUS# = '2801270';
+
+
+
+//***************************************************************
+// $Source: /net/home/cvs/core/src/com/nubridges/shared/util/DBTest.java,v $
+//
+//***************************************************************
+package com.philmcrew.utility;
+
+import gnu.getopt.LongOpt;
+
+import java.sql.*;
+import java.util.ListIterator;
+import java.util.Vector;
+
+public class JdbcSql
+{
+    private final static String FQCN = JdbcSql.class.getName();
+
+    private Connection targetConn = null;
+    private DatabaseMetaData dbmd = null;
+
+    private String db_driver = null;
+    private String db_password = null;
+    private String db_url = null;
+    private String db_uid = null;
+
+    private String db_catalog_pattern = null;
+    private String db_column_pattern = null;
+    private String db_schema_pattern = null;
+    private String db_table_pattern = null;
+
+    private String catSep = ".";
+
+    private boolean doScanCatalogs = false;
+    private boolean doScanColumns = false;
+    private boolean doScanTables = false;
+    private boolean doRowCount = false;
+    private boolean doXref = false;
+    private boolean doPrimaryKeys = false;
+    private boolean doImportedKeys = false;
+    private boolean doExportedKeys = false;
+    private boolean doIndex = false;
+
+    private int numFires = 1;
+
+    private Vector queryVector = new Vector();
+
+    protected static void logTrace(String logMessage)
+    {
+        System.out.println(logMessage);
+    }
+
+    protected static String logError(Throwable t, String logMessage)
+    {
+        StringBuffer buf = new StringBuffer(100);
+        buf.append("Caught Throwable ");
+        buf.append(t.getClass().getName());
+        buf.append(" - ");
+        buf.append(t);
+        buf.append(" - in ");
+        buf.append(logMessage);
+        System.err.println(buf);
+        t.printStackTrace();
+
+        return buf.toString();
+    }
+
+    /**
+     * Logs and returns the details of an SQL exception such as the the message, SQL state, and vendor code.
+     * @param ex exception to be logged
+     * @param methodName name of the method in which the exception occured.
+     * @return log message.
+     */
+    public static String log(SQLException ex, String methodName)
+    {
+        String retString = "";
+
+        try
+        {
+            StringBuffer buf = new StringBuffer(100);
+            buf.append("SQL Exception caught by ");
+            buf.append(methodName);
+
+            while (null != ex)
+            {
+                buf.append(";Message='");
+                buf.append(ex.getMessage());
+                buf.append("';SqlState='");
+                buf.append(ex.getSQLState());
+                buf.append("';VendorCode=");
+                buf.append(ex.getErrorCode());
+                retString += buf;
+                logError(ex, buf.toString());
+
+                buf.delete(0, buf.length());
+                ex = ex.getNextException();
+            }
+        }
+        catch (Exception ex2)
+        {
+            logError(ex2, "Error printing SQL Exception " + ex2);
+        }
+
+        return retString;
+    }
+
+    /**
+     * Close the connection.
+     * @param conn connection to close.
+     * @param methodName method called from for logging and error reporting.
+     */
+    public static void close(Connection conn, String methodName)
+    {
+        try
+        {
+            if (null != conn && !conn.isClosed()) conn.close();
+        }
+        catch (SQLException ex)
+        {
+            log(ex, methodName + " while closing Db Connection");
+        }
+    }
+
+    /**
+     * Close the result set.
+     * @param rs result set to close.
+     * @param methodName method called from for logging and error reporting.
+     */
+    public static void close(ResultSet rs, String methodName)
+    {
+        try
+        {
+            if (null != rs) rs.close();
+        }
+        catch (SQLException ex)
+        {
+            log(ex, methodName + " while closing Db ResultSet");
+        }
+    }
+
+    /**
+     * Close the statement.
+     * @param s statement to close.
+     * @param methodName method called from for logging and error reporting.
+     */
+    public static void close(Statement s, String methodName)
+    {
+        try
+        {
+            if (null != s) s.close();
+        }
+        catch (SQLException ex)
+        {
+            log(ex, methodName + " while closing Db Statement");
+        }
+    }
+
+    public void close()
+    {
+        logTrace("close");
+        close(targetConn, "JdbcSql.close");
+        this.targetConn = null;
+    }
+
+    public static void printSep(String title)
+    {
+        System.out.println(
+                "================================================================");
+        System.out.println(title);
+    }
+
+    public void loadDriver(String driver)
+    {
+        try
+        {
+            logTrace("loadDriver");
+
+            System.out.println();
+            System.out.println("Loading Driver: " + driver);
+            System.out.println();
+            Class.forName(driver);
+        }
+        catch (Exception e)
+        {
+            System.out.println("loadDriver(String):\n" + e);
+        }
+    }
+
+
+    public static Connection getConnection(String anUrl, String anUid,
+                                           String aPwd)
+    {
+        Connection conn = null;
+
+        try
+        {
+            logTrace("getConnection(String, String, String)");
+
+            System.out.println("Get Connection: " + anUrl + " " + anUid);
+            System.out.println();
+            conn = DriverManager.getConnection(anUrl, anUid, aPwd);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("Error getting DB Connection:" + ex);
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error getting DB Connection: " + ex);
+        }
+
+        return conn;
+    }
+
+    private Connection getConnection()
+    {
+        try
+        {
+            logTrace("getConnection");
+
+            close();
+            loadDriver(this.db_driver);
+
+            this.targetConn = getConnection(this.db_url, this.db_uid,
+                    this.db_password);
+
+            System.out.println("Connection is: " + this.targetConn);
+            this.dbmd = this.targetConn.getMetaData();
+
+            System.out.println();
+            System.out.println(
+                    "Product Name: " + this.dbmd.getDatabaseProductName());
+            System.out.println(
+                    "Product Version: " + this.dbmd.getDatabaseProductVersion());
+            System.out.println(
+                    "Driver Name: " + this.dbmd.getDriverName());
+            System.out.println(
+                    "Major Version: " + this.dbmd.getDriverMajorVersion());
+            System.out.println(
+                    "Minor Version: " + this.dbmd.getDriverMinorVersion());
+
+            try
+            {
+                this.catSep = this.dbmd.getCatalogSeparator();
+                System.out.println(
+                        "Catalog Separator: " + this.dbmd.getCatalogSeparator());
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Catalog Separator: " + ex);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (null != this.targetConn)
+                System.out.println("getConnection:\n" + ex);
+        }
+
+        return this.targetConn;
+    }
+
+
+    public static ResultSet executeSimpleQuery(Connection conn, String query)
+    {
+        ResultSet rs = null;
+
+        try
+        {
+            logTrace("executeSimpleQuery");
+            PreparedStatement pst = conn.prepareStatement(query);
+            rs = pst.executeQuery();
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("(Simple Query Error: " + ex.getMessage() + ")");
+            System.out.println("Query: " + query);
+        }
+        catch (Exception e)
+        {
+            System.out.println("(Unexpected Simple Query Error: " + e + ")");
+            System.out.println("Query: " + query);
+        }
+
+        return rs;
+    }
+
+    public static void printResult(ResultSet rs)
+    {
+        try
+        {
+            logTrace("printResult");
+
+            if (rs != null)
+            {
+                int cc = rs.getMetaData().getColumnCount();
+                System.out.println("Column Count: " + cc);
+
+                System.out.println();
+                for (int j = 1; j < cc + 1; j++)
+                {
+                    System.out.print(rs.getMetaData().getColumnName(j) + " | ");
+                }
+                System.out.println();
+
+                int row = 0;
+                while (rs.next())
+                {
+                    System.out.print(row++ + ") ");
+                    for (int i = 1; i < cc + 1; i++)
+                        System.out.print(rs.getString(i) + " | ");
+
+                    System.out.println();
+                }
+            }
+        }
+        catch (SQLException ex)
+        {
+            logError(ex, "scanColumns");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanColumns");
+        }
+
+    }
+
+
+    public void scanCatalogs()
+    {
+        ResultSet rs = null;
+
+        try
+        {
+            logTrace("scanCatalogs");
+            printSep("Catalogs");
+
+            rs = this.dbmd.getCatalogs();
+            printResult(rs);
+
+        }
+        catch (SQLException ex)
+        {
+            log(ex, "scanColumns");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanColumns");
+        }
+        finally
+        {
+            close(rs, "scanCatalogs");
+        }
+    }
+
+    public void scanPrimaryKeys()
+    {
+        ResultSet rs = null;
+
+        try
+        {
+            logTrace("scanPrimaryKeys");
+            printSep("Primary Keys");
+
+            // catalog, schema, table
+            rs = this.dbmd.getPrimaryKeys(
+                    this.db_catalog_pattern,
+                    this.db_schema_pattern, this.db_table_pattern);
+            printResult(rs);
+        }
+        catch (SQLException ex)
+        {
+            log(ex, "scanPrimaryKeys");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanPrimaryKeys");
+        }
+        finally
+        {
+            close(rs, "scanPrimaryKeys");
+        }
+    }
+    /*
+        public void scan()
+        {
+            try
+            {
+                logger.entry("scan");
+                printSep("");
+
+                //
+                ResultSet rs = this.dbmd.getCrossReference(
+                   null, this.db_schema_pattern, this.db_table_pattern,
+                   null, null, null);
+                printResult(rs);
+            }
+            catch (SQLException ex)
+            {
+                System.out.println(ex.getMessage());
+                DBConnection.log(ex, "scan");
+            }
+            catch (Exception ex)
+            {
+                logger.error("Exception in scan", ex);
+            }
+        }
+    */
+
+    public void scanIndex()
+    {
+        try
+        {
+            logTrace("scanIndex");
+            printSep("Indexes");
+
+            // catalog, schema, table, unique, approx
+            ResultSet rs = this.dbmd.getIndexInfo(
+                    this.db_catalog_pattern,
+                    this.db_schema_pattern, this.db_table_pattern,
+                    false, false);
+            printResult(rs);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            log(ex, "scanIndex");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanIndex");
+        }
+    }
+
+    public void scanImportedKeys()
+    {
+        try
+        {
+            logTrace("scanImportedKeys");
+            printSep("Imported Keys");
+
+            // catalog, schema, table
+            ResultSet rs = this.dbmd.getImportedKeys(
+                    this.db_catalog_pattern,
+                    this.db_schema_pattern,
+                    this.db_table_pattern);
+            printResult(rs);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            log(ex, "scanImportedKeys");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanImportedKeys");
+        }
+    }
+
+    public void scanExportedKeys()
+    {
+        try
+        {
+            logTrace("scanExportedKeys");
+            printSep("Exported Keys");
+
+            // catalog, schema, table
+            ResultSet rs = this.dbmd.getExportedKeys(
+                    null, this.db_schema_pattern,
+                    this.db_table_pattern);
+            printResult(rs);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            log(ex, "scanExportedKeys");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanExportedKeys");
+        }
+    }
+
+    /**
+     *
+     */
+    public void scanXref()
+    {
+        try
+        {
+            logTrace("scanXref");
+            printSep("Cross Reference");
+
+            // primaryCatalog, primarySchema, primaryTable,
+            // foreignCatalog, foreignSchema, foreignTable
+            ResultSet rs = this.dbmd.getCrossReference(
+                    this.db_catalog_pattern,
+                    this.db_schema_pattern, this.db_table_pattern,
+                    null, null, null);
+            printResult(rs);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            log(ex, "scanXref");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanXref");
+        }
+    }
+
+
+    /**
+     *
+     */
+    public void scanTables()
+    {
+        ResultSet rs = null;
+        ResultSet rs2 = null;
+
+        try
+        {
+            logTrace("scanTables");
+
+            printSep("Tables");
+
+            // catalog, schemaPattern, tableNamePattern, String[] types
+            rs = this.dbmd.getTables(this.db_catalog_pattern,
+                    this.db_schema_pattern,
+                    this.db_table_pattern, null);
+            if (rs != null)
+            {
+                int cc = rs.getMetaData().getColumnCount();
+                System.out.println("Column Count: " + cc);
+
+                System.out.println();
+                for (int j = 1; j <= cc; j++)
+                {
+                    System.out.print(rs.getMetaData().getColumnName(j) + " | ");
+                }
+                if (this.doRowCount)
+                    System.out.println(" count(*)");
+                else
+                    System.out.println();
+
+                StringBuffer buf = new StringBuffer();
+
+                int row = 0;
+                while (rs.next())
+                {
+                    System.out.print(row++ + ") ");
+                    for (int i = 1; i <= cc; i++)
+                    {
+                        System.out.print(rs.getString(i) + " | ");
+                    }
+
+                    try
+                    {
+                        if (this.doRowCount)
+                        {
+                            buf.delete(0, buf.length());
+
+                            buf.append("SELECT count(*) from ");
+                            if (null != rs.getString(2))
+                            {
+                                buf.append(rs.getString(2));
+                                buf.append(this.catSep);
+                            }
+                            buf.append(rs.getString(3));
+                            rs2 = executeSimpleQuery(this.targetConn,
+                                    buf.toString());
+                            if (rs2 != null)
+                            {
+                                rs2.next();
+                                System.out.println(rs2.getInt(1));
+                            }
+                            else
+                            {
+                                System.out.println("null");
+                            }
+                        }
+                        else
+                            System.out.println();
+                    }
+                    catch (SQLException ex)
+                    {
+                        System.out.println("Error: " + ex);
+                    }
+                    finally
+                    {
+                        close(rs2, "scanTables counting rows");
+                    }
+
+                }
+            }
+        }
+        catch (SQLException ex)
+        {
+            log(ex, "scanTables");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanTables");
+        }
+        finally
+        {
+            close(rs, "scanTables");
+        }
+    }
+
+    /**
+     *
+     */
+    public void scanColumns()
+    {
+        ResultSet rs = null;
+
+        try
+        {
+            logTrace("scanColumns");
+
+            printSep("Columns");
+
+            // catalog, schemaPattern, tableNamePattern, columnNamePattern
+            rs = this.dbmd.getColumns(
+                    this.db_catalog_pattern,
+                    this.db_schema_pattern, this.db_table_pattern,
+                    this.db_column_pattern);
+            printResult(rs);
+
+        }
+        catch (SQLException ex)
+        {
+            log(ex, "scanColumns");
+        }
+        catch (Exception ex)
+        {
+            logError(ex, "scanColumns");
+        }
+        finally
+        {
+            close(rs, "scanColumns");
+        }
+    }
+
+    /**
+     *
+     */
+    public void run()
+    {
+        logTrace("run");
+
+        for (int ii = 0; ii < this.numFires; ii++)
+        {
+            this.targetConn = getConnection();
+
+            if (this.doScanCatalogs)
+                scanCatalogs();
+
+            if (this.doScanTables)
+                scanTables();
+
+            if (this.doScanColumns)
+                scanColumns();
+
+            if (this.doPrimaryKeys)
+                scanPrimaryKeys();
+
+            if (this.doImportedKeys)
+                scanImportedKeys();
+
+            if (this.doExportedKeys)
+                scanExportedKeys();
+
+            if (this.doIndex)
+                scanIndex();
+
+            if (this.doXref)
+                scanXref();
+
+            if (this.queryVector.size() > 0)
+            {
+                ListIterator iter = this.queryVector.listIterator();
+                String query;
+                while (iter.hasNext())
+                {
+                    query = (String)iter.next();
+                    System.out.println("Query: " + query);
+                    printResult(executeSimpleQuery(this.targetConn, query));
+                }
+            }
+
+            close();
+        }
+    }
+
+    /**
+     *
+     */
+    public static void instructions()
+    {
+        System.out.println("Usage:\n java " + FQCN + " -d driver -u url -i uid -p password \n");
+
+        System.out.println("Connect to database:");
+        System.out.println("-d <jdbc_driver>");
+        System.out.println("-u <db_URL> eg jdbc:postgresql://localhost/nm -i userid -p password");
+        System.out.println("-i <db_user_id>");
+        System.out.println("-p <db_password>");
+
+        System.out.println("\nSelect scans and queries:");
+        System.out.println("-A Perform all Scans");
+        System.out.println("-c Scan for Catalogs");
+        System.out.println("-t Scan for Tables");
+        System.out.println("-l Scan for Columns");
+        System.out.println("-r Scan for Row Count");
+        System.out.println("-k Scan for Primary Keys");
+        System.out.println("-X Scan for Indexes");
+        System.out.println("-x Scan for Cross References");
+        System.out.println("-I Scan for Import Keys");
+        System.out.println("-E Scan for Export Keys");
+        System.out.println("-q <query>                      Run arbitrary query");
+
+        System.out.println("\nOther options:");
+        System.out.println("-S <schema_pattern>");
+        System.out.println("-C <catalog_pattern>");
+        System.out.println("-T <table_pattern>");
+        System.out.println("-L <column_pattern>");
+        System.out.println("-n <numFires>");
+        System.out.println("-h                      Display this help and exit");
+        System.out.println("--help                  Display this help and exit");
+
+        System.out.println("\nSome Drivers:");
+
+        System.out.println( "db2, 1433, as400, , com.ibm.as400.access.AS400JDBCDriver" );
+        System.out.println( "microsoft sql server 1433,  microsoft:sqlserver, master, com.microsoft.jdbc.sqlserver.SQLServerDriver" );
+        System.out.println( "mysql: 3306, mysql, mysql, org.gjt.mm.mysql.Driver" );
+        System.out.println( "oracle 1521, oracle:thin, ???, oracle.jdbc.driver.OracleDriver" );
+        System.out.println( "postgres 5432, postgresql, template1, org.postgresql.Driver" );
+        System.out.println( "red brick 5050, rbw, ???, redbrick.jdbc.RBWDriver");
+        System.out.println( "sas 5010, sharenet, ???, com.sas.net.sharenet.ShareNetDriver" );
+        System.out.println( "sybase 523, freetds, master, com.internetcds.jdbc.tds.Driver" );
+
+        System.exit(0);
+    }
+
+    public JdbcSql(String argv[]) throws ClassNotFoundException
+    {
+        logTrace(FQCN);
+
+        LongOpt[] longopts = new LongOpt[3];
+        longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
+
+        GetOptExtended g = new GetOptExtended(FQCN, argv, ":AC:cd:Ehi:IklL:n:p:q:rS:T:tu:xX", longopts);
+        g.setOpterr(false); // We'll do our own error handling
+
+        int c;
+        while ((c = g.getopt()) != -1)
+        {
+            try
+            {
+                switch (c)
+                {
+                    case 'A':
+                        {
+                            this.doScanCatalogs = true;
+                            this.doScanColumns = true;
+                            this.doScanTables = true;
+                            this.doPrimaryKeys = true;
+                            this.doImportedKeys = true;
+                            this.doExportedKeys = true;
+                            this.doIndex = true;
+                            this.doXref = true;
+                            logTrace("Scan All: true");
+                            break;
+                        }
+
+                    case 'c':
+                        {
+                            this.doScanCatalogs = true;
+                            logTrace("Scan Catalogs: true");
+                            break;
+                        }
+
+                    case 'C':                  // catalog pattern
+                        {
+                            this.db_catalog_pattern = g.getString("Catalog Pattern");
+                            break;
+                        }
+
+                    case 'd':                  // driver
+                        {
+                            this.db_driver = g.getString("JDBC Driver");
+                            break;
+                        }
+
+                    case 'E':                  // exports
+                        {
+                            this.doExportedKeys = true;
+                            logTrace("Scan Exports Keys: true");
+                            break;
+                        }
+
+                    case 'i':                  // uid
+                        {
+                            this.db_uid = g.getString("DB Userid");
+                            break;
+                        }
+
+                    case 'I':                  // imports
+                        {
+                            this.doImportedKeys = true;
+                            logTrace("Scan Import Keys: true");
+                            break;
+                        }
+
+                    case 'k':                  // primary_keys
+                        {
+                            this.doPrimaryKeys = true;
+                            logTrace("Scan Primary Keys: true");
+                            break;
+                        }
+
+                    case 'L':                  // column pattern
+                        {
+                            this.db_column_pattern = g.getString("Column Pattern");
+                            break;
+                        }
+
+                    case 'l':                  // columns
+                        {
+                            this.doScanColumns = true;
+                            System.out.println("Scan Columns: true");
+                            break;
+                        }
+
+                    case 'n':
+                        {
+                            this.numFires = g.getInt("numFires");
+                            logTrace("Num Fires: " + this.numFires);
+                            break;
+                        }
+
+
+                    case 'p':                  // password
+                        {
+                            this.db_password = g.getString("DB Password");
+                            break;
+                        }
+
+
+                    case 'q':
+                    {
+                        String query = g.getString("query");
+                        this.queryVector.add(query);
+                        logTrace("Query: " + query);
+                        break;
+                    }
+
+                    case 'r':            // row count
+                        {
+                            this.doRowCount = true;
+                            logTrace("Scan Row Count: true");
+                            break;
+                        }
+
+                    case 'S':                  // schema pattern
+                        {
+                            this.db_schema_pattern = g.getString("Schema Pattern");
+                            break;
+                        }
+
+                    case 'T':                  // table pattern
+                    {
+                            this.db_table_pattern = g.getString("Table Pattern");
+                            break;
+                    }
+
+                    case 't':                  // tables
+                    {
+                        this.doScanTables = true;
+                        logTrace("Scan Tables: true");
+                        break;
+                    }
+
+                    case 'u':                  // url
+                    {
+                        this.db_url = g.getString("DB URL");
+                        break;
+                    }
+
+                    case 'X':                  // indexes
+                    {
+                        this.doIndex = true;
+                        System.out.println("Scan Columns: true");
+                        break;
+                    }
+
+                    case 'x':                  // xref
+                    {
+                        this.doXref = true;
+                        System.out.println("Scan Cross Reference: true");
+                        break;
+                    }
+
+
+                    case 'h':                  // help
+                    case '?':
+                    default:
+                    {
+                        instructions();
+                        break;
+                    }
+
+                    case ':':
+                    {
+                        System.err.println("You need an argument for option " + (char) g.getOptopt());
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logError(e,"JdbcSql");
+            }
+        }
+
+        if (null == this.db_driver || null == this.db_url
+                || null == this.db_uid || null == this.db_password)
+            instructions();
+    }
+
+
+    public static void main(String[] args)
+    {
+        JdbcSql dt = null;
+
+        try
+        {
+            System.out.println(FQCN);
+            dt = new JdbcSql(args);
+            dt.run();
+        }
+        catch (Throwable t)
+        {
+            logError(t, "JdbcSql.main");
+        }
+        finally
+        {
+            if (null != dt)
+                dt.close();
+        }
+
+        System.exit(0);
+    }
+}
+
