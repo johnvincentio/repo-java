@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.SoftBevelBorder;
 
 public class DeleteExtensions extends JPanel {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = -7163136246992416392L;
 
 	private Extensions m_ext = new Extensions();
 	public Extensions getExtensions() {return m_ext;}

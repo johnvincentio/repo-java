@@ -39,8 +39,8 @@ public class CompareOptionsPanel extends JPanel implements ItemListener {
 		m_chkShowDifferences.setToolTipText ("On will show differences if found to be different.");
 		m_chkShowDifferences.addItemListener(this);
 
-		m_chkIgnoreWhiteSpace = new JCheckBox ("Ignore White Space");
-		m_chkIgnoreWhiteSpace.setToolTipText ("The compare will ignore white space.");
+		m_chkIgnoreWhiteSpace = new JCheckBox ("Ignore All White Space");
+		m_chkIgnoreWhiteSpace.setToolTipText ("The compare will ignore all white space.");
 		m_chkIgnoreWhiteSpace.addItemListener(this);
 
 		paneOptions.add (m_chkCompareFiles);

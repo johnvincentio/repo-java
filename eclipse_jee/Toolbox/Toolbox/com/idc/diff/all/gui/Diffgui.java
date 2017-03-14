@@ -66,10 +66,12 @@ public class Diffgui {
 		addMessage ("Make R/W privileges is turned " + (bCleaningMakeReadWrite ? "on": "off"));
 
 		boolean bCleaningPerform = cleaningOptions.isCleaning();
-		boolean bCleaningDeleteIgnoredFiles = cleaningOptions.isDeleteIgnoredFiles();
+		boolean bCleaningDeleteListedAsDelete = cleaningOptions.isDeleteListedAsDelete();
+		boolean bCleaningDeleteListedAsIgnore = cleaningOptions.isDeleteListedAsIgnore();
 		addMessage("");
 		addMessage ("Perform cleaning is turned " + (bCleaningPerform ? "on": "off"));
-		addMessage ("Ignored files will be deleted is turned " + (bCleaningDeleteIgnoredFiles ? "on": "off"));
+		addMessage ("Delete files list as delete is turned " + (bCleaningDeleteListedAsDelete ? "on": "off"));
+		addMessage ("Delete files list as ignore is turned " + (bCleaningDeleteListedAsIgnore ? "on": "off"));
 
 		boolean bCompareFiles = compareOptions.isCompareFiles();
 		boolean bCompareDeleteIdentical = compareOptions.isDeleteIdentical();
@@ -99,6 +101,12 @@ public class Diffgui {
 		while (iter.hasNext()) {
 			addMessage ("\t" + ((Extension) iter.next()).getExtension());
 		}
+		addMessage("");
+		addMessage ("Delete directories:");
+		iter = m_app.getDeleteDirectories().getItems();
+		while (iter.hasNext()) {
+			addMessage ("\t" + ((Extension) iter.next()).getExtension());
+		}
 
 		/*
 		 * Make all files read/write
@@ -118,10 +126,10 @@ public class Diffgui {
 		if (bCleaningPerform) {
 			addMessage("");
 			addMessage("Cleaning pass through "+baseDirectory);
-			doCleaningDirectory (baseDirectory, bCleaningDeleteIgnoredFiles, bMessageShowMessages);
+			doCleaningDirectory (baseDirectory, bCleaningDeleteListedAsDelete, bCleaningDeleteListedAsIgnore, bMessageShowMessages);
 			addMessage("");
 			addMessage("Cleaning pass through "+compareDirectory);
-			doCleaningDirectory (compareDirectory, bCleaningDeleteIgnoredFiles, bMessageShowMessages);
+			doCleaningDirectory (compareDirectory, bCleaningDeleteListedAsDelete, bCleaningDeleteListedAsIgnore, bMessageShowMessages);
 		}
 
 		/*
@@ -135,10 +143,10 @@ public class Diffgui {
 
 			addMessage("");
 			addMessage("Cleaning pass through "+baseDirectory);
-			doCleaningDirectory (baseDirectory, bCleaningDeleteIgnoredFiles, bMessageShowMessages);
+			doCleaningDirectory (baseDirectory, bCleaningDeleteListedAsDelete, bCleaningDeleteListedAsIgnore, bMessageShowMessages);
 			addMessage("");
 			addMessage("Cleaning pass through "+compareDirectory);
-			doCleaningDirectory (compareDirectory, bCleaningDeleteIgnoredFiles, bMessageShowMessages);
+			doCleaningDirectory (compareDirectory, bCleaningDeleteListedAsDelete, bCleaningDeleteListedAsIgnore, bMessageShowMessages);
 		}
 
 		/*
@@ -207,13 +215,17 @@ public class Diffgui {
 		LogHelper.info ("<<< doMakeReadWriteDirectory; " + currentDir.getPath());
 	}
 
-	private void doCleaningDirectory (File currentDir, boolean bDelIgnoredFiles, boolean bShowMessages) {
+	private void doCleaningDirectory (File currentDir, boolean bCleaningDeleteListedAsDelete, boolean bCleaningDeleteListedAsIgnore, boolean bShowMessages) {
 		if (isSearchStopped()) return; // user stopped the search
-		LogHelper.info (">>> doCleaningDirectory; " + currentDir.getPath());
+		LogHelper.info (">>> doCleaningDirectory; " + currentDir.getName() + " " + currentDir.getPath());
 		if (! currentDir.isDirectory()) return;
 
 		handleProgressIndicator();
-		if (handleJunkDirectory (currentDir, bShowMessages)) return;
+
+		if (bCleaningDeleteListedAsDelete && isDeleteDirectoryType(currentDir.getName())) {
+			deleteNonEmptyDirectory(currentDir, bShowMessages);
+			return;
+		}
 
 		handleProgressIndicator();
 		File[] allFiles = currentDir.listFiles();
@@ -221,14 +233,16 @@ public class Diffgui {
 			if (isSearchStopped()) return; // user stopped the search
 			File file = allFiles[i];
 			if (file.isFile()) {
-				if (isDeleteType(file.getName())) {
+				if (bCleaningDeleteListedAsDelete && isDeleteType(file.getName())) {
 					removeFile (file, bShowMessages);
 					continue;
 				}
-				if (! bDelIgnoredFiles) continue;
+				if (! bCleaningDeleteListedAsIgnore) continue;
 				if (isCompareType(file.getName())) continue;
 				if (isByteCompareType(file.getName())) continue;
-				removeIgnoredFile(file, bShowMessages);
+
+				if (bShowMessages) addMessage("Deleted ignored file; " + file.getPath());
+				file.delete();
 			}
 		}
 
@@ -237,7 +251,7 @@ public class Diffgui {
 			if (isSearchStopped()) return; // user stopped the search
 			File file = allFiles[i];
 			if (file.isDirectory())
-				doCleaningDirectory (file, bDelIgnoredFiles, bShowMessages);
+				doCleaningDirectory (file, bCleaningDeleteListedAsDelete, bCleaningDeleteListedAsIgnore, bShowMessages);
 		}
 
 		handleProgressIndicator();
@@ -408,22 +422,9 @@ public class Diffgui {
 		file.delete();
 	}
 
-	private void removeIgnoredFile(File file, boolean bShowMessages) {
-		if (bShowMessages) addMessage("Deleted ignored file; " + file.getPath());
-		file.delete();
-	}
-
-	private boolean handleJunkDirectory (File file, boolean bShowMessages) { // true if .svn, .metadata
-		String name = file.getName();
-		if (name == null) return false;
-		if ((! name.equals(".svn")) && (! name.equals(".metadata"))) return false;
-		deleteNonEmptyDirectory(file, bShowMessages);
-		return true;
-	}
-
 	public boolean deleteNonEmptyDirectory(File path, boolean bShowMessages) {
 		if (path.exists()) {
-			if (bShowMessages) addMessage("Deleted junk directory ; " + path.getPath());
+			if (bShowMessages) addMessage("Deleted directory ; " + path.getPath());
 			File[] files = path.listFiles();
 			for (int i = 0; i < files.length; i++) {
 				if (files[i].isDirectory())
@@ -444,5 +445,8 @@ public class Diffgui {
 	}
 	private boolean isDeleteType(String strFile) {
 		return m_app.getDeleteExtensions().isMatchAndChecked(strFile);
+	}
+	private boolean isDeleteDirectoryType(String strFile) {
+		return m_app.getDeleteDirectories().isMatchAndChecked(strFile);
 	}
 }

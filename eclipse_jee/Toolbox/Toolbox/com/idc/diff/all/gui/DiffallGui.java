@@ -18,7 +18,8 @@ import com.idc.swing.JVMessagesArea;
 import com.idc.trace.LogHelper;
 
 public class DiffallGui extends JFrame {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 3591937507178896647L;
+
 	private String m_strPropertiesFile = "diffallgui.properties";
 	private String m_strEditor;
 	private File m_LogDirectory;
@@ -30,6 +31,8 @@ public class DiffallGui extends JFrame {
 	public Extensions getDeleteExtensions() {return m_deleteExtensions.getExtensions();}
 	private ByteCompareExtensions m_byteCompareExtensions = new ByteCompareExtensions();
 	public Extensions getByteCompareExtensions() {return m_byteCompareExtensions.getExtensions();}
+	private DeleteDirectories m_deleteDirectories = new DeleteDirectories();
+	public Extensions getDeleteDirectories() {return m_deleteDirectories.getExtensions();}
 
 	private LowPanel m_lowPanel = new LowPanel (this);
 	private MidPanel m_midPanel = new MidPanel();
@@ -106,6 +109,7 @@ public class DiffallGui extends JFrame {
 		topPane.setLayout (new BorderLayout());
 		topPane.add (paneTopOptions, BorderLayout.NORTH);
 		topPane.add (paneExtensions, BorderLayout.CENTER);
+		topPane.add (m_deleteDirectories, BorderLayout.SOUTH);
 	
 		JPanel pane = new JPanel();
 		pane.setLayout (new BorderLayout());

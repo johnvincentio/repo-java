@@ -11,10 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.border.SoftBevelBorder;
 
 public class CleaningOptionsPanel extends JPanel implements ItemListener {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = -4189527450368947501L;
 
 	private JCheckBox m_chkCleaning;
-	private JCheckBox m_chkDeleteIgnoredFiles;
+	private JCheckBox m_chkDeleteListedAsDelete;
+	private JCheckBox m_chkDeleteListedAsIgnore;
 	public Options getOptions() {return new Options ();}
 
 	public CleaningOptionsPanel() {
@@ -31,10 +32,15 @@ public class CleaningOptionsPanel extends JPanel implements ItemListener {
 		paneOptions.add (m_chkCleaning);
 		m_chkCleaning.addItemListener(this);
 
-		m_chkDeleteIgnoredFiles = new JCheckBox ("Delete Ignored");
-		m_chkDeleteIgnoredFiles.setToolTipText ("On will delete files of type not listed as Compare Extensions.");
-		paneOptions.add (m_chkDeleteIgnoredFiles);
-		m_chkDeleteIgnoredFiles.addItemListener(this);
+		m_chkDeleteListedAsDelete = new JCheckBox ("Delete Listed As Delete");
+		m_chkDeleteListedAsDelete.setToolTipText ("On will delete files of listed as Delete Extensions and Delete Directories.");
+		paneOptions.add (m_chkDeleteListedAsDelete);
+		m_chkDeleteListedAsDelete.addItemListener(this);
+
+		m_chkDeleteListedAsIgnore = new JCheckBox ("Delete Listed As Ignore");
+		m_chkDeleteListedAsIgnore.setToolTipText ("On will delete files of type not listed as Compare Extensions.");
+		paneOptions.add (m_chkDeleteListedAsIgnore);
+		m_chkDeleteListedAsIgnore.addItemListener(this);
 
 		setLayout (new BorderLayout());
 		add (paneText, BorderLayout.NORTH);
@@ -48,13 +54,15 @@ public class CleaningOptionsPanel extends JPanel implements ItemListener {
 		else if (e.getStateChange() == ItemEvent.DESELECTED) {
 			Object source = e.getItemSelectable();
 			if (source == m_chkCleaning) {
-				m_chkDeleteIgnoredFiles.setSelected (false);
+				m_chkDeleteListedAsDelete.setSelected (false);
+				m_chkDeleteListedAsIgnore.setSelected (false);
 			}
 		}
 	}
 
 	public class Options {
 		public boolean isCleaning() {return m_chkCleaning.isSelected();}
-		public boolean isDeleteIgnoredFiles() {return m_chkDeleteIgnoredFiles.isSelected();}
+		public boolean isDeleteListedAsDelete() {return m_chkDeleteListedAsDelete.isSelected();}
+		public boolean isDeleteListedAsIgnore() {return m_chkDeleteListedAsIgnore.isSelected();}
 	}
 }

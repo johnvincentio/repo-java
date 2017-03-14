@@ -9,12 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.border.SoftBevelBorder;
 
 public class CompareExtensions extends JPanel {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 8866696522846475033L;
 
 	private Extensions m_ext = new Extensions();
 	public Extensions getExtensions() {return m_ext;}
 
 	public CompareExtensions() {
+		m_ext.add (new Extension("^[^.]*$", "<none>", true));
 		m_ext.add (new Extension(".*?\\.bat", "*.bat", true));
 		m_ext.add (new Extension(".*?\\.classpath", "*.classpath", true));
 		m_ext.add (new Extension(".*?\\.compatibility", "*.compatibility", true));
@@ -24,13 +25,16 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.dnx", "*.dnx", true));
 		m_ext.add (new Extension(".*?\\.dtd", "*.dtd", true));
 		m_ext.add (new Extension(".*?\\.gph", "*.gph", true));
+		m_ext.add (new Extension(".*?\\.gitignore", "*.gitignore", true));
 		m_ext.add (new Extension(".*?\\.html", "*.html", true));
 		m_ext.add (new Extension(".*?\\.iex", "*.iex", true));
 		m_ext.add (new Extension(".*?\\.j2ee", "*.j2ee", true));
 		m_ext.add (new Extension(".*?\\.jacl", "*.jacl", true));		
 		m_ext.add (new Extension(".*?\\.java", "*.java", true));
 		m_ext.add (new Extension(".*?\\.js", "*.js", true));
+		m_ext.add (new Extension(".*?\\.json", "*.json", true));
 		m_ext.add (new Extension(".*?\\.jsp", "*.jsp", true));
+		m_ext.add (new Extension(".*?\\.md", "*.md", true));
 		m_ext.add (new Extension(".*?\\.modulemaps", "*.modulemaps", true));
 		m_ext.add (new Extension(".*?\\.mf", "*.mf", true));
 		m_ext.add (new Extension(".*?\\.MF", "*.MF", true));
@@ -55,6 +59,7 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.xml", "*.xml", true));
 		m_ext.add (new Extension(".*?\\.xsd", "*.xsd", true));
 		m_ext.add (new Extension(".*?\\.xsl", "*.xsl", true));
+		m_ext.add (new Extension(".*?\\.yml", "*.yml", true));
 
 		JPanel paneText = new JPanel();
 		paneText.setLayout (new BorderLayout());
