@@ -2,8 +2,6 @@ package com.idc.grepgui;
 
 /*
 	To DO:
-	1. pull down box for file types.
-	5. pass info as parameters
 	7. enter implies start - maybe KeyListener on all TextFields, enter will do the Search.
 */
 
@@ -38,10 +36,10 @@ import com.idc.trace.LogHelper;
 import com.idc.utils.JVString;
 
 public class GrepdirGui extends JFrame implements ActionListener {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = -4209270984594432483L;
+
 	private static final int MAX_CNTR = 1000;
 	private int m_cntr = 0;
-//	private static final String PROPERTIES_FILE="grepdirgui.properties";
 	private String m_strPropertiesFile = "grepdirgui.properties";
 	private String m_strEditor;
 	private JTextArea m_messagesArea;	
@@ -64,6 +62,18 @@ public class GrepdirGui extends JFrame implements ActionListener {
 
 	private AppThread m_appThread = null;
 	private Grepdir m_grepdir;
+	private static String[] m_args;
+
+	public static void main(String[] args) {
+		m_args = args;
+		SwingUtilities.invokeLater (
+			new Runnable() {
+				public void run() {
+					new GrepdirGui("GrepdirGUI", m_args);
+				}
+			}
+		);
+	}
 
 	public GrepdirGui (String msg, String[] args) {
 		super(msg);
@@ -82,9 +92,6 @@ public class GrepdirGui extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 	public AppThread getAppThread() {return m_appThread;}
-	public static void main(String[] args) {
-		new GrepdirGui("GrepdirGUI", args);
-	}
 
 	private Container makeContentPane() {
 
@@ -111,12 +118,14 @@ public class GrepdirGui extends JFrame implements ActionListener {
 
 		JPanel paneA = new JPanel();
 		JLabel label1 = new JLabel("Search");
-		JLabel label2 = new JLabel("File Type");
-		m_stringField1 = new JTextField(25);
-		m_stringField2 = new JTextField(15);
+		label1.setToolTipText("Search is string1 (if exists) AND string2 (if exists) AND string3 (if exists).");
+		JLabel label2 = new JLabel("File Type(s)");
+		label2.setToolTipText("Comma separated wildcard string matching, * for all");
+		m_stringField1 = new JTextField(18);
+		m_stringField2 = new JTextField(10);
 		m_stringField3 = new JTextField(10);
 	
-		m_typeField = new JTextField(6);
+		m_typeField = new JTextField(15);
 		m_typeField.setText("*.java");
 		m_typeField.addActionListener(this);
 		m_chkCaseSensitive = new JCheckBox ("Case Sensitive");
@@ -139,7 +148,7 @@ public class GrepdirGui extends JFrame implements ActionListener {
 		m_btnDir = new JButton("Directory");
 		m_btnDir.addActionListener(this);
 
-		m_dirField = new JTextField(20);
+		m_dirField = new JTextField(30);
 		m_dirField.addActionListener(this);	
 		m_dirField.setText((String) m_comboDirs.getItemAt(0));
 		m_dirField.addActionListener(this);	
@@ -202,123 +211,60 @@ public class GrepdirGui extends JFrame implements ActionListener {
 	}	
 	public void setButtonText (boolean bBtn) {
 		final String msg;
-		if (bBtn) msg = "Search";
-		else msg = "Stop";
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_btnApp.setText(msg);
-				}
-			}
-		);
+		if (bBtn)
+			msg = "Search";
+		else 
+			msg = "Stop";
+		m_btnApp.setText(msg);
 	}
 	public void setEditButtonActive (final boolean bBtn) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_btnEdit.setEnabled(bBtn);
-				}
-			}
-		);
+		m_btnEdit.setEnabled(bBtn);
 	}
 	public void setDirButtonActive (final boolean bBtn) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_btnDir.setEnabled(bBtn);
-				}
-			}
-		);
+		m_btnDir.setEnabled(bBtn);
 	}
 	public void setClearButtonActive (final boolean bBtn) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_btnClear.setEnabled(bBtn);
-				}
-			}
-		);
+		m_btnClear.setEnabled(bBtn);
 	}		
 	public void setMessagesArea (final String msg) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_messagesArea.append(msg);
-					m_messagesArea.append("\n");
-					m_messagesArea.setCaretPosition(m_messagesArea.getText().length());
-					validate();
-				}
-			}
-		);
+		m_messagesArea.append(msg);
+		m_messagesArea.append("\n");
+		m_messagesArea.setCaretPosition(m_messagesArea.getText().length());
+		validate();
 	}
 	public void clearMessagesArea () {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_messagesArea.setText("");
-					m_messagesArea.setCaretPosition(m_messagesArea.getText().length());
-					validate();
-				}
-			}
-		);
+		m_messagesArea.setText("");
+		m_messagesArea.setCaretPosition(m_messagesArea.getText().length());
+		validate();
 	}
 	public void setStatusMessage (final String msg) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_txtStatus.setText(msg);
-					validate();
-				}
-			}
-		);		
+		m_txtStatus.setText(msg);
+		validate();
+
 	}
 
 	public void initProgressBar (final int iMin, final int iMax) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_progress.setMinimum(iMin);
-					m_progress.setMaximum(iMax);
-					m_progress.setValue(iMin);
-					m_progress.setStringPainted(false);	// true for %age
-//					m_progress.setIndeterminate(true);		// jdk 1.4
-				}
-			}
-		);		
+		m_progress.setMinimum(iMin);
+		m_progress.setMaximum(iMax);
+		m_progress.setValue(iMin);
+		m_progress.setStringPainted(false);	// true for %age
+//		m_progress.setIndeterminate(true);		// jdk 1.4
 	}
 	public void setProgressBar (final int value) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_progress.setValue(value);
-				}
-			}
-		);
+		m_progress.setValue(value);
 	}
 	private void setDirField (final String msg) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_dirField.setText(msg);
-					validate();
-				}
-			}
-		);		
+		m_dirField.setText(msg);
+		validate();
 	}
 	private void setEditField (final String msg) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_editField.setText(msg);
-					validate();
-				}
-			}
-		);		
+		m_editField.setText(msg);
+		validate();
 	}	
 	private void searchSelected() {
 //		LogHelper.info(">>> searchSelected");
 		boolean bError = false;
-		if (! isStringFieldValid()) bError = true;
+//		if (! isStringFieldValid()) bError = true;
 		if (! isTypeFieldValid()) bError = true;
 		if (! isDirFieldValid()) bError = true;
 		if (bError) {
@@ -436,11 +382,11 @@ public class GrepdirGui extends JFrame implements ActionListener {
 			return false;
 		return true;
 	}
-	private boolean isStringFieldValid() {
-		if (getStringField1() == null || getStringField1().length() < 1)
-			return false;
-		return true;
-	}
+//	private boolean isStringFieldValid() {
+//		if (getStringField1() == null || getStringField1().length() < 1)
+//			return false;
+//		return true;
+//	}
 	private boolean isCaseSensitive() {
 		return m_chkCaseSensitive.isSelected();
 	}
@@ -468,7 +414,7 @@ public class GrepdirGui extends JFrame implements ActionListener {
 		LogHelper.info(">>> doGrepdir");
 		ArrayList<String> findList = new ArrayList<String>();
 		String strFind =  getStringField1();
-		findList.add(strFind);
+		if (strFind.length() > 0) findList.add(strFind);
 		strFind = getStringField2();
 		if (strFind.length() > 0) findList.add(strFind);
 		strFind = getStringField3();
@@ -513,15 +459,3 @@ public class GrepdirGui extends JFrame implements ActionListener {
 		setProgressBar(m_cntr);		
 	}
 }
-/*
-	private void setTypeField (final String msg) {
-		SwingUtilities.invokeLater (
-			new Runnable() {
-				public void run() {
-					m_typeField.setText(msg);
-					validate();
-				}
-			}
-		);		
-	}
-*/

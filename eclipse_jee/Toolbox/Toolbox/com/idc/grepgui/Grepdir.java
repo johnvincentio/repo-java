@@ -19,9 +19,11 @@ public class Grepdir {
 	}
 	private void handleProgressIndicator() {m_app.handleProgressIndicator();}
 	private void addMessage (String msg) {m_app.setMessagesArea(msg);}
+
 	public void doGrepdir (String strDir, ArrayList<String> list, String strFiles, boolean bCaseSensitive) {
+//		System.out.println(">>> Grepdir::doGrepdir; list.size "+list.size());
 		doDirectory (new File(strDir), list, strFiles, bCaseSensitive);
-//		System.out.println("<<< leaving doGrepdir");
+//		System.out.println("<<< Grepdir::doGrepdir");
 	}
 	private void doDirectory (File dir, ArrayList<String> findList, String strFiles, boolean bCaseSensitive) {
 		File [] allFiles;
@@ -34,7 +36,7 @@ public class Grepdir {
 			System.out.println("thread exception; "+ex.getMessage());
 		}
 */
-				if (isSearchStopped()) return;	// user stopped the search
+		if (isSearchStopped()) return;	// user stopped the search
 							
 //		LogHelper.info(">>> doDirectory; "+dir.getPath());
 		if (! dir.isDirectory()) return;
@@ -70,7 +72,12 @@ public class Grepdir {
 	private void doFile (final File file, final ArrayList<String> findList, boolean bCaseSensitive) {
 //		LogHelper.info(">>> doFile; "+file.getPath());
 		if (! file.isFile()) return;
-		
+
+		if (findList.size() < 1) {
+			addMessage(file.getPath());
+			return;
+		}
+
 		ArrayList<String> codeList = new ArrayList<String>();
 		BufferedReader buf = null;
 		String line;
@@ -100,17 +107,17 @@ public class Grepdir {
 // first pass; look for all strings, they all must be found
 
 		boolean[] abFound = new boolean[findList.size()];
-		for (int i=0; i<abFound.length; i++) abFound[i] = false;
+		for (int i = 0; i < abFound.length; i++) abFound[i] = false;
 
 		Iterator<String> iter = codeList.iterator();	// parse through the code line by line
 		while(iter.hasNext()) {
 			String strCode = (String) iter.next();
-			for (int i=0; i<findList.size(); i++) {	// find next string
+			for (int i = 0; i < findList.size(); i++) {	// find next string
 				if (isStringFound(bCaseSensitive, strCode, (String) findList.get(i)))
 					abFound[i] = true;		// string found
 			}
 		}
-		for (int i=0; i<abFound.length; i++) {
+		for (int i = 0; i < abFound.length; i++) {
 			if (! abFound[i]) return;	// a string not found in file
 		}
 
@@ -127,10 +134,8 @@ public class Grepdir {
 // list occurrences
 
 		if (foundList.size() > 0) {
-			LogHelper.info(foundList.size()+" occurance(s) in file "+
-					file.getPath()+"\n");
-			addMessage(foundList.size()+" occurance(s) in file "+
-					file.getPath()+"\n");
+			LogHelper.info(foundList.size()+" occurance(s) in file "+file.getPath()+"\n");
+			addMessage(foundList.size()+" occurance(s) in file "+file.getPath()+"\n");
 			Iterator<String> iterator = foundList.iterator();
 			while (iterator.hasNext()) {
 				line = (String) iterator.next();
@@ -141,8 +146,7 @@ public class Grepdir {
 //		LogHelper.info("<<< doFile; "+file.getPath());		
 		return;
 	}
-	private boolean isStringFound(final boolean bCaseSensitive,
-						final String strCode, final String strFind) {
+	private boolean isStringFound(final boolean bCaseSensitive, final String strCode, final String strFind) {
 		if (bCaseSensitive) {
 			if (strCode.indexOf(strFind) > -1) return true;
 		}
@@ -152,8 +156,7 @@ public class Grepdir {
 		}
 		return false;
 	}
-	private boolean isAnyStringFound (final boolean bCaseSensitive,
-						final String strCode, final ArrayList<String> findList) {
+	private boolean isAnyStringFound (final boolean bCaseSensitive, final String strCode, final ArrayList<String> findList) {
 		Iterator<String> iter = findList.iterator();
 		while(iter.hasNext()) {
 			String strFind = (String) iter.next();
