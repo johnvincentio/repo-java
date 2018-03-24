@@ -32,9 +32,11 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.jacl", "*.jacl", true));		
 		m_ext.add (new Extension(".*?\\.java", "*.java", true));
 		m_ext.add (new Extension(".*?\\.js", "*.js", true));
+		m_ext.add (new Extension(".*?\\.jsx", "*.jsx", true));
 		m_ext.add (new Extension(".*?\\.json", "*.json", true));
 		m_ext.add (new Extension(".*?\\.jsp", "*.jsp", true));
 		m_ext.add (new Extension(".*?\\.md", "*.md", true));
+		m_ext.add (new Extension(".*?\\.todo", "*.todo", true));
 		m_ext.add (new Extension(".*?\\.modulemaps", "*.modulemaps", true));
 		m_ext.add (new Extension(".*?\\.mf", "*.mf", true));
 		m_ext.add (new Extension(".*?\\.MF", "*.MF", true));
