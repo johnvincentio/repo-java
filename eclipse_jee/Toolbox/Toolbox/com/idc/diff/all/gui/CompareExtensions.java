@@ -16,6 +16,7 @@ public class CompareExtensions extends JPanel {
 
 	public CompareExtensions() {
 		m_ext.add (new Extension("^[^.]*$", "<none>", true));
+		m_ext.add (new Extension(".*?\\.babelrc", "*.babelrc", true));
 		m_ext.add (new Extension(".*?\\.bat", "*.bat", true));
 		m_ext.add (new Extension(".*?\\.classpath", "*.classpath", true));
 		m_ext.add (new Extension(".*?\\.compatibility", "*.compatibility", true));
@@ -24,6 +25,7 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.dbxmi", "*.dbxmi", true));
 		m_ext.add (new Extension(".*?\\.dnx", "*.dnx", true));
 		m_ext.add (new Extension(".*?\\.dtd", "*.dtd", true));
+		m_ext.add (new Extension(".*?\\.env", "*.env", true));
 		m_ext.add (new Extension(".*?\\.gph", "*.gph", true));
 		m_ext.add (new Extension(".*?\\.gitignore", "*.gitignore", true));
 		m_ext.add (new Extension(".*?\\.html", "*.html", true));
@@ -36,11 +38,12 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.json", "*.json", true));
 		m_ext.add (new Extension(".*?\\.jsp", "*.jsp", true));
 		m_ext.add (new Extension(".*?\\.md", "*.md", true));
-		m_ext.add (new Extension(".*?\\.todo", "*.todo", true));
 		m_ext.add (new Extension(".*?\\.modulemaps", "*.modulemaps", true));
 		m_ext.add (new Extension(".*?\\.mf", "*.mf", true));
 		m_ext.add (new Extension(".*?\\.MF", "*.MF", true));
 		m_ext.add (new Extension(".*?\\.prefs", "*.prefs", true));
+		m_ext.add (new Extension(".*?\\.prettierignore", "*.prettierignore", true));
+		m_ext.add (new Extension(".*?\\.prettierrc", "*.prettierrc", true));
 		m_ext.add (new Extension(".*?\\.project", "*.project", true));
 		m_ext.add (new Extension(".*?\\.properties", "*.properties", true));
 		m_ext.add (new Extension(".*?\\.rlconxmi", "*.rlconxmi", true));
@@ -51,6 +54,7 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.sql", "*.sql", true));
 		m_ext.add (new Extension(".*?\\.tblxmi", "*.tblxmi", true));
 		m_ext.add (new Extension(".*?\\.tld", "*.tld", true));
+		m_ext.add (new Extension(".*?\\.todo", "*.todo", true));
 		m_ext.add (new Extension(".*?\\.txt", "*.txt", true));
 		m_ext.add (new Extension(".*?\\.unknown", "*.unknown", true));
 		m_ext.add (new Extension(".*?\\.values", "*.values", true));

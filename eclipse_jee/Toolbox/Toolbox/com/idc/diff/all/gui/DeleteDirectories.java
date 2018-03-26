@@ -20,6 +20,7 @@ public class DeleteDirectories extends JPanel {
 		m_ext.add (new Extension("node_modules", "node_modules", true));
 		m_ext.add (new Extension(".*?\\.sass-cache", "*.sass-cache", true));
 		m_ext.add (new Extension(".*?\\.svn", "*.svn", true));
+		m_ext.add (new Extension(".*?\\.vscode/chrome", "*.vscode/chrome", true));
 
 		JPanel paneText = new JPanel();
 		paneText.setLayout (new BorderLayout());
