@@ -28,6 +28,7 @@ public class CompareExtensions extends JPanel {
 		m_ext.add (new Extension(".*?\\.env", "*.env", true));
 		m_ext.add (new Extension(".*?\\.gph", "*.gph", true));
 		m_ext.add (new Extension(".*?\\.gitignore", "*.gitignore", true));
+		m_ext.add (new Extension(".*?\\.hbs", "*.hbs", true));
 		m_ext.add (new Extension(".*?\\.html", "*.html", true));
 		m_ext.add (new Extension(".*?\\.iex", "*.iex", true));
 		m_ext.add (new Extension(".*?\\.j2ee", "*.j2ee", true));
