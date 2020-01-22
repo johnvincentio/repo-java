@@ -1,8 +1,0 @@
--- FormInfo
-/**
- *	Describe a `getFormInfoClassName()`
- *
- * @author John Vincent
- */
- 
-`makeFormInfo()`
