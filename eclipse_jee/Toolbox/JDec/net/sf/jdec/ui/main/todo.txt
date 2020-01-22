@@ -1,4 +1,0 @@
-
-
-Have only start up stuff in UILauncher
-

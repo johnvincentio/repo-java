@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="/Jars/commons-lang-2.3.jar"/>
 	<classpathentry kind="lib" path="/Jars/jt400.jar"/>
 	<classpathentry kind="lib" path="/Jars/ant.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JDec"/>
 	<classpathentry kind="lib" path="/Jars/sqljdbc.jar"/>
 	<classpathentry kind="lib" path="/Jars/j2ee.jar"/>
 	<classpathentry kind="lib" path="/Jars/mysql-connector-java-5.1.30-bin.jar"/>
