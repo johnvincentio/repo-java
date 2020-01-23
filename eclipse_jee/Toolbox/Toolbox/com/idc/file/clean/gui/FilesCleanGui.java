@@ -18,8 +18,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import com.idc.diff.all.gui.Extension;
-import com.idc.diff.all.gui.Extensions;
+import com.idc.file.clean.gui.Extension;
+import com.idc.file.clean.gui.Extensions;
 import com.idc.swing.JVMessagesArea;
 import com.idc.swing.progress.JVProgressBar;
 import com.idc.trace.LogHelper;
