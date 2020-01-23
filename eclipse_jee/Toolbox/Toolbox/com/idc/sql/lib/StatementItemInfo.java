@@ -2,7 +2,7 @@ package com.idc.sql.lib;
 
 import java.io.Serializable;
 
-import com.idc.dbtool.DBTool;
+//import com.idc.dbtool.DBTool;
 
 public class StatementItemInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -118,18 +118,18 @@ public class StatementItemInfo implements Serializable {
 			buf.append ("example:").append(NL);
 			buf.append(TAB).append ("makesql hercdb.members;").append(NL);
 			break;
-		case 6:
-			buf.append ("makefile").append(NL);
-			buf.append ("writes SQL to a file in "+DBTool.REPORTSDIR.getPath()).append(NL);
-			buf.append ("example:").append(NL);
-			buf.append(TAB).append ("makefile hercdb.members;").append(NL);
-			break;
-		case 7:
-			buf.append ("loadfile <pathname>").append(NL);
-			buf.append ("loads SQL insert statements from the file and reports to a file in "+DBTool.REPORTSDIR.getPath()).append(NL);
-			buf.append ("example:").append(NL);
-			buf.append(TAB).append ("loadfile C:/tmp/data/demodata2/inserts/adminprofiles.sql;").append(NL);
-			break;
+//		case 6:
+//			buf.append ("makefile").append(NL);
+//			buf.append ("writes SQL to a file in "+DBTool.REPORTSDIR.getPath()).append(NL);
+//			buf.append ("example:").append(NL);
+//			buf.append(TAB).append ("makefile hercdb.members;").append(NL);
+//			break;
+//		case 7:
+//			buf.append ("loadfile <pathname>").append(NL);
+//			buf.append ("loads SQL insert statements from the file and reports to a file in "+DBTool.REPORTSDIR.getPath()).append(NL);
+//			buf.append ("example:").append(NL);
+//			buf.append(TAB).append ("loadfile C:/tmp/data/demodata2/inserts/adminprofiles.sql;").append(NL);
+//			break;
 		case 8:
 			buf.append ("Help or ?").append(NL);
 			break;
