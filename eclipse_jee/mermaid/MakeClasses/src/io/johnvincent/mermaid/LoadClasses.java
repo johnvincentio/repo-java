@@ -1,28 +1,30 @@
 package io.johnvincent.mermaid;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 import java.util.List;
+
+// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
+// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
 
 public class LoadClasses {
 
-	// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
-
+	private String m_baseDir;
 	private ClassList m_classList;
-	
 	private List<String> m_list;
 
-	public LoadClasses(List<String> list) {
+	public LoadClasses(String baseDir, List<String> list) {
+		m_baseDir = baseDir;
 		m_list = list;
 	}
-
-	// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
+	
+	public void loadClasses() {
+		for (int i = 0; i < m_list.size(); i++) {
+			
+		}
+		
+	}
 
 	public void doWork2(String str) {
 		System.out.println(">>> doWork2; file " + str);
@@ -42,10 +44,11 @@ public class LoadClasses {
 			URL[] urls = new URL[] { url };
 			System.out.println("doWork2 - stage 4");
 
-			ClassLoader cl = new URLClassLoader(urls);
+			URLClassLoader loader = new URLClassLoader(urls);
 			System.out.println("doWork2 - stage 5");
 
-			Class<?> clazz = cl.loadClass(p1);
+			Class<?> clazz = loader.loadClass(p1);
+			loader.close();
 			
 			ClassItem classItem = new ClassItem(clazz);
 			classItem.show();

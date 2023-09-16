@@ -18,7 +18,7 @@ public class App {
     	makeList.show();
     	List <String> filesList = makeList.getList();
         
-        LoadClasses loadClasses = new LoadClasses(filesList);
+        LoadClasses loadClasses = new LoadClasses(FOLDER, filesList);
 //        loadClasses.doWork(AA);
         
         loadClasses.doWork2(BB);
