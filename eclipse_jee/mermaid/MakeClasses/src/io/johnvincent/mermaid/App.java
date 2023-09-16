@@ -1,7 +1,6 @@
 package io.johnvincent.mermaid;
 
 import java.io.File;
-import java.util.List;
 
 public class App {
 	
@@ -16,9 +15,9 @@ public class App {
     public static void main(String[] args) {
     	MakeList makeList = new MakeList(new File(FOLDER), SUFFIX);
     	makeList.show();
-    	List <String> filesList = makeList.getList();
+    	FileList fileList = makeList.getList();
         
-        LoadClasses loadClasses = new LoadClasses(FOLDER, filesList);
+        LoadClasses loadClasses = new LoadClasses(FOLDER, fileList);
 //        loadClasses.doWork(AA);
         
         loadClasses.doWork2(BB);

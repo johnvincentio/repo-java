@@ -17,6 +17,7 @@ public class MakeList {
 		
 		getFilesRecursively(m_baseDir);
 	}
+	public FileList getList() { return m_fileList; }
 	
     private void getFilesRecursively(File dir) {
 //    	System.out.println(">>> getFilesRecursively; dir "+dir);

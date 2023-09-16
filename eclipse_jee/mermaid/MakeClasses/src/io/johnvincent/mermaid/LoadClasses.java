@@ -3,7 +3,6 @@ package io.johnvincent.mermaid;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
 // /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
 // /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
@@ -12,15 +11,15 @@ public class LoadClasses {
 
 	private String m_baseDir;
 	private ClassList m_classList;
-	private List<String> m_list;
+	private FileList m_fileList;
 
-	public LoadClasses(String baseDir, List<String> list) {
+	public LoadClasses(String baseDir, FileList fileList) {
 		m_baseDir = baseDir;
-		m_list = list;
+		m_fileList = fileList;
 	}
 	
 	public void loadClasses() {
-		for (int i = 0; i < m_list.size(); i++) {
+		for (int i = 0; i < m_fileList.getSize(); i++) {
 			
 		}
 		
