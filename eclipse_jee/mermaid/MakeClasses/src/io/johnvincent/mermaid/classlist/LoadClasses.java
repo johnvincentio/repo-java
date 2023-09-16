@@ -33,6 +33,10 @@ public class LoadClasses {
 			for (int i = 0; i < m_fileList.getSize(); i++) {
 				FileItem fileItem = m_fileList.getItem(i);
 				
+//				System.out.println("fileItem.getSubpath() "+fileItem.getPackage());
+				if (fileItem.getPackage().equals("io.johnvincent.gomoku.gui")) continue;
+				if (fileItem.getPackage().equals("io.johnvincent.gomoku.apps")) continue;
+				
 //				System.out.println("--- loadClasses; fileItem "+fileItem);
 				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
 				
