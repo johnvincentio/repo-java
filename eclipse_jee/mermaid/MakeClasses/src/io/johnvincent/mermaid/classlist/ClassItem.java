@@ -90,7 +90,6 @@ public class ClassItem {
 	}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
-//	public Method[] getMethods() {return m_methods;}
 
 	public void show() {
 		System.out.println("Class: "+m_name);
@@ -109,7 +108,8 @@ public class ClassItem {
 	}
 	
 	public String toString() {
-		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethodList()+","+getFieldList()+")";
+		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+
+				getConstructors()+","+getMethodList()+","+getFieldList()+")";
 	}
 }
 
