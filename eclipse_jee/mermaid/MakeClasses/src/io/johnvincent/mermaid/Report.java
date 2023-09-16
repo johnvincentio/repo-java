@@ -53,7 +53,10 @@ public class Report {
 			printWriter.println("");
 			printWriter.println("classDiagram");
 
+			int max = 2;
 			for (int i = 0; i < m_classList.getSize(); i++) {
+				if (i >= max) break;
+
 				ClassItem classItem = m_classList.getItem(i);
 				String name = classItem.getSimpleName();
 				System.out.println("classItem " + classItem.toString());
@@ -62,9 +65,7 @@ public class Report {
 				handleFields(classItem, printWriter);
 				handleMethods(classItem, printWriter);
 
-//				printWriter.write(classItem.toString());
 				printWriter.println("}");
-				break;
 			}
 
 			printWriter.close();
