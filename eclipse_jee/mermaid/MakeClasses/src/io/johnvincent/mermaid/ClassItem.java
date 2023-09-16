@@ -12,10 +12,11 @@ public class ClassItem {
 	private FileItem m_fileItem;
 
 	private String m_name;
+	private String m_simpleName;
 	private String m_packageName;
-	private Constructor[] m_constructors;
-	private Method[] m_methods;
-	private Field[] m_fields;
+	private Constructor[] m_constructors = null;
+	private Method[] m_methods = null;
+	private Field[] m_fields = null;
 	
 	private URL m_urlfrom;
 
@@ -25,9 +26,11 @@ public class ClassItem {
 	}
 
 	public void calculate() {
-//		System.out.println("--- calculate; name "+m_clazz.getSimpleName());
-		m_name = m_clazz.getSimpleName();
+		m_name = m_clazz.getName();
+		m_simpleName = m_clazz.getSimpleName();
 		m_packageName = m_clazz.getPackage().getName();
+//		System.out.println("--- calculate; simpleName "+m_simpleName);
+//		System.out.println("--- calculate; name "+m_name+" simpleName "+m_simpleName);
 		
 		ProtectionDomain pDomain = m_clazz.getProtectionDomain();
 		CodeSource cSource = pDomain.getCodeSource();
@@ -71,6 +74,7 @@ public class ClassItem {
 	}
 	
 	public String getName() {return m_name;}
+	public String getSimpleName() {return m_simpleName;}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
 	public Method[] getMethods() {return m_methods;}
@@ -78,6 +82,7 @@ public class ClassItem {
 
 	public void show() {
 		System.out.println("Class: "+m_name);
+		System.out.println("SimpleName: "+m_simpleName);
 		System.out.println("Package: "+m_packageName);
 		System.out.println("URL " + m_urlfrom.getFile());
 		for (int i = 0; i < m_constructors.length; i++) {

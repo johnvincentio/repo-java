@@ -18,5 +18,4 @@ public class ClassList {
 	
 	public int getSize() { return m_list.size(); }
 	public ClassItem getItem(int id) { return m_list.get(id); }
-
 }
