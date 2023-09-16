@@ -1,16 +1,16 @@
 
 package io.johnvincent.mermaid.classlist;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MethodItem {
 
 	private String m_name;
+	private String m_returnType;
+	private List<String> m_types = new ArrayList<String>();
 	
 	private boolean bPrivate;
 	private boolean bPublic;
@@ -20,28 +20,15 @@ public class MethodItem {
 	private boolean bInterface;
 	
 	public MethodItem(Method method) {
-		System.out.println("MethodItem; (1) method "+method);
-		System.out.println("MethodItem; (1a) method "+method.getName());
-		
-		System.out.println("MethodItem; (2) method "+method.getParameters());
-		System.out.println("MethodItem; (3) method "+method.getParameterTypes());
-		System.out.println("MethodItem; (4) method "+method.getReturnType());
-		
-		Parameter[] parameters = method.getParameters();
-		for (Parameter parameter:parameters) {
-			System.out.println("parameter "+parameter);
-		}
+		m_name = method.getName();
+		m_returnType = method.getReturnType().getName();
 		
 		Class<?>[] clazzes = method.getParameterTypes();
 		for (Class<?> clazz:clazzes) {
-			System.out.println("clazz "+clazz);
+			m_types.add(clazz.getSimpleName());
 		}
 		
-//		Class<?> tp = method.getType();
 		int mods = method.getModifiers();
-
-		m_name = method.getName();
-//		m_type = method.getSimpleName();		// ex; String
 
 		bPrivate = Modifier.isPrivate(mods);
 		bPublic = Modifier.isPublic(mods);
@@ -52,4 +39,31 @@ public class MethodItem {
 	}
 }
 
+/*
+
+		Class<?> clz = method.getReturnType();
+
+		System.out.println("clazz; (1) "+clazz);
+		System.out.println("clazz; (2) "+clazz.getCanonicalName());
+		System.out.println("clazz; (3) "+clazz.getName());
+		System.out.println("clazz; (4) "+clazz.getSimpleName());
+		System.out.println("clazz; (5) "+clazz.getTypeName());
+ 
+		System.out.println("MethodItem; (1) method "+method);
+		System.out.println("MethodItem; (1a) method "+method.getName());
+		System.out.println("MethodItem; (2) method "+method.getParameters());
+		System.out.println("MethodItem; (3) method "+method.getParameterTypes());
+		System.out.println("MethodItem; (4) method "+method.getReturnType());
+		
+		System.out.println("ReturnType; (1) "+clz.getCanonicalName());
+		System.out.println("ReturnType; (2) "+clz.descriptorString());
+		System.out.println("ReturnType; (3) "+clz.getTypeName());
+		System.out.println("ReturnType; (4) "+clz.getName());
+
+//		Parameter[] parameters = method.getParameters();
+//		for (Parameter parameter:parameters) {
+//			System.out.println("parameter "+parameter);
+//		}
+
+*/
 
