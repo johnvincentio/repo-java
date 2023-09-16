@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodList {
-	private List<MethodItem> m_list = new ArrayList<MethodItem>();
+	private List<MethodItem> m_collection = new ArrayList<MethodItem>();
 	
 	public void add(MethodItem item) {
-		if (item != null) m_list.add(item);
+		if (item != null) m_collection.add(item);
 	}
 	
-	public int getSize() { return m_list.size(); }
-	public MethodItem getItem(int id) { return m_list.get(id); }
+	public int getSize() { return m_collection.size(); }
+	public MethodItem getItem(int id) { return m_collection.get(id); }
 	
 	public void add(Method[] methods) {
 		if (methods == null) return;
@@ -23,6 +23,11 @@ public class MethodList {
 			break;
 		}
 	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < m_collection.size(); i++)
+			buf.append((m_collection.get(i)).toString());
+		return "("+buf.toString()+")";
+	}
 }
-
-

@@ -3,8 +3,6 @@ package io.johnvincent.mermaid.classlist;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.johnvincent.mermaid.filelist.FileItem;
-
 public class ClassList {
 	private String m_baseDir;
 	private List<ClassItem> m_collection = new ArrayList<ClassItem>();

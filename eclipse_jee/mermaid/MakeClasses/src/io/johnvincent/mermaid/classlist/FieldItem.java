@@ -29,40 +29,27 @@ public class FieldItem {
 		bInterface = Modifier.isInterface(mods);
 	};
 
-	public String getName() {
-		return m_name;
-	}
-
-	public String getType() {
-		return m_type;
-	}
-
 	private String getAccessMark() {
-		if (bPrivate)
-			return "-";
-		if (bPublic)
-			return "+";
-		if (bProtected)
-			return "#";
+		if (bPrivate) return "-";
+		if (bPublic) return "+";
+		if (bProtected) return "#";
 		return "";
 	}
 
 	public String getMermaid() {
 		StringBuffer buf = new StringBuffer();
-		buf.append(getAccessMark()).append(getType()).append(" ").append(getName());
+		buf.append(getAccessMark()).append(m_type).append(" ").append(m_name);
 		return buf.toString();
 	}
 	
-	public boolean isStatic() {
-		return bStatic;
-	}
-
-	public boolean isFinal() {
-		return bFinal;
-	}
-
-	public boolean isInterface() {
-		return bInterface;
+	public boolean isStatic() {return bStatic;}
+	public boolean isFinal() {return bFinal;}
+	public boolean isInterface() {return bInterface;}
+	
+	public String toString() {
+		return "("+m_name+","+m_type+","+
+				bPrivate+","+bPublic+","+bProtected+","+bStatic+","+bFinal+","+bInterface+
+			")";
 	}
 }
 
