@@ -15,6 +15,7 @@ public class LoadClasses {
 		m_fileList = fileList;
 		m_classList = new ClassList(m_baseDir);
 	}
+	public ClassList getClassList() { return m_classList; }
 	
 	public void loadClasses() {
 		System.out.println("--- loadClasses; m_baseDir "+m_baseDir);

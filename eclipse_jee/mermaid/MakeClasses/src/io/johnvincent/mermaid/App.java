@@ -21,5 +21,6 @@ public class App {
 
 		LoadClasses loadClasses = new LoadClasses(fileList);
 		loadClasses.loadClasses();
+		ClassList classList = loadClasses.getClassList();
 	}
 }
