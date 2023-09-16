@@ -1,7 +1,6 @@
 package io.johnvincent.mermaid.classlist;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ public class ConstructorItem {
 	private String m_packageName;
 	private String m_name;
 	private String m_fullName;
-	private String m_returnType;
 	private List<String> m_types = new ArrayList<String>();
 	
 	private boolean bPrivate;
@@ -65,7 +63,6 @@ public class ConstructorItem {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getAccessMark()).append(m_name);
 		buf.append("(").append(String.join(",", m_types)).append(") ");
-		buf.append(m_returnType);
 		return buf.toString();
 	}
 	
@@ -81,7 +78,7 @@ public class ConstructorItem {
 	public boolean isInterface() {return bInterface;}
 	
 	public String toString() {
-		return "("+m_name+","+m_returnType+",["+String.join(",", m_types)+"],"+
+		return "("+m_name+","+"["+String.join(",", m_types)+"],"+
 				bPrivate+","+bPublic+","+bProtected+","+bStatic+","+bFinal+","+bInterface+
 			")";
 	}
