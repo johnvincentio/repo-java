@@ -19,7 +19,6 @@ public class App {
 		FileList fileList = makeList.getList();
 //		fileList.show();
 
-		@SuppressWarnings("unused")
 		LoadClasses loadClasses = new LoadClasses(fileList);
 		loadClasses.loadClasses();
 	}

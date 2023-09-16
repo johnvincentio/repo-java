@@ -17,7 +17,7 @@ public class LoadClasses {
 	}
 	
 	public void loadClasses() {
-		System.out.println("loadClasses; m_baseDir "+m_baseDir);
+		System.out.println("--- loadClasses; m_baseDir "+m_baseDir);
 		File file = new File(m_baseDir);
 
 		URL url = null;
@@ -28,6 +28,8 @@ public class LoadClasses {
 			
 			for (int i = 0; i < m_fileList.getSize(); i++) {
 				FileItem fileItem = m_fileList.getItem(i);
+				
+				System.out.println("--- loadClasses; fileItem "+fileItem);
 				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
 				
 				ClassItem classItem = new ClassItem(clazz, fileItem);
