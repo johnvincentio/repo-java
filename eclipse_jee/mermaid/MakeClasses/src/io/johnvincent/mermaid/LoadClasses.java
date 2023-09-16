@@ -30,7 +30,7 @@ public class LoadClasses {
 				FileItem fileItem = m_fileList.getItem(i);
 				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
 				
-				ClassItem classItem = new ClassItem(clazz);
+				ClassItem classItem = new ClassItem(clazz, fileItem);
 				classItem.calculate();
 				m_classList.add(classItem);
 			}
@@ -40,7 +40,9 @@ public class LoadClasses {
 			ex.printStackTrace();
 		}
 	}
+}
 
+/*
 	public void doWork2(String str) {
 		System.out.println(">>> doWork2; file " + str);
 		
@@ -71,7 +73,7 @@ public class LoadClasses {
 			System.out.println("Exception; ex " + ex);
 		}
 	}
-}
+*/
 
 /*
  * public void doWork1(String str) { System.out.println(">>> doWork1; file "+

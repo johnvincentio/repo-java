@@ -9,6 +9,7 @@ import java.security.ProtectionDomain;
 
 public class ClassItem {
 	private Class<?> m_clazz;
+	private FileItem m_fileItem;
 
 	private String m_name;
 	private String m_packageName;
@@ -18,12 +19,13 @@ public class ClassItem {
 	
 	private URL m_urlfrom;
 
-	public ClassItem(Class<?> clazz) {
+	public ClassItem(Class<?> clazz, FileItem fileItem) {
 		m_clazz = clazz;
+		m_fileItem = fileItem;
 	}
 
 	public void calculate() {
-		System.out.println("--- calculate; name "+m_clazz.getSimpleName());
+//		System.out.println("--- calculate; name "+m_clazz.getSimpleName());
 		m_name = m_clazz.getSimpleName();
 		m_packageName = m_clazz.getPackage().getName();
 		
@@ -36,12 +38,17 @@ public class ClassItem {
 		handleFields();
 	}
 	
+	private void showError(NoClassDefFoundError ex, String type) {
+		System.out.println("NoClassDefFoundError in "+type+" name "+m_name+
+			"fileItem "+m_fileItem.toString()+" ex "+ex);	
+	}
+	
 	private void handleConstructors() {
 		try {
 			m_constructors = m_clazz.getDeclaredConstructors();
 		}
 		catch (NoClassDefFoundError ex) {
-			System.out.println("Exception in handleConstructors; name "+m_name+" ex "+ex);
+			showError(ex, "handleConstructors");
 		}
 	}
 	
@@ -50,7 +57,7 @@ public class ClassItem {
 			m_methods = m_clazz.getDeclaredMethods();
 		}
 		catch (NoClassDefFoundError ex) {
-			System.out.println("Exception in handleMethods; name "+m_name+" ex "+ex);
+			showError(ex, "handleMethods");
 		}
 	}
 	
@@ -59,7 +66,7 @@ public class ClassItem {
 			m_fields = m_clazz.getDeclaredFields();
 		}
 		catch (NoClassDefFoundError ex) {
-			System.out.println("Exception in handleFields; name "+m_name+" ex "+ex);
+			showError(ex, "handleFields");
 		}
 	}
 	
