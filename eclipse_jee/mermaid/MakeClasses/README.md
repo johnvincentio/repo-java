@@ -1,5 +1,11 @@
 
 
+
+
+// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
+// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
+
+
 /*
  https://stackoverflow.com/questions/61246154/dynamically-loading-and-instantiating-a-class-that-is-not-in-the-classpath
  

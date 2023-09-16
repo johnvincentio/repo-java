@@ -12,6 +12,12 @@ public class FileItem {
 	}
 	public String getPath() { return m_path; }
 	public String getSubpath() { return m_subpath; }
+	
+	public String getClassLoaderName() {
+		String str = m_subpath.replace(".class", "").replace("/", ".");
+		return str;
+		
+	}
 
 	public String toString() {
 		return "("+m_path+","+m_subpath+")";

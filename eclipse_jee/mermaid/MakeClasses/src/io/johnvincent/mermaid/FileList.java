@@ -1,7 +1,6 @@
 package io.johnvincent.mermaid;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class FileList {
@@ -17,8 +16,10 @@ public class FileList {
 			m_collection.add(new FileItem(path, subpath));	
 		}
 	}
+	public String getBaseDir() { return m_baseDir; }
 	public void add(FileItem item) { if (item != null) m_collection.add (item); }
-	public Iterator<FileItem> getItems() {return m_collection.iterator();}
+	public FileItem getItem(int index) { return m_collection.get(index); }
+
 	public int getSize() {return m_collection.size();}
 	public boolean isNone() {return getSize() < 1;}
 

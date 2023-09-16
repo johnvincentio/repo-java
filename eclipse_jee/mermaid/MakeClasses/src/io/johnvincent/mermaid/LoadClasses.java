@@ -4,31 +4,49 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
-// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
-
 public class LoadClasses {
 
 	private String m_baseDir;
 	private ClassList m_classList;
 	private FileList m_fileList;
 
-	public LoadClasses(String baseDir, FileList fileList) {
-		m_baseDir = baseDir;
+	public LoadClasses(FileList fileList) {
+		m_baseDir = fileList.getBaseDir();
 		m_fileList = fileList;
+		m_classList = new ClassList(m_baseDir);
 	}
 	
 	public void loadClasses() {
-		for (int i = 0; i < m_fileList.getSize(); i++) {
+		File file = new File(m_baseDir);
+
+		URL url = null;
+		try {
+			url = file.toURI().toURL();
+			System.out.println("doWork2 - stage 3");
+
+			URL[] urls = new URL[]{ url };
+			System.out.println("doWork2 - stage 4");
+	
+			URLClassLoader classLoader = new URLClassLoader(urls);
+			System.out.println("doWork2 - stage 5");
 			
+			for (int i = 0; i < m_fileList.getSize(); i++) {
+				FileItem fileItem = m_fileList.getItem(i);
+				
+				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
+				
+				ClassItem classItem = new ClassItem(clazz);
+				m_classList.add(classItem);
+			}
+			classLoader.close();
 		}
-		
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	public void doWork2(String str) {
 		System.out.println(">>> doWork2; file " + str);
-		
-		m_classList = new ClassList(str);
 		
 		String a1 = "/Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/";
 
