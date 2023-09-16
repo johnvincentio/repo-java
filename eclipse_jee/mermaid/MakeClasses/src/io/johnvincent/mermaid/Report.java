@@ -62,18 +62,23 @@ public class Report {
 			printWriter.println("");
 			printWriter.println("classDiagram");
 
-			int max = 2;
+//			int max = 20;
 			for (int i = 0; i < m_classList.getSize(); i++) {
-				if (i >= max) break;
+//				if (i >= max) break;
 
 				ClassItem classItem = m_classList.getItem(i);
 				String name = classItem.getSimpleName();
+				
+//				if (!name.equals("JsonHelper")) continue; 
+
 				System.out.println("classItem " + classItem.toString());
 				printWriter.println("class " + name + " {");
 
 				handleFields(classItem, printWriter);
 				handleConstructors(classItem, printWriter);
 				handleMethods(classItem, printWriter);
+				
+				if (! classItem.hasAnyData()) printWriter.println("\t");
 
 				printWriter.println("}");
 			}

@@ -25,6 +25,13 @@ public class ClassItem {
 		m_fileItem = fileItem;
 	}
 
+	public boolean hasAnyData() {
+		if (m_constructorList.getSize() > 0) return true;
+		if (m_methodList.getSize() > 0) return true;
+		if (m_fieldList.getSize() > 0) return true;
+		return false;
+	}
+	
 	public ConstructorList getConstructorList() {return m_constructorList;}
 	public MethodList getMethodList() {return m_methodList;}
 	public FieldList getFieldList() {return m_fieldList;}
