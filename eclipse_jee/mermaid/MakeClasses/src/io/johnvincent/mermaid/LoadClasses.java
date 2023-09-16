@@ -28,11 +28,10 @@ public class LoadClasses {
 			
 			for (int i = 0; i < m_fileList.getSize(); i++) {
 				FileItem fileItem = m_fileList.getItem(i);
-				System.out.println("fileItem "+fileItem.toString());
-				
 				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
 				
 				ClassItem classItem = new ClassItem(clazz);
+				classItem.calculate();
 				m_classList.add(classItem);
 			}
 			classLoader.close();

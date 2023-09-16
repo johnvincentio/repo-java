@@ -20,18 +20,45 @@ public class ClassItem {
 
 	public ClassItem(Class<?> clazz) {
 		m_clazz = clazz;
-		
-		m_name = clazz.getSimpleName();
-		m_packageName = clazz.getPackage().getName();
-		m_constructors = clazz.getDeclaredConstructors();
-		m_methods = clazz.getDeclaredMethods();
-		m_fields = clazz.getDeclaredFields();
-		
-		ProtectionDomain pDomain = clazz.getProtectionDomain();
-		CodeSource cSource = pDomain.getCodeSource();
-		m_urlfrom = cSource.getLocation();
 	}
 
+	public void calculate() {
+		System.out.println("--- calculate; name "+m_clazz.getSimpleName());
+		m_name = m_clazz.getSimpleName();
+		m_packageName = m_clazz.getPackage().getName();
+		m_constructors = m_clazz.getDeclaredConstructors();
+		
+		System.out.println("--- calculate; stage 10");
+//		m_fields = m_clazz.getDeclaredFields();
+		
+		ProtectionDomain pDomain = m_clazz.getProtectionDomain();
+		CodeSource cSource = pDomain.getCodeSource();
+		m_urlfrom = cSource.getLocation();
+	
+		System.out.println("--- calculate; stage 15");
+		handleMethods();
+		System.out.println("--- calculate; stage 20");
+		handleFields();
+		System.out.println("--- calculate; stage 30");
+	}
+	
+	private void handleMethods() {
+		m_methods = m_clazz.getDeclaredMethods();
+	}
+	
+	private void handleFields() {
+		try {
+			System.out.println("--- handleFields; stage 1");
+			m_fields = m_clazz.getDeclaredFields();
+			System.out.println("--- handleFields; stage 2");
+		}
+		catch (NoClassDefFoundError ex) {
+			System.out.println("--- handleFields; stage 10");
+			System.out.println("Exception in handleFields; name "+m_name+" ex "+ex);
+			System.out.println("--- handleFields; stage 15");
+		}
+	}
+	
 	public String getName() {return m_name;}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
