@@ -14,25 +14,21 @@ public class LoadClasses {
 
 	// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/io/johnvincent/gomoku/library/pattern/
 
+	private ClassList m_classList;
+	
 	private List<String> m_list;
 
 	public LoadClasses(List<String> list) {
 		m_list = list;
 	}
 
-	public void doWork(String str) {
-		System.out.println(">>> doWork; file " + str);
-		try {
-			Class.forName(str);
-		} catch (Exception ex) {
-			System.out.println("Exception; ex " + ex);
-		}
-	}
-
 	// /Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes
 
 	public void doWork2(String str) {
 		System.out.println(">>> doWork2; file " + str);
+		
+		m_classList = new ClassList(str);
+		
 		String a1 = "/Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/";
 
 		String p1 = "io.johnvincent.gomoku.library.pattern.Pattern";
@@ -49,34 +45,10 @@ public class LoadClasses {
 			ClassLoader cl = new URLClassLoader(urls);
 			System.out.println("doWork2 - stage 5");
 
-			Class cls = cl.loadClass(p1);
-			System.out.println("doWork2 - stage 6");
-			System.out.println("Class name " + cls.getName());
-			System.out.println("Class name " + cls.getCanonicalName());
-			System.out.println("Class name " + cls.getSimpleName());
-
-			ProtectionDomain pDomain = cls.getProtectionDomain();
-			CodeSource cSource = pDomain.getCodeSource();
-			URL urlfrom = cSource.getLocation();
-			System.out.println("urlfrom " + urlfrom.getFile());
-
-			Package p = cls.getPackage();
-			System.out.println("package: " + p.getName());
-
-			Constructor[] constructors = cls.getDeclaredConstructors();
-			for (int i = 0; i < constructors.length; i++) {
-				System.out.println("Constructor: " + constructors[i]);
-			}
-
-			Method[] methods = cls.getDeclaredMethods();
-			for (int i = 0; i < methods.length; i++) {
-				System.out.println("Method: " + methods[i]);
-			}
-
-			Field[] fields = cls.getDeclaredFields();
-			for (int i = 0; i < fields.length; i++) {
-				System.out.println("Field: " + fields[i].toString());
-			}
+			Class<?> clazz = cl.loadClass(p1);
+			
+			ClassItem classItem = new ClassItem(clazz);
+			classItem.show();
 
 			System.out.println("doWork2 - stage 100");
 		} catch (Exception ex) {
