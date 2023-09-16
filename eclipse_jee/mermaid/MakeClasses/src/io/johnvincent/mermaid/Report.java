@@ -3,11 +3,11 @@ package io.johnvincent.mermaid;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import io.johnvincent.mermaid.classlist.ClassItem;
 import io.johnvincent.mermaid.classlist.ClassList;
+import io.johnvincent.mermaid.classlist.FieldItem;
+import io.johnvincent.mermaid.classlist.FieldList;
 
 public class Report {
 	private ClassList m_classList;
@@ -20,10 +20,17 @@ public class Report {
 	// classModifiers()
 	// interfaceModifiers
 	private void handleFields(ClassItem classItem, PrintWriter printWriter) {
-		Field[] fields = classItem.getFields();
-		if (fields == null)
-			return;
-
+		FieldList fieldList = classItem.getFieldList();
+		if (fieldList == null) return;
+		
+		for (int i = 0; i < fieldList.getSize(); i++) {
+			FieldItem fieldItem = fieldList.getItem(i);
+			// getAccessMark
+			StringBuffer buf = new StringBuffer();
+			buf.append(fieldItem.getAccessMark()).append(fieldItem.getType()).append(" ")
+				.append(fieldItem.getName());
+			printWriter.println(buf);
+		}
 
 	}
 

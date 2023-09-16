@@ -18,7 +18,7 @@ public class ClassItem {
 	private String m_packageName;
 	private Constructor[] m_constructors;
 	private Method[] m_methods = null;
-	private Field[] m_fields = null;
+//	private Field[] m_fields = null;
 	
 	private FieldList m_fieldList = new FieldList();
 	
@@ -29,6 +29,8 @@ public class ClassItem {
 		m_fileItem = fileItem;
 	}
 
+	public FieldList getFieldList() {return m_fieldList;}
+	
 	public void calculate() {
 		m_name = m_clazz.getName();
 		m_simpleName = m_clazz.getSimpleName();
@@ -70,8 +72,7 @@ public class ClassItem {
 	
 	private void handleFields() {
 		try {
-			m_fields = m_clazz.getDeclaredFields();
-			m_fieldList.add(m_fields);
+			m_fieldList.add(m_clazz.getDeclaredFields());
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleFields");
@@ -88,7 +89,6 @@ public class ClassItem {
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
 	public Method[] getMethods() {return m_methods;}
-	public Field[] getFields() {return m_fields;}
 
 	public void show() {
 		System.out.println("Class: "+m_name);
@@ -101,13 +101,13 @@ public class ClassItem {
 		for (int i = 0; i < m_methods.length; i++) {
 			System.out.println("Method: " + m_methods[i]);
 		}
-		for (int i = 0; i < m_fields.length; i++) {
-			System.out.println("Field: " + m_fields[i].toString());
+		for (int i = 0; i < m_fieldList.getSize(); i++) {
+			System.out.println("Field: " + m_fieldList.getItem(i).toString());
 		}
 	}
 	
 	public String toString() {
-		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethods()+","+getFields()+")";
+		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethods()+","+getFieldList()+")";
 	}
 }
 
