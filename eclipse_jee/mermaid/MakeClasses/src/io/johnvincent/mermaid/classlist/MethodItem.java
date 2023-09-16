@@ -21,7 +21,7 @@ public class MethodItem {
 	
 	public MethodItem(Method method) {
 		m_name = method.getName();
-		m_returnType = method.getReturnType().getName();
+		m_returnType = method.getReturnType().getSimpleName();
 		
 		Class<?>[] clazzes = method.getParameterTypes();
 		for (Class<?> clazz:clazzes) {
@@ -67,7 +67,12 @@ public class MethodItem {
 /*
 
 		Class<?> clz = method.getReturnType();
-
+		System.out.println("ReturnType; (1) "+clz.getCanonicalName());
+		System.out.println("ReturnType; (2) "+clz.descriptorString());
+		System.out.println("ReturnType; (3) "+clz.getTypeName());
+		System.out.println("ReturnType; (4) "+clz.getName());
+		System.out.println("ReturnType; (5) "+clz.getSimpleName());
+		
 		System.out.println("clazz; (1) "+clazz);
 		System.out.println("clazz; (2) "+clazz.getCanonicalName());
 		System.out.println("clazz; (3) "+clazz.getName());
