@@ -1,4 +1,4 @@
-package io.johnvincent.mermaid;
+package io.johnvincent.mermaid.classlist;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,6 +4,11 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import io.johnvincent.mermaid.classlist.ClassItem;
+import io.johnvincent.mermaid.classlist.ClassList;
+import io.johnvincent.mermaid.filelist.FileItem;
+import io.johnvincent.mermaid.filelist.FileList;
+
 public class LoadClasses {
 
 	private String m_baseDir;

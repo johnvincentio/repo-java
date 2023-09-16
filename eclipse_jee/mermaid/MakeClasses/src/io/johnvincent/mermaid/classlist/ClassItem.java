@@ -1,4 +1,4 @@
-package io.johnvincent.mermaid;
+package io.johnvincent.mermaid.classlist;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+
+import io.johnvincent.mermaid.filelist.FileItem;
 
 public class ClassItem {
 	private Class<?> m_clazz;

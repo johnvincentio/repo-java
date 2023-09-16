@@ -6,6 +6,9 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import io.johnvincent.mermaid.classlist.ClassItem;
+import io.johnvincent.mermaid.classlist.ClassList;
+
 public class Report {
 	private ClassList m_classList;
 

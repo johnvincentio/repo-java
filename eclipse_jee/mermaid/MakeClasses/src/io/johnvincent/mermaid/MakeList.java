@@ -2,6 +2,8 @@ package io.johnvincent.mermaid;
 
 import java.io.File;
 
+import io.johnvincent.mermaid.filelist.FileList;
+
 public class MakeList {
 
 	private String m_baseDir;

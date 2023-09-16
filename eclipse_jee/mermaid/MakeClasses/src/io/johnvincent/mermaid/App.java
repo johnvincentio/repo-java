@@ -1,5 +1,8 @@
 package io.johnvincent.mermaid;
 
+import io.johnvincent.mermaid.classlist.ClassList;
+import io.johnvincent.mermaid.filelist.FileList;
+
 public class App {
 
 	private static final String SUFFIX = ".class";

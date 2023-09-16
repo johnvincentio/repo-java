@@ -1,4 +1,4 @@
-package io.johnvincent.mermaid;
+package io.johnvincent.mermaid.filelist;
 
 public class FileItem {
 	private String m_path;
