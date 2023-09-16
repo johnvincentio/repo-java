@@ -33,8 +33,6 @@ public class ClassItem {
 		m_name = m_clazz.getName();
 		m_simpleName = m_clazz.getSimpleName();
 		m_packageName = m_clazz.getPackage().getName();
-//		System.out.println("--- calculate; simpleName "+m_simpleName);
-//		System.out.println("--- calculate; name "+m_name+" simpleName "+m_simpleName);
 		
 		ProtectionDomain pDomain = m_clazz.getProtectionDomain();
 		CodeSource cSource = pDomain.getCodeSource();
@@ -107,31 +105,3 @@ public class ClassItem {
 				getConstructorList()+","+getMethodList()+","+getFieldList()+")";
 	}
 }
-
-//public void setName (String name) {m_name = name;}
-//public void setPackageName (String packageName) {this.m_packageName = packageName;}
-//public void setConstructors (Constructor[] constructors) {m_constructors = constructors;}
-//public void setMethods (Method[] methods) {m_methods = methods;}
-//public void setFields (Field[] fields) {m_fields = fields;}
-
-/*
-	Package p = cls.getPackage();
-	System.out.println("package: " + p.getName());
-
-	Constructor[] constructors = cls.getDeclaredConstructors();
-	for (int i = 0; i < constructors.length; i++) {
-		System.out.println("Constructor: " + constructors[i]);
-	}
-
-	Method[] methods = cls.getDeclaredMethods();
-	for (int i = 0; i < methods.length; i++) {
-		System.out.println("Method: " + methods[i]);
-	}
-
-	Field[] fields = cls.getDeclaredFields();
-	for (int i = 0; i < fields.length; i++) {
-		System.out.println("Field: " + fields[i].toString());
-	}
-*/
-
-
