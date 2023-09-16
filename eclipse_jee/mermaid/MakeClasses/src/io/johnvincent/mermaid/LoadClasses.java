@@ -17,21 +17,18 @@ public class LoadClasses {
 	}
 	
 	public void loadClasses() {
+		System.out.println("loadClasses; m_baseDir "+m_baseDir);
 		File file = new File(m_baseDir);
 
 		URL url = null;
 		try {
 			url = file.toURI().toURL();
-			System.out.println("doWork2 - stage 3");
-
 			URL[] urls = new URL[]{ url };
-			System.out.println("doWork2 - stage 4");
-	
 			URLClassLoader classLoader = new URLClassLoader(urls);
-			System.out.println("doWork2 - stage 5");
 			
 			for (int i = 0; i < m_fileList.getSize(); i++) {
 				FileItem fileItem = m_fileList.getItem(i);
+				System.out.println("fileItem "+fileItem.toString());
 				
 				Class<?> clazz = classLoader.loadClass(fileItem.getClassLoaderName());
 				

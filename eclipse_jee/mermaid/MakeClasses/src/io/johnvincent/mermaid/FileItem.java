@@ -8,7 +8,7 @@ public class FileItem {
 		m_path = path;
 		m_subpath = subpath;
 		
-		System.out.println("FileItem; m_path "+m_path);
+//		System.out.println("FileItem; m_path "+m_path);
 	}
 	public String getPath() { return m_path; }
 	public String getSubpath() { return m_subpath; }
@@ -16,7 +16,6 @@ public class FileItem {
 	public String getClassLoaderName() {
 		String str = m_subpath.replace(".class", "").replace("/", ".");
 		return str;
-		
 	}
 
 	public String toString() {
