@@ -15,7 +15,6 @@ public class FieldItem {
 	private boolean bInterface;
 
 	public FieldItem(Field field) {
-//		System.out.println("FieldList::add; field "+field);
 		Class<?> tp = field.getType();
 		int mods = field.getModifiers();
 
