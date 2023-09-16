@@ -8,10 +8,6 @@ import java.util.List;
 public class MethodList {
 	private List<MethodItem> m_collection = new ArrayList<MethodItem>();
 	
-	public void add(MethodItem item) {
-		if (item != null) m_collection.add(item);
-	}
-	
 	public int getSize() { return m_collection.size(); }
 	public MethodItem getItem(int id) { return m_collection.get(id); }
 	
@@ -19,7 +15,7 @@ public class MethodList {
 		if (methods == null) return;
 		for (Method method:methods) {
 			MethodItem methodItem = new MethodItem(method);
-			add(methodItem);
+			if (methodItem != null) m_collection.add(methodItem);
 		}
 	}
 	

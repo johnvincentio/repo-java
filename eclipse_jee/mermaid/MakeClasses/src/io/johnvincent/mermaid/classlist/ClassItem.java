@@ -16,12 +16,10 @@ public class ClassItem {
 	private String m_name;
 	private String m_simpleName;
 	private String m_packageName;
-	private Constructor[] m_constructors;
-//	private Method[] m_methods = null;
-//	private Field[] m_fields = null;
-	
+
+	private ConstructorList m_constructorList = new ConstructorList();
+	private MethodList m_methodList = new MethodList();	
 	private FieldList m_fieldList = new FieldList();
-	private MethodList m_methodList = new MethodList();
 	
 	private URL m_urlfrom;
 
@@ -30,8 +28,9 @@ public class ClassItem {
 		m_fileItem = fileItem;
 	}
 
-	public FieldList getFieldList() {return m_fieldList;}
+	public ConstructorList getConstructorList() {return m_constructorList;}
 	public MethodList getMethodList() {return m_methodList;}
+	public FieldList getFieldList() {return m_fieldList;}
 	
 	public void calculate() {
 		m_name = m_clazz.getName();
@@ -56,7 +55,7 @@ public class ClassItem {
 	
 	private void handleConstructors() {
 		try {
-			m_constructors = m_clazz.getDeclaredConstructors();
+			m_constructorList.add(m_clazz.getDeclaredConstructors());
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleConstructors");
@@ -89,15 +88,14 @@ public class ClassItem {
 		return m_name;
 	}
 	public String getPackageName() {return m_packageName;}
-	public Constructor[] getConstructors() {return m_constructors;}
 
 	public void show() {
 		System.out.println("Class: "+m_name);
 		System.out.println("SimpleName: "+m_simpleName);
 		System.out.println("Package: "+m_packageName);
 		System.out.println("URL " + m_urlfrom.getFile());
-		for (int i = 0; i < m_constructors.length; i++) {
-			System.out.println("Constructor: " + m_constructors[i]);
+		for (int i = 0; i < m_constructorList.getSize(); i++) {
+			System.out.println("Constructor: " + m_constructorList.getItem(i).toString());
 		}
 		for (int i = 0; i < m_methodList.getSize(); i++) {
 			System.out.println("Method: " + m_methodList.getItem(i).toString());
@@ -109,7 +107,7 @@ public class ClassItem {
 	
 	public String toString() {
 		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+
-				getConstructors()+","+getMethodList()+","+getFieldList()+")";
+				getConstructorList()+","+getMethodList()+","+getFieldList()+")";
 	}
 }
 

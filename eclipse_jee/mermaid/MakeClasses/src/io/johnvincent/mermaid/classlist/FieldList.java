@@ -7,10 +7,6 @@ import java.util.List;
 public class FieldList {
 	private List<FieldItem> m_collection = new ArrayList<FieldItem>();
 	
-	public void add(FieldItem item) {
-		if (item != null) m_collection.add(item);
-	}
-	
 	public int getSize() { return m_collection.size(); }
 	public FieldItem getItem(int id) { return m_collection.get(id); }
 	
@@ -18,7 +14,7 @@ public class FieldList {
 		if (fields == null) return;
 		for (Field field:fields) {
 			FieldItem fieldItem = new FieldItem(field);
-			add(fieldItem);
+			if (fieldItem != null) m_collection.add(fieldItem);
 		}
 	}
 	
