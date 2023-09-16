@@ -14,7 +14,7 @@ public class ClassItem {
 	private String m_name;
 	private String m_simpleName;
 	private String m_packageName;
-	private Constructor[] m_constructors = null;
+	private Constructor[] m_constructors;
 	private Method[] m_methods = null;
 	private Field[] m_fields = null;
 	
@@ -74,10 +74,12 @@ public class ClassItem {
 	}
 	
 	public String getName() {
-		if (m_name != null && m_name.length() > 0) return m_name;
-		return m_simpleName;
+		return m_name;
 	}
-	public String getSimpleName() {return m_simpleName;}
+	public String getSimpleName() {
+		if (m_simpleName != null && m_simpleName.length() > 0) return m_simpleName;
+		return m_name;
+	}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
 	public Method[] getMethods() {return m_methods;}
@@ -100,7 +102,7 @@ public class ClassItem {
 	}
 	
 	public String toString() {
-		return "("+getName()+","+getPackageName()+","+getConstructors()+","+getMethods()+","+getFields()+")";
+		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethods()+","+getFields()+")";
 	}
 }
 
