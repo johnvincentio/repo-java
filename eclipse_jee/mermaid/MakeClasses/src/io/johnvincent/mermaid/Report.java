@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 
 import io.johnvincent.mermaid.classlist.ClassItem;
 import io.johnvincent.mermaid.classlist.ClassList;
+import io.johnvincent.mermaid.classlist.ConstructorItem;
+import io.johnvincent.mermaid.classlist.ConstructorList;
 import io.johnvincent.mermaid.classlist.FieldItem;
 import io.johnvincent.mermaid.classlist.FieldList;
 import io.johnvincent.mermaid.classlist.MethodItem;
@@ -18,16 +20,13 @@ public class Report {
 		m_classList = classList;
 	}
 
-	// methodModifiers()
-	// classModifiers()
-	// interfaceModifiers
-	private void handleFields(ClassItem classItem, PrintWriter printWriter) {
-		FieldList fieldList = classItem.getFieldList();
-		if (fieldList == null) return;
+	private void handleConstructors(ClassItem classItem, PrintWriter printWriter) {
+		ConstructorList constructorList = classItem.getConstructorList();
+		if (constructorList == null) return;
 		
-		for (int i = 0; i < fieldList.getSize(); i++) {
-			FieldItem fieldItem = fieldList.getItem(i);
-			printWriter.println(fieldItem.getMermaid());
+		for (int i = 0; i < constructorList.getSize(); i++) {
+			ConstructorItem constructorItem = constructorList.getItem(i);
+			printWriter.println(constructorItem.getMermaid());
 		}
 	}
 	
@@ -38,6 +37,16 @@ public class Report {
 		for (int i = 0; i < methodList.getSize(); i++) {
 			MethodItem methodItem = methodList.getItem(i);
 			printWriter.println(methodItem.getMermaid());
+		}
+	}
+	
+	private void handleFields(ClassItem classItem, PrintWriter printWriter) {
+		FieldList fieldList = classItem.getFieldList();
+		if (fieldList == null) return;
+		
+		for (int i = 0; i < fieldList.getSize(); i++) {
+			FieldItem fieldItem = fieldList.getItem(i);
+			printWriter.println(fieldItem.getMermaid());
 		}
 	}
 
@@ -63,6 +72,7 @@ public class Report {
 				printWriter.println("class " + name + " {");
 
 				handleFields(classItem, printWriter);
+				handleConstructors(classItem, printWriter);
 				handleMethods(classItem, printWriter);
 
 				printWriter.println("}");

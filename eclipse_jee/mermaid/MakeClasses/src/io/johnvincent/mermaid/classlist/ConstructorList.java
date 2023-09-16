@@ -10,10 +10,10 @@ public class ConstructorList {
 	public int getSize() { return m_collection.size(); }
 	public ConstructorItem getItem(int id) { return m_collection.get(id); }
 	
-	public void add(Constructor<?>[] constructors) {
+	public void add(String packageName, Constructor<?>[] constructors) {
 		if (constructors == null) return;
 		for (Constructor<?> constructor:constructors) {
-			ConstructorItem constructorItem = new ConstructorItem(constructor);
+			ConstructorItem constructorItem = new ConstructorItem(packageName, constructor);
 			if (constructorItem != null) m_collection.add(constructorItem);
 		}
 	}

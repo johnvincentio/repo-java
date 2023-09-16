@@ -1,8 +1,5 @@
 package io.johnvincent.mermaid.classlist;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -55,7 +52,7 @@ public class ClassItem {
 	
 	private void handleConstructors() {
 		try {
-			m_constructorList.add(m_clazz.getDeclaredConstructors());
+			m_constructorList.add(m_packageName, m_clazz.getDeclaredConstructors());
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleConstructors");
