@@ -12,6 +12,9 @@ public class App {
 	private static final String FOLDER =
 		"/Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/";
 
+	private static final String REPORT = 
+		"/Users/jv/Desktop/MyDevelopment/github/java/repo-java/eclipse_jee/mermaid/MakeClasses/jv.txt";
+	
 	public static void main(String[] args) {
 		MakeList makeList = new MakeList(FOLDER, SUFFIX);
 //		makeList.show();
@@ -22,5 +25,8 @@ public class App {
 		LoadClasses loadClasses = new LoadClasses(fileList);
 		loadClasses.loadClasses();
 		ClassList classList = loadClasses.getClassList();
+		
+		Report report = new Report(classList);
+		report.makeMermaid("Gomoku Classes", REPORT);
 	}
 }

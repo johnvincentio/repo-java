@@ -73,7 +73,10 @@ public class ClassItem {
 		}
 	}
 	
-	public String getName() {return m_name;}
+	public String getName() {
+		if (m_name != null && m_name.length() > 0) return m_name;
+		return m_simpleName;
+	}
 	public String getSimpleName() {return m_simpleName;}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
