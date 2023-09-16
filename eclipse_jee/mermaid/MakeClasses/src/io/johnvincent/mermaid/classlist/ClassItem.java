@@ -17,10 +17,11 @@ public class ClassItem {
 	private String m_simpleName;
 	private String m_packageName;
 	private Constructor[] m_constructors;
-	private Method[] m_methods = null;
+//	private Method[] m_methods = null;
 //	private Field[] m_fields = null;
 	
 	private FieldList m_fieldList = new FieldList();
+	private MethodList m_methodList = new MethodList();
 	
 	private URL m_urlfrom;
 
@@ -30,6 +31,7 @@ public class ClassItem {
 	}
 
 	public FieldList getFieldList() {return m_fieldList;}
+	public MethodList getMethodList() {return m_methodList;}
 	
 	public void calculate() {
 		m_name = m_clazz.getName();
@@ -63,7 +65,7 @@ public class ClassItem {
 	
 	private void handleMethods() {
 		try {
-			m_methods = m_clazz.getDeclaredMethods();
+			m_methodList.add(m_clazz.getDeclaredMethods());
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleMethods");
@@ -88,7 +90,7 @@ public class ClassItem {
 	}
 	public String getPackageName() {return m_packageName;}
 	public Constructor[] getConstructors() {return m_constructors;}
-	public Method[] getMethods() {return m_methods;}
+//	public Method[] getMethods() {return m_methods;}
 
 	public void show() {
 		System.out.println("Class: "+m_name);
@@ -98,8 +100,8 @@ public class ClassItem {
 		for (int i = 0; i < m_constructors.length; i++) {
 			System.out.println("Constructor: " + m_constructors[i]);
 		}
-		for (int i = 0; i < m_methods.length; i++) {
-			System.out.println("Method: " + m_methods[i]);
+		for (int i = 0; i < m_methodList.getSize(); i++) {
+			System.out.println("Method: " + m_methodList.getItem(i).toString());
 		}
 		for (int i = 0; i < m_fieldList.getSize(); i++) {
 			System.out.println("Field: " + m_fieldList.getItem(i).toString());
@@ -107,7 +109,7 @@ public class ClassItem {
 	}
 	
 	public String toString() {
-		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethods()+","+getFieldList()+")";
+		return "("+getName()+","+getSimpleName()+","+getPackageName()+","+getConstructors()+","+getMethodList()+","+getFieldList()+")";
 	}
 }
 
