@@ -37,6 +37,44 @@ public class MethodItem {
 		bFinal = Modifier.isFinal(mods);
 		bInterface = Modifier.isInterface(mods);
 	}
+
+	public String getName() {
+		return m_name;
+	}
+
+	public String getReturnType() {
+		return m_returnType;
+	}
+	
+	public String getMermaid() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(getAccessMark()).append(getName());
+		buf.append("(").append(String.join(",", m_types)).append(") ");
+		buf.append(getReturnType());
+		return buf.toString();
+	}
+	
+	private String getAccessMark() {
+		if (bPrivate)
+			return "-";
+		if (bPublic)
+			return "+";
+		if (bProtected)
+			return "#";
+		return "";
+	}
+
+	public boolean isStatic() {
+		return bStatic;
+	}
+
+	public boolean isFinal() {
+		return bFinal;
+	}
+
+	public boolean isInterface() {
+		return bInterface;
+	}
 }
 
 /*

@@ -37,17 +37,7 @@ public class FieldItem {
 		return m_type;
 	}
 
-	public String getAccessType() {
-		if (bPrivate)
-			return "private";
-		if (bPublic)
-			return "public";
-		if (bProtected)
-			return "protected";
-		return "";
-	}
-	
-	public String getAccessMark() {
+	private String getAccessMark() {
 		if (bPrivate)
 			return "-";
 		if (bPublic)
@@ -57,6 +47,12 @@ public class FieldItem {
 		return "";
 	}
 
+	public String getMermaid() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(getAccessMark()).append(getType()).append(" ").append(getName());
+		return buf.toString();
+	}
+	
 	public boolean isStatic() {
 		return bStatic;
 	}

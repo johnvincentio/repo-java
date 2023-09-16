@@ -27,10 +27,7 @@ public class Report {
 		
 		for (int i = 0; i < fieldList.getSize(); i++) {
 			FieldItem fieldItem = fieldList.getItem(i);
-			StringBuffer buf = new StringBuffer();
-			buf.append(fieldItem.getAccessMark()).append(fieldItem.getType()).append(" ")
-				.append(fieldItem.getName());
-			printWriter.println(buf);
+			printWriter.println(fieldItem.getMermaid());
 		}
 	}
 	
@@ -40,11 +37,7 @@ public class Report {
 		
 		for (int i = 0; i < methodList.getSize(); i++) {
 			MethodItem methodItem = methodList.getItem(i);
-
-//			StringBuffer buf = new StringBuffer();
-//			buf.append(fieldItem.getAccessMark()).append(fieldItem.getType()).append(" ")
-//				.append(fieldItem.getName());
-//			printWriter.println(buf);
+			printWriter.println(methodItem.getMermaid());
 		}
 	}
 
