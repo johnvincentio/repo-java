@@ -6,16 +6,17 @@ import java.util.List;
 
 public class MakeList {
 
-	private File m_baseDir;
+	private String m_baseDir;
 	private String m_suffix;
 	
-	private FileList m_fileList = new FileList();
+	private FileList m_fileList;
 
-	public MakeList(File baseDir, String suffix) {
+	public MakeList(String baseDir, String suffix) {
 		m_baseDir = baseDir;
 		m_suffix = suffix;
 		
-		getFilesRecursively(m_baseDir);
+		m_fileList = new FileList(m_baseDir);
+		getFilesRecursively(new File(m_baseDir));
 	}
 	public FileList getList() { return m_fileList; }
 	
@@ -44,10 +45,10 @@ public class MakeList {
     }
     
     public void show() {
-        System.out.println("Included files follow:");
-//        for (String file:m_filesList) {
-//            System.out.println(file);
-//        }
-        System.out.println("End of Included files");
+    	System.out.println(">>> MakeList::show");
+    	System.out.println("baseDir : "+m_baseDir);
+    	System.out.println("suffix : "+m_suffix);
+    	m_fileList.show();
+        System.out.println("<<< MakeList::show");
     }
 }

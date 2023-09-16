@@ -1,7 +1,5 @@
 package io.johnvincent.mermaid;
 
-import java.io.File;
-
 public class App {
 	
 	private static final String FOLDER = 
@@ -13,9 +11,11 @@ public class App {
 		"/Users/jv/Desktop/MyDevelopment/github/website/gomoku/gomoku-server/gomoku-server/target/classes/";
 	
     public static void main(String[] args) {
-    	MakeList makeList = new MakeList(new File(FOLDER), SUFFIX);
+    	MakeList makeList = new MakeList(FOLDER, SUFFIX);
     	makeList.show();
+    	
     	FileList fileList = makeList.getList();
+    	fileList.show();
         
         LoadClasses loadClasses = new LoadClasses(FOLDER, fileList);
 //        loadClasses.doWork(AA);
