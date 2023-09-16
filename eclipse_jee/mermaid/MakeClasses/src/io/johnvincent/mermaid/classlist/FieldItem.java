@@ -29,6 +29,12 @@ public class FieldItem {
 		bInterface = Modifier.isInterface(mods);
 	};
 
+	public FieldItem(String name) {
+		m_name = name;
+		m_type = name;
+		bPrivate = true;
+	}
+
 	private String getAccessMark() {
 		if (bPrivate) return "-";
 		if (bPublic) return "+";

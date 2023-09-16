@@ -18,6 +18,11 @@ public class ConstructorList {
 		}
 	}
 	
+	public void add(String name) {
+		ConstructorItem constructorItem = new ConstructorItem(name);
+		if (constructorItem != null) m_collection.add(constructorItem);
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < m_collection.size(); i++)

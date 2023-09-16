@@ -17,7 +17,12 @@ public class FieldList {
 			if (fieldItem != null) m_collection.add(fieldItem);
 		}
 	}
-	
+
+	public void add(String name) {
+		FieldItem fieldItem = new FieldItem(name);
+		if (fieldItem != null) m_collection.add(fieldItem);
+	}
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < m_collection.size(); i++)

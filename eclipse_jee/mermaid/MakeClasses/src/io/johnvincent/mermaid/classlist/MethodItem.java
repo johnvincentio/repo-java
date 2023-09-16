@@ -37,6 +37,12 @@ public class MethodItem {
 		bFinal = Modifier.isFinal(mods);
 		bInterface = Modifier.isInterface(mods);
 	}
+	
+	public MethodItem(String name) {
+		m_name = name;
+		m_returnType = name;
+		bPrivate = true;
+	}
 
 	public String getMermaid() {
 		StringBuffer buf = new StringBuffer();

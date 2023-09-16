@@ -19,6 +19,11 @@ public class MethodList {
 		}
 	}
 	
+	public void add(String name) {
+		MethodItem methodItem = new MethodItem(name);
+		if (methodItem != null) m_collection.add(methodItem);
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < m_collection.size(); i++)

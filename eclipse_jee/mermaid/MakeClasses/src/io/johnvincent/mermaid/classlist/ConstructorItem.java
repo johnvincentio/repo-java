@@ -24,25 +24,7 @@ public class ConstructorItem {
 
 		m_fullName = constructor.getName();
 		m_name = m_fullName.replace(m_packageName+".", "");
-		System.out.println("m_packageName "+m_packageName+" m_name "+m_name);
-		
-		System.out.println("ConstructorItem; (1) "+constructor.getName());
-		System.out.println("ConstructorItem; (2) "+constructor.getClass());
-//		System.out.println("ConstructorItem; (1) "+constructor.getPackageName());
-//		System.out.println("ConstructorItem; (1) "+constructor);
-//		System.out.println("ConstructorItem; (1) "+constructor);
-//		System.out.println("ConstructorItem; (1) "+constructor);
-//		System.out.println("ConstructorItem; (1) "+constructor);
-		
-		Class<?> clz = constructor.getClass();
-		System.out.println("clz; (1) "+clz.getName());
-		System.out.println("clz; (2) "+clz.getCanonicalName());
-		System.out.println("clz; (3) "+clz.getSimpleName());
-		System.out.println("clz; (4) "+clz.getTypeName());
-		System.out.println("clz; (5) "+clz.getPackageName());
-//		System.out.println("clz; (1) "+clz.);
-//		System.out.println("clz; (1) "+clz);
-		
+//		System.out.println("m_packageName "+m_packageName+" m_name "+m_name);
 		
 		Class<?>[] clazzes = constructor.getParameterTypes();
 		for (Class<?> clazz:clazzes) {
@@ -59,6 +41,12 @@ public class ConstructorItem {
 		bInterface = Modifier.isInterface(mods);
 	}
 
+	public ConstructorItem(String name) {
+		m_name = name;
+		m_fullName = name;
+		bPrivate = true;
+	}
+	
 	public String getMermaid() {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getAccessMark()).append(m_name);
@@ -83,3 +71,24 @@ public class ConstructorItem {
 			")";
 	}
 }
+
+/*
+		
+//		System.out.println("ConstructorItem; (1) "+constructor.getName());
+//		System.out.println("ConstructorItem; (2) "+constructor.getClass());
+//		System.out.println("ConstructorItem; (1) "+constructor.getPackageName());
+//		System.out.println("ConstructorItem; (1) "+constructor);
+//		System.out.println("ConstructorItem; (1) "+constructor);
+//		System.out.println("ConstructorItem; (1) "+constructor);
+//		System.out.println("ConstructorItem; (1) "+constructor);
+		
+//		Class<?> clz = constructor.getClass();
+//		System.out.println("clz; (1) "+clz.getName());
+//		System.out.println("clz; (2) "+clz.getCanonicalName());
+//		System.out.println("clz; (3) "+clz.getSimpleName());
+//		System.out.println("clz; (4) "+clz.getTypeName());
+//		System.out.println("clz; (5) "+clz.getPackageName());
+//		System.out.println("clz; (1) "+clz.);
+//		System.out.println("clz; (1) "+clz);
+*/
+

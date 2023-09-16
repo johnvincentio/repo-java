@@ -42,10 +42,16 @@ public class ClassItem {
 		handleMethods();
 		handleFields();
 	}
+
+	private String getClassFromError(NoClassDefFoundError ex) {
+		String msg = ex.getMessage();
+		String result = msg.substring(msg.lastIndexOf("/") + 1);
+		return result;
+	}
 	
 	private void showError(NoClassDefFoundError ex, String type) {
 		System.out.println("NoClassDefFoundError in "+type+" name "+m_name+
-			"fileItem "+m_fileItem.toString()+" ex "+ex);	
+			" fileItem "+m_fileItem.toString()+" ex "+ex);
 	}
 	
 	private void handleConstructors() {
@@ -54,6 +60,7 @@ public class ClassItem {
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleConstructors");
+			m_constructorList.add(getClassFromError(ex));
 		}
 	}
 	
@@ -63,6 +70,7 @@ public class ClassItem {
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleMethods");
+			m_methodList.add(getClassFromError(ex));
 		}
 	}
 	
@@ -72,6 +80,7 @@ public class ClassItem {
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleFields");
+			m_fieldList.add(getClassFromError(ex));
 		}
 	}
 	
