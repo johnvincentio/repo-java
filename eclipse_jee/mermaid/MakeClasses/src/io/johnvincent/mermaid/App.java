@@ -30,7 +30,7 @@ public class App {
 		LoadClasses loadClasses = new LoadClasses(fileList);
 		loadClasses.loadClasses();
 		ClassList classList = loadClasses.getClassList();
-		classList.show();
+//		classList.show();
 		
 		Report report = new Report(classList);
 		report.makeMermaid("Gomoku Classes", REPORT);

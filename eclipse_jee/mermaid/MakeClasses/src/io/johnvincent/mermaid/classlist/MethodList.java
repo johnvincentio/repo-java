@@ -20,7 +20,6 @@ public class MethodList {
 		for (Method method:methods) {
 			MethodItem methodItem = new MethodItem(method);
 			add(methodItem);
-			break;
 		}
 	}
 	
