@@ -20,6 +20,8 @@ public class ClassItem {
 	private Method[] m_methods = null;
 	private Field[] m_fields = null;
 	
+	private FieldList m_fieldList = new FieldList();
+	
 	private URL m_urlfrom;
 
 	public ClassItem(Class<?> clazz, FileItem fileItem) {
@@ -69,6 +71,7 @@ public class ClassItem {
 	private void handleFields() {
 		try {
 			m_fields = m_clazz.getDeclaredFields();
+			m_fieldList.add(m_fields);
 		}
 		catch (NoClassDefFoundError ex) {
 			showError(ex, "handleFields");
