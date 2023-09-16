@@ -1,7 +1,9 @@
 package io.johnvincent.mermaid;
 
 import io.johnvincent.mermaid.classlist.ClassList;
+import io.johnvincent.mermaid.classlist.LoadClasses;
 import io.johnvincent.mermaid.filelist.FileList;
+import io.johnvincent.mermaid.filelist.MakeList;
 
 public class App {
 

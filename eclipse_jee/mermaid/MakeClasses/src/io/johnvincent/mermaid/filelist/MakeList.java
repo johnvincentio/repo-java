@@ -1,8 +1,6 @@
-package io.johnvincent.mermaid;
+package io.johnvincent.mermaid.filelist;
 
 import java.io.File;
-
-import io.johnvincent.mermaid.filelist.FileList;
 
 public class MakeList {
 

@@ -1,11 +1,9 @@
-package io.johnvincent.mermaid;
+package io.johnvincent.mermaid.classlist;
 
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import io.johnvincent.mermaid.classlist.ClassItem;
-import io.johnvincent.mermaid.classlist.ClassList;
 import io.johnvincent.mermaid.filelist.FileItem;
 import io.johnvincent.mermaid.filelist.FileList;
 
